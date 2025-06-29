@@ -1,518 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Abel&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <title>Crowdplzr – Immersive Shows On-Demand</title>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IMMERSIVE EXPERIENCES <BR> DOWNLOADED DIRECTLY TO VENUES</title>
-  
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <!-- Tailwind with forms plugin -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 
   <style>
-    body {
-      font-family: 'Abel', sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #000000;
-      color: #f3eded;
-    }
-    header {
-      background-color: #b33a94;
-      color: rgb(247, 227, 227);
-      padding: 1em 0;
-      background: rgba(0, 0, 0, 0.7);
-    }
-    .logo {
-      width: 150px;
-      height: auto;
-    }
-    main {
-      padding: 20px 10px;
-    }
-    .hero-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-    }
-    .hero-container img {
-      width: 45%;
-      max-width: 400px;
-      height: auto;
-    }
-    .gif-demo img {
-      width: 80%;
-      max-width: 400px;
-      height: auto;
-    }
-    .hero-caption p {
-      max-width: 600px;
-      margin: 10px auto;
-      text-align: center;
-    }
-    .investor {
-      margin-top: 20px;
-      padding: 20px;
-      border: 2px solid #f3eded;
-      display: inline-block;
-      text-align: center;
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-    .investor img {
-      width: 400px;
-      height: auto;
-    }
-    .investor p {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    .contact {
-      margin-top: 20px;
-      margin-bottom: 60px;
-    }
-    footer {
-  position: absolute;
-  bottom: -9999px;
-  visibility: hidden;
-}
-
-    a {
-      color: #ffffff;
-    }
-
-    /* Game styles */
-   body {
-  font-family: 'Inter', sans-serif;
-}
-
-    canvas {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-    .dialogue {
-      align-items: center;
-      background-color: rgba(0, 0, 0, .85);
-      bottom: 0;
-      display: flex;
-      justify-content: center;
-      left: 0;
-      opacity: 1;
-      position: fixed;
-      right: 0;
-      text-align: center;
-      top: 0;
-      z-index: 10;
-    }
-    .dialogue--hidden {
-      opacity: 0;
-      transform: translateX(-100vw);
-      transition: opacity 0.3s linear 0s, transform 0s linear 0.3s;
-    }
-    .dialogue__content {
-      max-width: 800px;
-      padding: 18px;
-    }
-    .key {
-      border: 1px solid white;
-      border-radius: 5px;
-      display: inline-block;
-      padding: 0.8em;
-      color: white;
-    }
-    .key--arrow {
-      font-size: 1.8rem;
-      padding: 0.35em 0.1em 0.6em;
-      position: relative;
-      top: 0.05em;
-    }
-    button {
-      border: 1px solid white;
-      border-radius: 5px;
-      padding: 0.8em;
-      background-color: white;
-      color: black;
-      font-size: 1rem;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-    button:hover,
-    button:focus {
-      background-color: black;
-      color: #ff9d00;
-    }
-    .hud {
-      box-sizing: border-box;
-      display: flex;
-      justify-content: flex-start;
-      margin: 0;
-      left: 0;
-      opacity: 1;
-      padding: 1rem;
-      position: fixed;
-      top: 0;
-      transition: opacity 0.07s linear 0.5s;
-      width: 100%;
-      z-index: 5;
-    }
-    .hud--hidden {
-      opacity: 0;
-    }
-  
-.touch-controls {
-  position: fixed;
-  bottom: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-  z-index: 20;
-  pointer-events: auto;
-}
-.touch-controls button {
-  font-family: 'Press Start 2P', sans-serif;
-  font-size: 16px;
-  padding: 20px;
-  background-color: rgba(255,255,255,0.9);
-  border: 2px solid #000;
-  border-radius: 10px;
-  color: black;
-  width: 80px;
-}
-.touch-left {
-  display: flex;
-  gap: 10px;
-}
-.touch-right {
-  display: flex;
-}
-
-</style>
+    body,html{height:100%}
+    .scrollbar-hide::-webkit-scrollbar{display:none}
+    .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+  </style>
 </head>
 
-<body>
-  <header>
-    <h1>IMMERSIVE EXPERIENCES <BR>DOWNLOADED DIRECTLY TO VENUES</h1>
-    <img src="01 FW Logo.png" alt="Company Logo" class="logo">
+<body class="bg-black text-white flex flex-col">
+
+  <!-- ───── HEADER ───── -->
+  <header class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-4 bg-black/80 backdrop-blur-sm">
+    <h1 class="text-2xl font-extrabold tracking-tight">Crowdplzr</h1>
+    <nav class="hidden md:flex space-x-6 text-sm font-medium">
+      <a href="#" class="hover:text-red-500">Home</a>
+      <a href="#" class="hover:text-red-500">Browse</a>
+      <a href="#" class="hover:text-red-500">My List</a>
+    </nav>
+    <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
   </header>
 
-  <main>
-    <div class="hero-container">
-      <img src="04 tech.png" alt="Upcoming Technology">
-      <img src="03 multi venue.gif" alt="Lights Image">
-    </div>
-    <div class="hero-caption">
-      <p>
-       COMPLETE REWIRE OF LIVE ENTERTAINMENT SUPPLY CHAIN <br> <br>
-        FASTER, SMARTER WAY FOR VENUES, CREATIVES & AUDIENCES TO THRIVE IN $600B MARKET<br> <br>
-       NETFLIX FOR LIVE ENTERTAINMENT
+  <!-- ────────── HERO (video background) ────────── -->
+  <section class="relative flex-1 flex items-center justify-center text-center px-6 pt-24">
+    <!-- ① Added id so we can easily target the element in JS -->
+    <video id="heroVideo" src="assets/urgc.mp4" autoplay muted loop playsinline preload="metadata"
+           class="absolute inset-0 w-full h-full object-cover -z-10"></video>
+    <div class="absolute inset-0 bg-black/60 -z-10"></div>
+
+    <div class="max-w-2xl space-y-6">
+      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
+        Amazing Immersive Productions <br class="hidden md:block">
+        Downloaded Into Your Venue.
+      </h1>
+
+      <p class="text-lg md:text-xl">
+        Enter your email to get early access and pricing.
+      </p>
+
+      <!-- ------------- EMAIL CAPTURE FORM ---------------- -->
+      <form id="emailForm"
+            action="https://script.google.com/macros/s/AKfycbzUfRw-L2U8wxV3fv8GDRic8JNwtxKEBsJhbrQtwNNiqe9CoJOTlq-DROinO-jVAARM3w/exec"
+            method="POST"
+            class="flex flex-col sm:flex-row gap-3 w-full">
+
+        <input type="email" name="email" required
+               placeholder="Email address"
+               class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500">
+
+        <button type="submit"
+                class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold">
+          Get Started ▶
+        </button>
+      </form>
+      <!-- /EMAIL FORM -->
+
+      <p class="text-sm text-gray-300">
+        Already have an account?
+        <a href="login.html" class="underline hover:text-red-400">Sign in</a>
       </p>
     </div>
-    <div class="investor">
-      <img src="02 FUV logo.PNG" alt="Investor Logo">
-      <p>Comprehensive, equity-based support for innovative founders building the future of technology</p>
-    </div>
-    <div class="contact">
-      <h2>Get in Touch</h2>
-      <p><a href="mailto:office@theendofthe.world">office@theendofthe.world</a></p>
-    </div>
+  </section>
 
-    <!-- Game markup -->
-    <div class="dialogue">
-      <div class="dialogue__content">
-        <h1>OTHERS STREAM TO SCREENS<br>WE STREAM TO STAGES</h1>
-                <button>ENTER</button>
-      </div>
-    </div>
-    <ul class="hud hud--hidden">
-      <li class="hud__score">Score: <span>0</span></li>
-    </ul>
-  
-<div class="touch-controls">
-  <div class="touch-left">
-    <button id="left">&#8592;</button>
-    <button id="right">&#8594;</button>
-  </div>
-  <div class="touch-right">
-    <button id="fire">FIRE</button>
+  <!-- ────────── FAQ SECTION ────────── -->
+  <section class="max-w-3xl mx-auto px-6 py-16 space-y-6">
+    <h2 class="text-3xl font-extrabold text-center mb-4">Frequently Asked Questions</h2>
+
+    <!-- FAQ 1 -->
+<div class="border-b border-gray-700">
+  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+    <span class="font-medium">Will this work in my venue?</span>
+    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+    <p>Easily installed &amp; configured by your own technical team.</p>
+    <p>We don't mess with your set up - which can can be used as normal.</p>
+    <p>This is like an Xbox, but for productions not games</p>
+    <p>Minimum requirements: Video screens (projectors/TVs etc.), lighting desk &amp; PA.</p>
   </div>
 </div>
 
-</main>
+<!-- FAQ 2 -->
+<div class="border-b border-gray-700">
+  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+    <span class="font-medium">Will this work for my production?</span>
+    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+    <p>Yes, we capture your creative vision &amp; lock it down so you can be confident of it meeting your high standards whether it's playing in Sydney, Lagos, London or LA </p>
+    <p>Our tools allow you to make regional changes & adjustments</p>
+    <p>You have your own login &amp; are in complete control of your creation</p>
+  </div>
+</div>
 
-  <footer>
-    <p>&copy; 2025 Forever World. All rights reserved.</p>
-  </footer>
+<!-- FAQ 3 -->
+<div class="border-b border-gray-700">
+  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+    <span class="font-medium">Will this benefit my business?</span>
+    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+    <p>This software is designed to increase revenue, reduce costs & lower financial risks</p>
+    <p>Revenue: delivering consistent, premium productions to you that are shown to drive footfall &amp; enhance ticket yield &amp; bar spends</p>
+    <p>Costs: Get-in times, set up &amp; venue turnaround times are reduced from hours to minutes</p>
+<p>Risks: Our network is constantly A/B testing productions &amp; marketing impact of our content; successful shows are repeatable with less reliance on 3rd party scheduling/availability</p>
+</p>Crowdplzr is designed to make your life EASIER</p>
+  </div>
+</div>
 
+<!-- FAQ 4 -->
+<div class="border-b border-gray-700">
+  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+    <span class="font-medium">Will this enhance the customer experience?</span>
+    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+    <p>Cue-perfect light, video and audio shows once reserved for global tours now run on a one-click preset.</p>
+    <p>Your in house team has more time to demonstrate their expertise &amp; push your exisitng AV to it's full potential</p>
+  </div>
+</div>
+
+
+<!-- FAQ 5 -->
+<div class="border-b border-gray-700">
+  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+    <span class="font-medium">What does it cost?</span>
+    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+    <p>There is a venue set up fee and a monthly maintenance fee, then your standard promoter agreement for each production which can be negotiated to share/include costs of this software</p>
+  </div>
+</div>
+
+<!-- FAQ 8 -->
+<div class="border-b border-gray-700">
+  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+    <span class="font-medium">I’m an independent promoter / producer / performer—what’s in it for me?</span>
+    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5 8l5 5
+5-5H5z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+    <p>We can take your show global: instant distribution to every subscribing venue.</p>
+  </div>
+</div>
+
+<!-- FAQ 9 -->
+<div class="border-b border-gray-700">
+  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+    <span class="font-medium">I’m a major brand, corporate, or label—what’s in it for me?</span>
+    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+    <p>Scale on tap. Drop your IP into a nationwide venue network, capture first-party engagement data, and activate local audiences. Networked and hybrid events are baked into the system.</p>
+  </div>
+</div>
+  </section>
+
+  <!-- ────────── FAQ TOGGLE SCRIPT & FORM HANDLER ────────── -->
   <script>
-    const DEV_MODE = false;
-    const stage = document.createElement('canvas'),
-          ctx = stage.getContext('2d'),
-          dialogue = document.querySelector('.dialogue'),
-          startBtn = dialogue.querySelector('button'),
-          hud = document.querySelector('.hud'),
-          scoreNode = hud.querySelector('.hud__score span');
+    // FAQ toggle
+    document.querySelectorAll('.faq-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const panel = btn.nextElementSibling;
+        const icon  = btn.querySelector('.faq-icon');
+        const open  = !panel.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180', open);
+        btn.setAttribute('aria-expanded', open);
+      });
+    });
 
-    let ship, lasers = [], enemies = [],
-        playing = false,
-        gameStarted = false,
-        speedMultiplier,
-        enemySeedFrameInterval,
-        score = 0,
-        tick = 0,
-        laserTick = 0;
+    // Email form: validate, POST to Apps Script, then redirect
+    document.getElementById('emailForm').addEventListener('submit', async e=>{
+      e.preventDefault();
+      const form  = e.target;
+      const email = form.email.value.trim();
 
-    function randomBetween(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function calcScore(x) {
-      return Math.floor((1 / x) * 500);
-    }
-
-    function Ship(options) {
-      this.radius = 15;
-      this.x = options.x || stage.width * .5 - this.radius - .5;
-      this.y = stage.height - this.radius - 510; // adds 80px buffer for footer
-      this.width = this.radius * 2;
-      this.height = this.width;
-      this.color = options.color || 'red';
-      this.left = false;
-      this.right = false;
-      this.speed = 10;
-      this.active = true;
-
-      document.addEventListener('keydown', this.onKeyDown.bind(this));
-      document.addEventListener('keyup', this.onKeyUp.bind(this));
-    }
-
-    Ship.prototype.update = function(x) {
-      this.x = x;
-      this.y = stage.height - this.radius - 30;
-    }
-
-    Ship.prototype.draw = function() {
-      ctx.save();
-      ctx.fillStyle = this.color;
-      ctx.fillRect(this.x + this.radius - 5, this.y, 10, this.radius);
-      ctx.fillRect(this.x, this.y + this.radius, this.width, 10);
-      ctx.fillRect(this.x, this.y + this.radius + 10, 10, 5);
-      ctx.fillRect(this.x + this.width - 10, this.y + this.radius + 10, 10, 5);
-      ctx.restore();
-    }
-
-    Ship.prototype.onKeyDown = function(e) {
-      if (ship.active) {
-        if (e.keyCode === 39) this.right = true;
-        else if (e.keyCode === 37) this.left = true;
-        if (e.keyCode == 32 && !this.shooting) {
-          this.shooting = true;
-          laserTick = 0;
-        }
+      // simple regex validation
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        alert('Please enter a valid email address.');
+        form.email.focus();
+        return;
       }
-    }
 
-    Ship.prototype.onKeyUp = function(e) {
-      if (e.key === 'ArrowRight') this.right = false;
-      else if (e.key === 'ArrowLeft') this.left = false;
-      else if (e.keyCode == 32) this.shooting = false;
-    }
-
-    function Laser(options) {
-      this.x = options.x - .5;
-      this.y = options.y || stage.height - 50;
-      this.width = 6;
-      this.height = 20;
-      this.speed = 15;
-      this.color = options.color || 'white';
-      this.active = true;
-    }
-
-    Laser.prototype.update = function(y) {
-      this.y = y;
-    }
-
-    Laser.prototype.draw = function() {
-      ctx.save();
-      ctx.fillStyle = this.color;
-      ctx.fillRect(this.x, this.y, this.width, this.height);
-      ctx.restore();
-    }
-
-    function Enemy(options) {
-      this.radius = randomBetween(10, 40);
-      this.width = this.radius * 2;
-      this.height = this.width;
-      this.x = randomBetween(0, stage.width - this.width);
-      this.y = 0;
-      this.color = options && options.color ? options.color : 'white';
-      this.speed = 2;
-      this.active = true;
-    }
-
-    Enemy.prototype.update = function(x, y) {
-      this.x = x;
-      this.y = y;
-    }
-
-    Enemy.prototype.draw = function() {
-      ctx.save();
-      ctx.fillStyle = this.color;
-      ctx.beginPath();
-      ctx.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function hitTest(item1, item2) {
-      return !(item1.x > item2.x + item2.width ||
-               item1.y > item2.y + item2.height ||
-               item2.x > item1.x + item1.width ||
-               item2.y > item1.y + item1.height);
-    }
-
-    function handleLaserCollision() {
-      for (let enemy of enemies) {
-        for (let laser of lasers) {
-          if (hitTest(laser, enemy) && laser.active) {
-            enemy.active = false;
-            laser.active = false;
-            speedMultiplier += .025;
-            if (enemySeedFrameInterval > 20) enemySeedFrameInterval -= 2;
-            score += calcScore(enemy.radius);
-            scoreNode.textContent = score;
-          }
-        }
+      try{
+        await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ email })
+        });
+        window.location.href = 'netflix.html';
+      }catch{
+        alert('Sorry, something went wrong. Please try again later.');
       }
-    }
-
-    function handleShipCollision() {
-      for (let enemy of enemies) {
-        if (hitTest(ship, enemy)) {
-          ship.active = false;
-          setTimeout(() => {
-            ship.active = true;
-            speedMultiplier = 1;
-            enemySeedFrameInterval = 100;
-            score = 0;
-            scoreNode.textContent = score;
-          }, 2000);
-        }
-      }
-    }
-
-    function drawShip(x) {
-      if (ship.active) {
-        ship.update(x);
-        ship.draw();
-      }
-    }
-
-    function drawEnemies() {
-      for (let enemy of enemies) {
-        if (enemy.active) {
-          enemy.update(enemy.x, enemy.y += enemy.speed * speedMultiplier);
-          enemy.draw();
-        }
-      }
-    }
-
-    function enemyCleanup() {
-      enemies = enemies.filter(e => e.y < stage.height + e.width && e.active);
-    }
-
-    function drawLasers() {
-      for (let laser of lasers) {
-        if (laser.active) {
-          laser.update(laser.y -= laser.speed);
-          laser.draw();
-        }
-      }
-    }
-
-    function laserCleanup() {
-      lasers = lasers.filter(l => l.y > -l.height && l.active);
-    }
-
-    function render() {
-      if (playing) {
-        let xPos = ship.x;
-        if (tick % enemySeedFrameInterval === 0 && ship.active) enemies.push(new Enemy());
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, stage.width, stage.height);
-        if (ship.left) xPos = ship.x -= ship.speed;
-        else if (ship.right) xPos = ship.x += ship.speed;
-        if (gameStarted) {
-          if (xPos < 0) xPos = 0;
-          else if (xPos > stage.width - ship.width) xPos = stage.width - ship.width;
-        }
-        if (ship.active && ship.shooting && (laserTick === 0 || laserTick % 10 === 0)) {
-          lasers.push(new Laser({ color: 'skyblue', x: ship.x + ship.radius - 3 }));
-        }
-        drawShip(xPos);
-        handleShipCollision();
-        handleLaserCollision();
-        drawLasers();
-        drawEnemies();
-        enemyCleanup();
-        laserCleanup();
-        if (ship.shooting) laserTick++;
-        tick++;
-      }
-      requestAnimationFrame(render);
-    }
-
-    function startGame(e) {
-      dialogue.classList.add('dialogue--hidden');
-      hud.classList.remove('hud--hidden');
-      e.currentTarget.blur();
-      speedMultiplier = 1;
-      enemySeedFrameInterval = 100;
-      ship.x = stage.width * .5 - ship.radius - .5;
-      ship.y = stage.height - ship.radius - 30;
-      enemies = [];
-      gameStarted = true;
-    }
-
-    function onResize() {
-      stage.width = window.innerWidth;
-      stage.height = window.innerHeight;
-    }
-
-    startBtn.addEventListener('click', startGame);
-    window.addEventListener('resize', onResize);
-    document.body.appendChild(stage);
-    onResize();
-    ship = new Ship({ color:'#ff9d00', x: -100 });
-    speedMultiplier = 6;
-    enemySeedFrameInterval = 20;
-    playing = true;
-    render();
+    });
   </script>
-
-<script>
-  const leftBtn = document.getElementById("left");
-  const rightBtn = document.getElementById("right");
-  const fireBtn = document.getElementById("fire");
-
-  leftBtn.addEventListener("touchstart", () => ship.left = true);
-  leftBtn.addEventListener("touchend", () => ship.left = false);
-  rightBtn.addEventListener("touchstart", () => ship.right = true);
-  rightBtn.addEventListener("touchend", () => ship.right = false);
-  fireBtn.addEventListener("touchstart", () => {
-    ship.shooting = true;
-    laserTick = 0;
-  });
-  fireBtn.addEventListener("touchend", () => {
-    ship.shooting = false;
-  });
-</script>
 
 </body>
 </html>
