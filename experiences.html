@@ -2,19 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Crowdplzr – Immersive Shows On-Demand</title>
+  <title>Crowdplzr Streaming</title>
 
-  <!-- Tailwind with forms plugin -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <!-- Tailwind with aspect-ratio plugin -->
+  <script src="https://cdn.tailwindcss.com?plugins=aspect-ratio"></script>
 
   <style>
-    body,html{height:100%}
     .scrollbar-hide::-webkit-scrollbar{display:none}
     .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
   </style>
 </head>
 
-<body class="bg-black text-white flex flex-col">
+<body class="bg-black text-white font-sans">
 
   <!-- ───── HEADER ───── -->
   <header class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-4 bg-black/80 backdrop-blur-sm">
@@ -27,192 +26,184 @@
     <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
   </header>
 
-  <!-- ────────── HERO (video background) ────────── -->
-  <section class="relative flex-1 flex items-center justify-center text-center px-6 pt-24">
-    <!-- ① Added id so we can easily target the element in JS -->
-    <video id="heroVideo" src="assets/rbbw.mp4" autoplay muted loop playsinline preload="metadata"
-           class="absolute inset-0 w-full h-full object-cover -z-10"></video>
-    <div class="absolute inset-0 bg-black/60 -z-10"></div>
-
-    <div class="max-w-2xl space-y-6">
-      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
-        Amazing Immersive Productions <br class="hidden md:block">
-        Downloaded Into Your Venue.
-      </h1>
-
-      <p class="text-lg md:text-xl">
-        Enter your email to get early access and pricing.
-      </p>
-
-      <!-- ------------- EMAIL CAPTURE FORM ---------------- -->
-      <form id="emailForm"
-            action="https://script.google.com/macros/s/AKfycbzUfRw-L2U8wxV3fv8GDRic8JNwtxKEBsJhbrQtwNNiqe9CoJOTlq-DROinO-jVAARM3w/exec"
-            method="POST"
-            class="flex flex-col sm:flex-row gap-3 w-full">
-
-        <input type="email" name="email" required
-               placeholder="Email address"
-               class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500">
-
-        <button type="submit"
-                class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold">
-          Get Started ▶
-        </button>
-      </form>
-      <!-- /EMAIL FORM -->
-
-      <p class="text-sm text-gray-300">
-        Already have an account?
-        <a href="login.html" class="underline hover:text-red-400">Sign in</a>
-      </p>
+  <!-- ───── HERO ───── -->
+  <section class="relative h-[60vh] w-full overflow-hidden pt-16">
+    <video src="assets/rb.mp4" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+    <div class="relative z-10 max-w-xl p-8 mt-24 space-y-4">
+      <h2 class="text-4xl md:text-5xl font-extrabold">Featured Experience</h2>
+      <p class="text-sm md:text-base">Drop audiences straight into blockbuster-scale worlds.</p>
+      <button class="flex items-center gap-2 px-5 py-2 bg-red-600 rounded-md text-sm font-semibold hover:bg-red-700">
+        ▶ Play Trailer
+      </button>
     </div>
   </section>
 
-  <!-- ────────── FAQ SECTION ────────── -->
-  <section class="max-w-3xl mx-auto px-6 py-16 space-y-6">
-    <h2 class="text-3xl font-extrabold text-center mb-4">Frequently Asked Questions</h2>
+  <!-- ───── ROW : Popular Now ───── -->
+  <section class="space-y-3 px-6 py-8">
+    <h3 class="text-lg md:text-xl font-bold px-1">Popular Now</h3>
 
-    <!-- FAQ 1 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">Will this work in my venue?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>Easily installed &amp; configured by your own technical team.</p>
-    <p>We don't mess with your set up - which can can be used as normal.</p>
-    <p>This is like an Xbox, but for productions not games</p>
-    <p>Minimum requirements: Video screens (projectors/TVs etc.), lighting desk &amp; PA.</p>
-  </div>
-</div>
+    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
 
-<!-- FAQ 2 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">Will this work for my production?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>Yes, we capture your creative vision &amp; lock it down so you can be confident of it meeting your high standards whether it's playing in Sydney, Lagos, London or LA </p>
-    <p>Our tools allow you to make regional changes & adjustments</p>
-    <p>You have your own login &amp; are in complete control of your creation</p>
-  </div>
-</div>
+      <!-- EOTW -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/eotw.mp4">
+        <img src="assets/eotw.jpg" alt="End of the World"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/eotw.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
 
-<!-- FAQ 3 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">Will this benefit my business?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>This software is designed to increase revenue, reduce costs & lower financial risks</p>
-    <p>Revenue: delivering consistent, premium productions to you that are shown to drive footfall &amp; enhance ticket yield &amp; bar spends</p>
-    <p>Costs: Get-in times, set up &amp; venue turnaround times are reduced from hours to minutes</p>
-<p>Risks: Our network is constantly A/B testing productions &amp; marketing impact of our content; successful shows are repeatable with less reliance on 3rd party scheduling/availability</p>
-</p>Crowdplzr is designed to make your life EASIER</p>
-  </div>
-</div>
+      <!-- URGC -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/URGC.mp4">
+        <img src="assets/urgc.jpg" alt="Underground Rebel Gameshow"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/URGC.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
 
-<!-- FAQ 4 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">Will this enhance the customer experience?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>Cue-perfect light, video and audio shows once reserved for global tours now run on a one-click preset.</p>
-    <p>Your in house team has more time to demonstrate their expertise &amp; push your exisitng AV to it's full potential</p>
-  </div>
-</div>
+      <!-- TTM -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/TTM.mp4">
+        <img src="assets/ttm.JPG" alt="Twisted Time Machine"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/TTM.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+
+      <!-- RB -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/rb.mp4">
+        <img src="assets/rb.jpg" alt="Rebel Bingo"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/rb.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+
+ <!-- Cat Face -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/rb.mp4">
+        <img src="assets/catface.png" alt="Rebel Bingo"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/catface.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+
+ <!-- Lycra -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/rb.mp4">
+        <img src="assets/lycra.png" alt="Lycra 80s Party"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/lycra.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
 
 
-<!-- FAQ 5 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">What does it cost?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>There is a venue set up fee and a monthly maintenance fee, then your standard promoter agreement for each production which can be negotiated to share/include costs of this software</p>
-  </div>
-</div>
+    </div> 
 
-<!-- FAQ 8 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">I’m an independent promoter / producer / performer—what’s in it for me?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5
-5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>We can take your show global: instant distribution to every subscribing venue.</p>
-  </div>
-</div>
+ </section>
 
-<!-- FAQ 9 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">I’m a major brand, corporate, or label—what’s in it for me?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>Scale on tap. Drop your IP into a nationwide venue network, capture first-party engagement data, and activate local audiences. Networked and hybrid events are baked into the system.</p>
-  </div>
-</div>
+  <!-- ───── ROW : Coming Soon (duplicate) ───── -->
+  <section class="space-y-3 px-6 py-8">
+    <h3 class="text-lg md:text-xl font-bold px-1">Coming Soon</h3>
+
+    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+
+            <!-- SNOOZEFEST -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/SNZF.mp4">
+        <img src="assets/SNOOZEFESTSQ.PNG" alt="Snoozefest Pajama Party"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/SNZF.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+
+<!-- HOEDOWN -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/URGC.mp4">
+        <img src="assets/hoedown.png" alt="Placeholder 2"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/URGC.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+    </div> 
+
+ </section>
+
+  <!-- ───── ROW : Corporate) ───── -->
+
+  <section class="space-y-3 px-6 py-8">
+    <h3 class="text-lg md:text-xl font-bold px-1">Corporate Events & Keynotes</h3>
+
+    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+
+<!-- KILLER KEYNOTE -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/URGC.mp4">
+        <img src="assets/keynote.png" alt="Placeholder 2"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/keynote.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+
+<!-- PERFECT PANEL -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/URGC.mp4">
+        <img src="assets/panels.png" alt="Placeholder 2"
+             class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/keynote.mp4" muted loop playsinline
+               class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+
+    </div>
   </section>
 
-  <!-- ────────── FAQ TOGGLE SCRIPT & FORM HANDLER ────────── -->
+  <!-- ───── OVERLAY PLAYER ───── -->
+  <div id="overlay"
+       class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 hidden">
+    <video id="overlayVid" class="max-h-[90vh] max-w-[90vw]" controls></video>
+    <button id="closeBtn"
+            class="absolute top-4 right-4 text-white text-4xl font-bold leading-none">&times;</button>
+  </div>
+
+  <!-- ───── JS ───── -->
   <script>
-    // FAQ toggle
-    document.querySelectorAll('.faq-btn').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        const panel = btn.nextElementSibling;
-        const icon  = btn.querySelector('.faq-icon');
-        const open  = !panel.classList.toggle('hidden');
-        icon.classList.toggle('rotate-180', open);
-        btn.setAttribute('aria-expanded', open);
+  document.addEventListener('DOMContentLoaded', () => {
+    /* Overlay logic */
+    const overlay    = document.getElementById('overlay');
+    const overlayVid = document.getElementById('overlayVid');
+    const closeBtn   = document.getElementById('closeBtn');
+
+    closeBtn.addEventListener('click', () => {
+      overlayVid.pause();
+      overlayVid.removeAttribute('src');
+      overlay.classList.add('hidden');
+    });
+
+    /* Card previews & clicks */
+    document.querySelectorAll('[data-src]').forEach(card => {
+
+      /* full-screen on click */
+      card.addEventListener('click', () => {
+        overlayVid.src = card.dataset.src;
+        overlay.classList.remove('hidden');
+        overlayVid.play();
+      });
+
+      /* hover preview to frame-60 (≈2 s @30 fps) */
+      const preview = card.querySelector('video');
+      preview.preload = 'metadata';
+
+      const startPreview = () => {
+        preview.currentTime = 2;
+        preview.play();
+      };
+
+      card.addEventListener('mouseenter', () => {
+        if (preview.readyState >= 2) {
+          startPreview();
+        } else {
+          preview.addEventListener('loadedmetadata', startPreview, { once:true });
+        }
+      });
+
+      card.addEventListener('mouseleave', () => {
+        preview.pause();
+        preview.currentTime = 0;  // reset so next hover starts clean
       });
     });
-
-    // Email form: validate, POST to Apps Script, then redirect
-    document.getElementById('emailForm').addEventListener('submit', async e=>{
-      e.preventDefault();
-      const form  = e.target;
-      const email = form.email.value.trim();
-
-      // simple regex validation
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-        alert('Please enter a valid email address.');
-        form.email.focus();
-        return;
-      }
-
-      try{
-        await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ email })
-        });
-        window.location.href = 'netflix.html';
-      }catch{
-        alert('Sorry, something went wrong. Please try again later.');
-      }
-    });
+  });
   </script>
 
 </body>
