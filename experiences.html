@@ -168,7 +168,8 @@
     closeBtn.addEventListener('click', () => {
       overlayVid.pause();
       overlayVid.removeAttribute('src');
-      overlay.classList.add('hidden');
+  overlayVid.load();
+overlay.classList.add('hidden');
     });
 
     /* Card previews & clicks */
@@ -186,7 +187,7 @@
       preview.preload = 'metadata';
 
       const startPreview = () => {
-        preview.currentTime = 2;
+        preview.currentTime = preview.duration > 2 ? 2 : 0.1;
         preview.play();
       };
 

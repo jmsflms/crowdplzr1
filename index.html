@@ -116,7 +116,7 @@
     <p>Revenue: delivering consistent, premium productions to you that are shown to drive footfall &amp; enhance ticket yield &amp; bar spends</p>
     <p>Costs: Get-in times, set up &amp; venue turnaround times are reduced from hours to minutes</p>
 <p>Risks: Our network is constantly A/B testing productions &amp; marketing impact of our content; successful shows are repeatable with less reliance on 3rd party scheduling/availability</p>
-</p>Crowdplzr is designed to make your life EASIER</p>
+<p>Crowdplzr is designed to make your life EASIER</p>
   </div>
 </div>
 
@@ -130,7 +130,7 @@
   </button>
   <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
     <p>Cue-perfect light, video and audio shows once reserved for global tours now run on a one-click preset.</p>
-    <p>Your in house team has more time to demonstrate their expertise &amp; push your exisitng AV to it's full potential</p>
+    <p>Your in house team has more time to demonstrate their expertise &amp; push your existing AV to it's full potential</p>
   </div>
 </div>
 
@@ -153,8 +153,7 @@
   <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
     <span class="font-medium">I’m an independent promoter / producer / performer—what’s in it for me?</span>
     <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5
-5-5H5z" clip-rule="evenodd" />
+      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
     </svg>
   </button>
   <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
@@ -203,12 +202,17 @@
       }
 
       try{
-        await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ email })
-        });
-        window.location.href = 'experiences.html';
+        const res = await fetch(form.action, {
+  method: 'POST',
+  mode: 'no-cors',
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  body: new URLSearchParams({ email })
+});
+if (res.type === 'opaque' || res.ok) {
+  window.location.href = 'experiences.html';
+} else {
+  throw new Error('submit failed');
+}
       }catch{
         alert('Sorry, something went wrong. Please try again later.');
       }
