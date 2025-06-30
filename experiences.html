@@ -8,16 +8,11 @@
   <script src="https://cdn.tailwindcss.com?plugins=aspect-ratio"></script>
 
   <style>
-    /* hide horizontal scrollbar for the card rows */
     .scrollbar-hide::-webkit-scrollbar{display:none}
     .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
-
-    /* ---------- Mobile‑friendly close button ---------- */
     @media (max-width:640px){
-      /* 48 × 48 px tap target per WCAG */
-      #closeBtn{width:3rem;height:3rem;font-size:2.5rem}
+      #closeBtn{width:3rem;height:2.5rem;font-size:2.5rem}
     }
-    /* invisible hit‑box so even desktop users get a larger area */
     #closeBtn{position:relative}
     #closeBtn::after{content:"";position:absolute;inset:-0.75rem}
   </style>
@@ -52,16 +47,16 @@
 <!-- ───── ROW : Popular Now ───── -->
 <section class="space-y-3 px-6 py-8">
   <h3 class="text-lg md:text-xl font-bold px-1">Popular Now</h3>
-  <div class="relative">
+  <div class="relative min-h-[13rem]">
     <!-- Left Chevron -->
-    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="left" aria-label="Scroll left">
+    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="left" aria-label="Scroll left">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
     </button>
     <!-- Right Chevron -->
-    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="right" aria-label="Scroll right">
+    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="right" aria-label="Scroll right">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
     </button>
-    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
+    <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
       <!-- EOTW -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/eotw.mp4">
         <img src="assets/eotw.jpg" alt="End of the World" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
@@ -99,16 +94,16 @@
 <!-- ───── ROW : Coming Soon ───── -->
 <section class="space-y-3 px-6 py-8">
   <h3 class="text-lg md:text-xl font-bold px-1">Coming Soon</h3>
-  <div class="relative">
+  <div class="relative min-h-[13rem]">
     <!-- Left Chevron -->
-    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="left" aria-label="Scroll left">
+    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="left" aria-label="Scroll left">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
     </button>
     <!-- Right Chevron -->
-    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="right" aria-label="Scroll right">
+    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="right" aria-label="Scroll right">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
     </button>
-    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
+    <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
       <!-- SNOOZEFEST -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/SNZF.mp4">
         <img src="assets/SNOOZEFESTSQ.png" alt="Snoozefest Pajama Party" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
@@ -126,16 +121,16 @@
 <!-- ───── ROW : Corporate ───── -->
 <section class="space-y-3 px-6 py-8">
   <h3 class="text-lg md:text-xl font-bold px-1">Corporate Events & Keynotes</h3>
-  <div class="relative">
+  <div class="relative min-h-[13rem]">
     <!-- Left Chevron -->
-    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="left" aria-label="Scroll left">
+    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="left" aria-label="Scroll left">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
     </button>
     <!-- Right Chevron -->
-    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="right" aria-label="Scroll right">
+    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="right" aria-label="Scroll right">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
     </button>
-    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
+    <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
       <!-- KILLER KEYNOTE -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/keynote.mp4">
         <img src="assets/keynote.png" alt="Killer Keynote" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
@@ -161,13 +156,30 @@
   .chevron-btn {
     transition: opacity 0.2s;
     opacity: 0.85;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .chevron-btn svg {
+    width: 2rem;
+    height: 2rem;
   }
   .chevron-btn:hover {
     opacity: 1;
     background: white;
   }
   @media (max-width: 640px) {
-    .chevron-btn { display: none !important; }
+    .chevron-btn {
+      width: 3.5rem;
+      height: 3.5rem;
+      padding: 0.75rem;
+    }
+    .chevron-btn svg {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
   }
 </style>
 
@@ -240,31 +252,58 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   }
 
-  /* ---------- Chevron scroll logic ---------- */
+  /* ---------- Infinite Chevron scroll logic ---------- */
   document.querySelectorAll('.scroll-row').forEach(row => {
     const container = row;
     const parent = container.parentElement;
     const leftBtn = parent.querySelector('[data-chevron="left"]');
     const rightBtn = parent.querySelector('[data-chevron="right"]');
+    const cards = Array.from(container.children);
+    const cardCount = cards.length;
+    const cloneCount = Math.min(3, cardCount);
 
-    function updateChevrons() {
-      leftBtn.classList.toggle('hidden', container.scrollLeft < 10);
-      rightBtn.classList.toggle('hidden', container.scrollLeft + container.clientWidth >= container.scrollWidth - 10);
+    // Only enable infinite scroll if there are 6 or more cards
+    if(cardCount >= 6) {
+      for(let i=0;i<cloneCount;i++){
+        container.appendChild(cards[i].cloneNode(true));
+        container.insertBefore(cards[cardCount-1-i].cloneNode(true), container.firstChild);
+      }
+
+      function setToRealStart() {
+        const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
+        container.scrollLeft = cardWidth * cloneCount;
+      }
+      setTimeout(setToRealStart, 50);
+
+      container.addEventListener('scroll', () => {
+        const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
+        if (container.scrollLeft < cardWidth * 0.5) {
+          container.scrollLeft = cardWidth * cardCount + container.scrollLeft;
+        } else if (container.scrollLeft > cardWidth * (cardCount + cloneCount - 0.5)) {
+          container.scrollLeft = container.scrollLeft - cardWidth * cardCount;
+        }
+      });
+
+      window.addEventListener('resize', setToRealStart);
     }
 
+    // Chevrons always visible
+    function updateChevrons() {
+      leftBtn.classList.remove('hidden');
+      rightBtn.classList.remove('hidden');
+    }
     updateChevrons();
-    container.addEventListener('scroll', updateChevrons);
-    window.addEventListener('resize', updateChevrons);
 
     leftBtn.addEventListener('click', () => {
-      container.scrollBy({ left: -container.clientWidth * 0.8, behavior: 'smooth' });
+      const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
+      container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
     });
     rightBtn.addEventListener('click', () => {
-      container.scrollBy({ left: container.clientWidth * 0.8, behavior: 'smooth' });
+      const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
+      container.scrollBy({ left: cardWidth, behavior: 'smooth' });
     });
   });
 });
 </script>
 
 </body>
-</html>
