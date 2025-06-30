@@ -49,165 +49,222 @@
     </div>
   </section>
 
-  <!-- ───── ROW : Popular Now ───── -->
-  <section class="space-y-3 px-6 py-8">
-    <h3 class="text-lg md:text-xl font-bold px-1">Popular Now</h3>
-
-    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
-
+<!-- ───── ROW : Popular Now ───── -->
+<section class="space-y-3 px-6 py-8">
+  <h3 class="text-lg md:text-xl font-bold px-1">Popular Now</h3>
+  <div class="relative">
+    <!-- Left Chevron -->
+    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="left" aria-label="Scroll left">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <!-- Right Chevron -->
+    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="right" aria-label="Scroll right">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
       <!-- EOTW -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/eotw.mp4">
         <img src="assets/eotw.jpg" alt="End of the World" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/eotw.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
-
       <!-- URGC -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/Urgc.mp4">
         <img src="assets/urgc.jpg" alt="Underground Rebel Gameshow" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/Urgc.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
-
       <!-- TTM -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/Ttm.mp4">
         <img src="assets/ttm.jpg" alt="Twisted Time Machine" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/Ttm.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
-
       <!-- RB -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/rb.mp4">
         <img src="assets/rb.jpg" alt="Rebel Bingo" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/rb.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
-
       <!-- Cat Face -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/CatFace.mp4">
         <img src="assets/catface.png" alt="Cat Face" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/CatFace.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
-
       <!-- Lycra -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/Lycra.mp4">
         <img src="assets/lycra.png" alt="Lycra 80s Party" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/Lycra.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
-
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ───── ROW : Coming Soon ───── -->
-  <section class="space-y-3 px-6 py-8">
-    <h3 class="text-lg md:text-xl font-bold px-1">Coming Soon</h3>
-
-    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+<!-- ───── ROW : Coming Soon ───── -->
+<section class="space-y-3 px-6 py-8">
+  <h3 class="text-lg md:text-xl font-bold px-1">Coming Soon</h3>
+  <div class="relative">
+    <!-- Left Chevron -->
+    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="left" aria-label="Scroll left">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <!-- Right Chevron -->
+    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="right" aria-label="Scroll right">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
       <!-- SNOOZEFEST -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/SNZF.mp4">
         <img src="assets/SNOOZEFESTSQ.png" alt="Snoozefest Pajama Party" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/SNZF.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
-
       <!-- HOEDOWN -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/hoedown.mp4">
         <img src="assets/hoedown.png" alt="Hoedown Showdown" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/hoedown.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ───── ROW : Corporate ───── -->
-  <section class="space-y-3 px-6 py-8">
-    <h3 class="text-lg md:text-xl font-bold px-1">Corporate Events & Keynotes</h3>
-
-    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+<!-- ───── ROW : Corporate ───── -->
+<section class="space-y-3 px-6 py-8">
+  <h3 class="text-lg md:text-xl font-bold px-1">Corporate Events & Keynotes</h3>
+  <div class="relative">
+    <!-- Left Chevron -->
+    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="left" aria-label="Scroll left">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <!-- Right Chevron -->
+    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow hidden" data-chevron="right" aria-label="Scroll right">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
       <!-- KILLER KEYNOTE -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/keynote.mp4">
         <img src="assets/keynote.png" alt="Killer Keynote" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/keynote.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
-
       <!-- PERFECT PANEL -->
       <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/keynote.mp4">
         <img src="assets/PANELS.png" alt="Perfect Panel" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
         <video src="assets/keynote.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
       </div>
     </div>
-  </section>
-
-  <!-- ───── OVERLAY PLAYER ───── -->
-  <div id="overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 hidden">
-    <video id="overlayVid" class="max-h-[90vh] max-w-[90vw]" controls></video>
-    <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl font-bold leading-none">&times;</button>
   </div>
+</section>
 
-  <!-- ───── JS ───── -->
-  <script>
-  document.addEventListener('DOMContentLoaded',()=>{
-    /* ---------- Overlay logic ---------- */
-    const overlay    = document.getElementById('overlay');
-    const overlayVid = document.getElementById('overlayVid');
-    const closeBtn   = document.getElementById('closeBtn');
+<!-- ───── OVERLAY PLAYER ───── -->
+<div id="overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 hidden">
+  <video id="overlayVid" class="max-h-[90vh] max-w-[90vw]" controls></video>
+  <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl font-bold leading-none">&times;</button>
+</div>
 
-    closeBtn.addEventListener('click',()=>{
-      overlayVid.pause();
-      overlayVid.removeAttribute('src');
-      overlayVid.load();
-      overlay.classList.add('hidden');
+<!-- ───── CHEVRON CSS ───── -->
+<style>
+  .chevron-btn {
+    transition: opacity 0.2s;
+    opacity: 0.85;
+  }
+  .chevron-btn:hover {
+    opacity: 1;
+    background: white;
+  }
+  @media (max-width: 640px) {
+    .chevron-btn { display: none !important; }
+  }
+</style>
+
+<!-- ───── JS ───── -->
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  /* ---------- Overlay logic ---------- */
+  const overlay    = document.getElementById('overlay');
+  const overlayVid = document.getElementById('overlayVid');
+  const closeBtn   = document.getElementById('closeBtn');
+
+  closeBtn.addEventListener('click',()=>{
+    overlayVid.pause();
+    overlayVid.removeAttribute('src');
+    overlayVid.load();
+    overlay.classList.add('hidden');
+  });
+
+  const cards = document.querySelectorAll('[data-src]');
+
+  /* ---------- Full‑screen on click ---------- */
+  cards.forEach(card=>{
+    card.addEventListener('click',()=>{
+      overlayVid.src = card.dataset.src;
+      overlay.classList.remove('hidden');
+      overlayVid.play();
+    });
+  });
+
+  /* ---------- Hover previews (desktop) ---------- */
+  cards.forEach(card=>{
+    const preview = card.querySelector('video');
+    preview.preload = 'metadata';
+
+    const startPreview = ()=>{
+      preview.currentTime = preview.duration > 2 ? 2 : 0.1;
+      preview.play();
+    };
+
+    card.addEventListener('mouseenter',()=>{
+      if(preview.readyState>=2){
+        startPreview();
+      }else{
+        preview.addEventListener('loadedmetadata',startPreview,{once:true});
+      }
     });
 
-    const cards = document.querySelectorAll('[data-src]');
-
-    /* ---------- Full‑screen on click ---------- */
-    cards.forEach(card=>{
-      card.addEventListener('click',()=>{
-        overlayVid.src = card.dataset.src;
-        overlay.classList.remove('hidden');
-        overlayVid.play();
-      });
+    card.addEventListener('mouseleave',()=>{
+      preview.pause();
+      preview.currentTime = 0;
     });
+  });
 
-    /* ---------- Hover previews (desktop) ---------- */
+  /* ---------- Touch devices: tap to preview ---------- */
+  if(matchMedia('(pointer: coarse)').matches){
     cards.forEach(card=>{
       const preview = card.querySelector('video');
-      preview.preload = 'metadata';
-
-      const startPreview = ()=>{
-        preview.currentTime = preview.duration > 2 ? 2 : 0.1;
-        preview.play();
-      };
-
-      card.addEventListener('mouseenter',()=>{
-        if(preview.readyState>=2){
-          startPreview();
+      card.addEventListener('touchstart',e=>{
+        e.preventDefault(); // avoid accidental scroll
+        if(preview.paused){
+          preview.currentTime = preview.duration > 2 ? 2 : 0.1;
+          preview.play();
+          preview.style.opacity = 1;
         }else{
-          preview.addEventListener('loadedmetadata',startPreview,{once:true});
+          preview.pause();
+          preview.currentTime = 0;
+          preview.style.opacity = 0;
         }
-      });
-
-      card.addEventListener('mouseleave',()=>{
-        preview.pause();
-        preview.currentTime = 0;
-      });
+      },{passive:false});
     });
+  }
 
-    /* ---------- Touch devices: tap to preview ---------- */
-    if(matchMedia('(pointer: coarse)').matches){
-      cards.forEach(card=>{
-        const preview = card.querySelector('video');
-        card.addEventListener('touchstart',e=>{
-          e.preventDefault(); // avoid accidental scroll
-          if(preview.paused){
-            preview.currentTime = preview.duration > 2 ? 2 : 0.1;
-            preview.play();
-            preview.style.opacity = 1;
-          }else{
-            preview.pause();
-            preview.currentTime = 0;
-            preview.style.opacity = 0;
-          }
-        },{passive:false});
-      });
+  /* ---------- Chevron scroll logic ---------- */
+  document.querySelectorAll('.scroll-row').forEach(row => {
+    const container = row;
+    const parent = container.parentElement;
+    const leftBtn = parent.querySelector('[data-chevron="left"]');
+    const rightBtn = parent.querySelector('[data-chevron="right"]');
+
+    function updateChevrons() {
+      leftBtn.classList.toggle('hidden', container.scrollLeft < 10);
+      rightBtn.classList.toggle('hidden', container.scrollLeft + container.clientWidth >= container.scrollWidth - 10);
     }
+
+    updateChevrons();
+    container.addEventListener('scroll', updateChevrons);
+    window.addEventListener('resize', updateChevrons);
+
+    leftBtn.addEventListener('click', () => {
+      container.scrollBy({ left: -container.clientWidth * 0.8, behavior: 'smooth' });
+    });
+    rightBtn.addEventListener('click', () => {
+      container.scrollBy({ left: container.clientWidth * 0.8, behavior: 'smooth' });
+    });
   });
-  </script>
+});
+</script>
 
 </body>
 </html>
