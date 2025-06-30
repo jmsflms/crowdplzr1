@@ -241,6 +241,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     overlayVid.load();
     overlay.classList.add('hidden');
     overlayText.innerHTML = "";
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
   });
 
   function showOverlay(src) {
@@ -251,6 +254,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     const meta = videoMeta[src] || {title: "Experience", desc: "<p>Lorem ipsum dolor sit amet.</p>"};
     overlayText.innerHTML = `<h2 class="text-2xl md:text-3xl font-bold mb-2">${meta.title}</h2>
       <div class="text-base md:text-lg leading-relaxed">${meta.desc}</div>`;
+
+    // Request fullscreen for the overlay (if not already)
+    if (document.fullscreenEnabled && !document.fullscreenElement) {
+      overlay.requestFullscreen().catch(()=>{});
+    }
   }
 
   function isTouchDevice() {
