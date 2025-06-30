@@ -15,6 +15,34 @@
     }
     #closeBtn{position:relative}
     #closeBtn::after{content:"";position:absolute;inset:-0.75rem}
+    .chevron-btn {
+      transition: opacity 0.2s;
+      opacity: 0.85;
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chevron-btn svg {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+    .chevron-btn:hover {
+      opacity: 1;
+      background: white;
+    }
+    @media (max-width: 640px) {
+      .chevron-btn {
+        width: 4rem;
+        height: 4rem;
+        padding: 1rem;
+      }
+      .chevron-btn svg {
+        width: 3rem;
+        height: 3rem;
+      }
+    }
   </style>
 </head>
 
@@ -48,12 +76,11 @@
 <section class="space-y-3 px-6 py-8">
   <h3 class="text-lg md:text-xl font-bold px-1">Popular Now</h3>
   <div class="relative min-h-[13rem]">
-    <!-- Left Chevron -->
-    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="left" aria-label="Scroll left">
+    <!-- Chevrons with spacing and larger size -->
+    <button class="chevron-btn left-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="left" aria-label="Scroll left">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
     </button>
-    <!-- Right Chevron -->
-    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="right" aria-label="Scroll right">
+    <button class="chevron-btn right-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="right" aria-label="Scroll right">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
     </button>
     <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
@@ -95,12 +122,10 @@
 <section class="space-y-3 px-6 py-8">
   <h3 class="text-lg md:text-xl font-bold px-1">Coming Soon</h3>
   <div class="relative min-h-[13rem]">
-    <!-- Left Chevron -->
-    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="left" aria-label="Scroll left">
+    <button class="chevron-btn left-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="left" aria-label="Scroll left">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
     </button>
-    <!-- Right Chevron -->
-    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="right" aria-label="Scroll right">
+    <button class="chevron-btn right-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="right" aria-label="Scroll right">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
     </button>
     <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
@@ -122,12 +147,10 @@
 <section class="space-y-3 px-6 py-8">
   <h3 class="text-lg md:text-xl font-bold px-1">Corporate Events & Keynotes</h3>
   <div class="relative min-h-[13rem]">
-    <!-- Left Chevron -->
-    <button class="chevron-btn left-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="left" aria-label="Scroll left">
+    <button class="chevron-btn left-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="left" aria-label="Scroll left">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
     </button>
-    <!-- Right Chevron -->
-    <button class="chevron-btn right-0 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-2 shadow" data-chevron="right" aria-label="Scroll right">
+    <button class="chevron-btn right-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="right" aria-label="Scroll right">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
     </button>
     <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
@@ -151,39 +174,6 @@
   <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl font-bold leading-none">&times;</button>
 </div>
 
-<!-- ───── CHEVRON CSS ───── -->
-<style>
-  .chevron-btn {
-    transition: opacity 0.2s;
-    opacity: 0.85;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .chevron-btn svg {
-    width: 2rem;
-    height: 2rem;
-  }
-  .chevron-btn:hover {
-    opacity: 1;
-    background: white;
-  }
-  @media (max-width: 640px) {
-    .chevron-btn {
-      width: 3.5rem;
-      height: 3.5rem;
-      padding: 0.75rem;
-    }
-    .chevron-btn svg {
-      width: 2.5rem;
-      height: 2.5rem;
-    }
-  }
-</style>
-
-<!-- ───── JS ───── -->
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
   /* ---------- Overlay logic ---------- */
@@ -200,14 +190,19 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   const cards = document.querySelectorAll('[data-src]');
 
-  /* ---------- Full‑screen on click ---------- */
-  cards.forEach(card=>{
-    card.addEventListener('click',()=>{
-      overlayVid.src = card.dataset.src;
-      overlay.classList.remove('hidden');
-      overlayVid.play();
+  /* ---------- Full‑screen on click (desktop only) ---------- */
+  function isTouchDevice() {
+    return matchMedia('(pointer: coarse)').matches;
+  }
+  if (!isTouchDevice()) {
+    cards.forEach(card=>{
+      card.addEventListener('click',()=>{
+        overlayVid.src = card.dataset.src;
+        overlay.classList.remove('hidden');
+        overlayVid.play();
+      });
     });
-  });
+  }
 
   /* ---------- Hover previews (desktop) ---------- */
   cards.forEach(card=>{
@@ -233,20 +228,29 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   });
 
-  /* ---------- Touch devices: tap to preview ---------- */
-  if(matchMedia('(pointer: coarse)').matches){
+  /* ---------- Touch devices: tap to preview, second tap to play ---------- */
+  if(isTouchDevice()){
     cards.forEach(card=>{
       const preview = card.querySelector('video');
-      card.addEventListener('touchstart',e=>{
-        e.preventDefault(); // avoid accidental scroll
-        if(preview.paused){
+      let tapped = false;
+      card.addEventListener('touchend',e=>{
+        e.preventDefault();
+        if(!tapped){
+          // First tap: show preview
+          tapped = true;
           preview.currentTime = preview.duration > 2 ? 2 : 0.1;
           preview.play();
           preview.style.opacity = 1;
+          setTimeout(()=>{ tapped = false; }, 400);
         }else{
+          // Second tap: open overlay player
           preview.pause();
           preview.currentTime = 0;
           preview.style.opacity = 0;
+          overlayVid.src = card.dataset.src;
+          overlay.classList.remove('hidden');
+          overlayVid.play();
+          tapped = false;
         }
       },{passive:false});
     });
@@ -307,3 +311,4 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 </body>
+</html>
