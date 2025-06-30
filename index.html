@@ -29,7 +29,6 @@
 
   <!-- ────────── HERO (video background) ────────── -->
   <section class="relative flex-1 flex items-center justify-center text-center px-6 pt-24">
-    <!-- ① Added id so we can easily target the element in JS -->
     <video id="heroVideo" src="assets/rbbw.mp4" autoplay muted loop playsinline preload="metadata"
            class="absolute inset-0 w-full h-full object-cover -z-10"></video>
     <div class="absolute inset-0 bg-black/60 -z-10"></div>
@@ -55,7 +54,7 @@
                class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500">
 
         <button type="submit"
-                class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold">
+                class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold flex items-center justify-center min-w-[9rem]">
           Get Started ▶
         </button>
       </form>
@@ -73,106 +72,105 @@
     <h2 class="text-3xl font-extrabold text-center mb-4">Frequently Asked Questions</h2>
 
     <!-- FAQ 1 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">Will this work in my venue?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>Easily installed &amp; configured by your own technical team.</p>
-    <p>We don't mess with your set up - which can can be used as normal.</p>
-    <p>This is like an Xbox, but for productions not games</p>
-    <p>Minimum requirements: Video screens (projectors/TVs etc.), lighting desk &amp; PA.</p>
-  </div>
-</div>
+    <div class="border-b border-gray-700">
+      <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+        <span class="font-medium">Will this work in my venue?</span>
+        <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+        <p>Easily installed &amp; configured by your own technical team.</p>
+        <p>We don't mess with your set up - which can can be used as normal.</p>
+        <p>This is like an Xbox, but for productions not games</p>
+        <p>Minimum requirements: Video screens (projectors/TVs etc.), lighting desk &amp; PA.</p>
+      </div>
+    </div>
 
-<!-- FAQ 2 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">Will this work for my production?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>Yes, we capture your creative vision &amp; lock it down so you can be confident of it meeting your high standards whether it's playing in Sydney, Lagos, London or LA </p>
-    <p>Our tools allow you to make regional changes & adjustments</p>
-    <p>You have your own login &amp; are in complete control of your creation</p>
-  </div>
-</div>
+    <!-- FAQ 2 -->
+    <div class="border-b border-gray-700">
+      <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+        <span class="font-medium">Will this work for my production?</span>
+        <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+        <p>Yes, we capture your creative vision &amp; lock it down so you can be confident of it meeting your high standards whether it's playing in Sydney, Lagos, London or LA </p>
+        <p>Our tools allow you to make regional changes & adjustments</p>
+        <p>You have your own login &amp; are in complete control of your creation</p>
+      </div>
+    </div>
 
-<!-- FAQ 3 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">Will this benefit my business?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>This software is designed to increase revenue, reduce costs & lower financial risks</p>
-    <p>Revenue: delivering consistent, premium productions to you that are shown to drive footfall &amp; enhance ticket yield &amp; bar spends</p>
-    <p>Costs: Get-in times, set up &amp; venue turnaround times are reduced from hours to minutes</p>
-<p>Risks: Our network is constantly A/B testing productions &amp; marketing impact of our content; successful shows are repeatable with less reliance on 3rd party scheduling/availability</p>
-<p>Crowdplzr is designed to make your life EASIER</p>
-  </div>
-</div>
+    <!-- FAQ 3 -->
+    <div class="border-b border-gray-700">
+      <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+        <span class="font-medium">Will this benefit my business?</span>
+        <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+        <p>This software is designed to increase revenue, reduce costs & lower financial risks</p>
+        <p>Revenue: delivering consistent, premium productions to you that are shown to drive footfall &amp; enhance ticket yield &amp; bar spends</p>
+        <p>Costs: Get-in times, set up &amp; venue turnaround times are reduced from hours to minutes</p>
+        <p>Risks: Our network is constantly A/B testing productions &amp; marketing impact of our content; successful shows are repeatable with less reliance on 3rd party scheduling/availability</p>
+        <p>Crowdplzr is designed to make your life EASIER</p>
+      </div>
+    </div>
 
-<!-- FAQ 4 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">Will this enhance the customer experience?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>Cue-perfect light, video and audio shows once reserved for global tours now run on a one-click preset.</p>
-    <p>Your in house team has more time to demonstrate their expertise &amp; push your existing AV to it's full potential</p>
-  </div>
-</div>
+    <!-- FAQ 4 -->
+    <div class="border-b border-gray-700">
+      <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+        <span class="font-medium">Will this enhance the customer experience?</span>
+        <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+        <p>Cue-perfect light, video and audio shows once reserved for global tours now run on a one-click preset.</p>
+        <p>Your in house team has more time to demonstrate their expertise &amp; push your existing AV to it's full potential</p>
+      </div>
+    </div>
 
+    <!-- FAQ 5 -->
+    <div class="border-b border-gray-700">
+      <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+        <span class="font-medium">What does it cost?</span>
+        <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+        <p>There is a venue set up fee and a monthly maintenance fee, then your standard promoter agreement for each production which can be negotiated to share/include costs of this software</p>
+      </div>
+    </div>
 
-<!-- FAQ 5 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">What does it cost?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>There is a venue set up fee and a monthly maintenance fee, then your standard promoter agreement for each production which can be negotiated to share/include costs of this software</p>
-  </div>
-</div>
+    <!-- FAQ 8 -->
+    <div class="border-b border-gray-700">
+      <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+        <span class="font-medium">I’m an independent promoter / producer / performer—what’s in it for me?</span>
+        <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+        <p>We can take your show global: instant distribution to every subscribing venue.</p>
+      </div>
+    </div>
 
-<!-- FAQ 8 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">I’m an independent promoter / producer / performer—what’s in it for me?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>We can take your show global: instant distribution to every subscribing venue.</p>
-  </div>
-</div>
-
-<!-- FAQ 9 -->
-<div class="border-b border-gray-700">
-  <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
-    <span class="font-medium">I’m a major brand, corporate, or label—what’s in it for me?</span>
-    <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
-    </svg>
-  </button>
-  <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
-    <p>Scale on tap. Drop your IP into a nationwide venue network, capture first-party engagement data, and activate local audiences. Networked and hybrid events are baked into the system.</p>
-  </div>
-</div>
+    <!-- FAQ 9 -->
+    <div class="border-b border-gray-700">
+      <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+        <span class="font-medium">I’m a major brand, corporate, or label—what’s in it for me?</span>
+        <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+        <p>Scale on tap. Drop your IP into a nationwide venue network, capture first-party engagement data, and activate local audiences. Networked and hybrid events are baked into the system.</p>
+      </div>
+    </div>
   </section>
 
   <!-- ────────── FAQ TOGGLE SCRIPT & FORM HANDLER ────────── -->
@@ -193,6 +191,8 @@
       e.preventDefault();
       const form  = e.target;
       const email = form.email.value.trim();
+      const button = form.querySelector('button[type="submit"]');
+      const originalText = button.innerHTML;
 
       // simple regex validation
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
@@ -201,20 +201,26 @@
         return;
       }
 
+      // Show loading state
+      button.disabled = true;
+      button.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>Loading...`;
+
       try{
         const res = await fetch(form.action, {
-  method: 'POST',
-  mode: 'no-cors',
-  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  body: new URLSearchParams({ email })
-});
-if (res.type === 'opaque' || res.ok) {
-  window.location.href = 'experiences.html';
-} else {
-  throw new Error('submit failed');
-}
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ email })
+        });
+        if (res.type === 'opaque' || res.ok) {
+          window.location.href = 'experiences.html';
+        } else {
+          throw new Error('submit failed');
+        }
       }catch{
-        alert('Sorry, something went wrong. Please try again later.');
+        alert('Sorry, something went wrong. Please try again.');
+        button.disabled = false;
+        button.innerHTML = originalText;
       }
     });
   </script>
