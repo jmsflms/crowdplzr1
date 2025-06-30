@@ -170,8 +170,11 @@
 
 <!-- ───── OVERLAY PLAYER ───── -->
 <div id="overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 hidden">
-  <video id="overlayVid" class="max-h-[90vh] max-w-[90vw]" controls></video>
-  <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl font-bold leading-none">&times;</button>
+  <div class="relative flex flex-col items-center w-full max-w-2xl px-4">
+    <video id="overlayVid" class="max-h-[45vh] w-full rounded-xl mb-6" controls></video>
+    <div id="overlayText" class="w-full text-white text-center mt-2 mb-4"></div>
+    <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl font-bold leading-none">&times;</button>
+  </div>
 </div>
 
 <script>
@@ -179,32 +182,91 @@ document.addEventListener('DOMContentLoaded',()=>{
   /* ---------- Overlay logic ---------- */
   const overlay    = document.getElementById('overlay');
   const overlayVid = document.getElementById('overlayVid');
+  const overlayText = document.getElementById('overlayText');
   const closeBtn   = document.getElementById('closeBtn');
+
+  // Map video src to title/description (replace with real content later)
+  const videoMeta = {
+    "assets/eotw.mp4": {
+      title: "End of the World",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    },
+    "assets/Urgc.mp4": {
+      title: "Underground Rebel Gameshow",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    },
+    "assets/Ttm.mp4": {
+      title: "Twisted Time Machine",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    },
+    "assets/rb.mp4": {
+      title: "Rebel Bingo",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    },
+    "assets/CatFace.mp4": {
+      title: "Cat Face",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    },
+    "assets/Lycra.mp4": {
+      title: "Lycra 80s Party",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    },
+    "assets/SNZF.mp4": {
+      title: "Snoozefest Pajama Party",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    },
+    "assets/hoedown.mp4": {
+      title: "Hoedown Showdown",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    },
+    "assets/keynote.mp4": {
+      title: "Killer Keynote",
+      desc: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.</p>
+             <p>Aliquam erat volutpat. Etiam nec velit nec libero pretium pharetra.</p>`
+    }
+  };
 
   closeBtn.addEventListener('click',()=>{
     overlayVid.pause();
     overlayVid.removeAttribute('src');
     overlayVid.load();
     overlay.classList.add('hidden');
+    overlayText.innerHTML = "";
   });
 
   const cards = document.querySelectorAll('[data-src]');
 
-  /* ---------- Full‑screen on click (desktop only) ---------- */
+  function showOverlay(src) {
+    overlayVid.src = src;
+    overlay.classList.remove('hidden');
+    overlayVid.play();
+    // Set overlay text
+    const meta = videoMeta[src] || {title: "Experience", desc: "<p>Lorem ipsum dolor sit amet.</p>"};
+    overlayText.innerHTML = `<h2 class="text-2xl md:text-3xl font-bold mb-2">${meta.title}</h2>
+      <div class="text-base md:text-lg leading-relaxed">${meta.desc}</div>`;
+  }
+
+  // Desktop: click to open overlay
   function isTouchDevice() {
     return matchMedia('(pointer: coarse)').matches;
   }
   if (!isTouchDevice()) {
     cards.forEach(card=>{
       card.addEventListener('click',()=>{
-        overlayVid.src = card.dataset.src;
-        overlay.classList.remove('hidden');
-        overlayVid.play();
+        showOverlay(card.dataset.src);
       });
     });
   }
 
-  /* ---------- Hover previews (desktop) ---------- */
+  // Hover previews (desktop)
   cards.forEach(card=>{
     const preview = card.querySelector('video');
     preview.preload = 'metadata';
@@ -228,7 +290,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   });
 
-  /* ---------- Touch devices: tap to preview, second tap to play ---------- */
+  // Touch devices: tap to preview, second tap to play
   if(isTouchDevice()){
     cards.forEach(card=>{
       const preview = card.querySelector('video');
@@ -247,16 +309,14 @@ document.addEventListener('DOMContentLoaded',()=>{
           preview.pause();
           preview.currentTime = 0;
           preview.style.opacity = 0;
-          overlayVid.src = card.dataset.src;
-          overlay.classList.remove('hidden');
-          overlayVid.play();
+          showOverlay(card.dataset.src);
           tapped = false;
         }
       },{passive:false});
     });
   }
 
-  /* ---------- Infinite Chevron scroll logic ---------- */
+  // Infinite Chevron scroll logic
   document.querySelectorAll('.scroll-row').forEach(row => {
     const container = row;
     const parent = container.parentElement;
@@ -308,7 +368,3 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   });
 });
-</script>
-
-</body>
-</html>
