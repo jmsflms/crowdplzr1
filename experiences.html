@@ -172,13 +172,14 @@
 <div id="overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 hidden">
   <div class="relative flex flex-col items-center w-full max-w-2xl px-4">
     <video id="overlayVid" class="max-h-[45vh] w-full rounded-xl mb-6" controls></video>
-    <div id="overlayText" class="w-full text-white text-center mt-2 mb-4"></div>
+    <div id="overlayText" class="w-full text-white text-left mt-2 mb-4"></div>
     <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl font-bold leading-none">&times;</button>
   </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
+
   /* ---------- Overlay logic ---------- */
   const overlay    = document.getElementById('overlay');
   const overlayVid = document.getElementById('overlayVid');
@@ -242,8 +243,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     overlayText.innerHTML = "";
   });
 
-  const cards = document.querySelectorAll('[data-src]');
-
   function showOverlay(src) {
     overlayVid.src = src;
     overlay.classList.remove('hidden');
@@ -254,20 +253,12 @@ document.addEventListener('DOMContentLoaded',()=>{
       <div class="text-base md:text-lg leading-relaxed">${meta.desc}</div>`;
   }
 
-  // Desktop: click to open overlay
   function isTouchDevice() {
     return matchMedia('(pointer: coarse)').matches;
   }
-  if (!isTouchDevice()) {
-    cards.forEach(card=>{
-      card.addEventListener('click',()=>{
-        showOverlay(card.dataset.src);
-      });
-    });
-  }
 
-  // Hover previews (desktop)
-  cards.forEach(card=>{
+  // Attach all card events (for originals and clones)
+  function attachCardEvents(card) {
     const preview = card.querySelector('video');
     preview.preload = 'metadata';
 
@@ -288,24 +279,18 @@ document.addEventListener('DOMContentLoaded',()=>{
       preview.pause();
       preview.currentTime = 0;
     });
-  });
 
-  // Touch devices: tap to preview, second tap to play
-  if(isTouchDevice()){
-    cards.forEach(card=>{
-      const preview = card.querySelector('video');
+    if(isTouchDevice()){
       let tapped = false;
       card.addEventListener('touchend',e=>{
         e.preventDefault();
         if(!tapped){
-          // First tap: show preview
           tapped = true;
           preview.currentTime = preview.duration > 2 ? 2 : 0.1;
           preview.play();
           preview.style.opacity = 1;
           setTimeout(()=>{ tapped = false; }, 400);
         }else{
-          // Second tap: open overlay player
           preview.pause();
           preview.currentTime = 0;
           preview.style.opacity = 0;
@@ -313,8 +298,15 @@ document.addEventListener('DOMContentLoaded',()=>{
           tapped = false;
         }
       },{passive:false});
-    });
+    } else {
+      card.addEventListener('click',()=>{
+        showOverlay(card.dataset.src);
+      });
+    }
   }
+
+  // Attach events to all original cards
+  document.querySelectorAll('[data-src]').forEach(attachCardEvents);
 
   // Infinite Chevron scroll logic
   document.querySelectorAll('.scroll-row').forEach(row => {
@@ -329,8 +321,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     // Only enable infinite scroll if there are 6 or more cards
     if(cardCount >= 6) {
       for(let i=0;i<cloneCount;i++){
-        container.appendChild(cards[i].cloneNode(true));
-        container.insertBefore(cards[cardCount-1-i].cloneNode(true), container.firstChild);
+        const cloneAfter = cards[i].cloneNode(true);
+        const cloneBefore = cards[cardCount-1-i].cloneNode(true);
+        container.appendChild(cloneAfter);
+        container.insertBefore(cloneBefore, container.firstChild);
+        attachCardEvents(cloneAfter);
+        attachCardEvents(cloneBefore);
       }
 
       function setToRealStart() {
