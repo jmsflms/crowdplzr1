@@ -373,6 +373,50 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 });
 </script>
+<!-- ───── CLIENT LOGO SCROLLER ───── -->
+<div class="bg-black text-white py-8">
+  <div class="text-center text-xl font-semibold mb-4">We've produced shows for</div>
+  <div class="overflow-hidden whitespace-nowrap relative">
+    <div class="animate-scroll inline-block">
+      <img src="logos/acehotel.png" class="h-12 inline-block mx-6" />
+      <img src="logos/amg.png" class="h-12 inline-block mx-6" />
+      <img src="logos/cosmopolitan.png" class="h-12 inline-block mx-6" />
+      <img src="logos/crowdplzr.png" class="h-12 inline-block mx-6" />
+      <img src="logos/dice.png" class="h-12 inline-block mx-6" />
+      <img src="logos/gastonbury.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ibizarocks.png" class="h-12 inline-block mx-6" />
+      <img src="logos/livenation.png" class="h-12 inline-block mx-6" />
+      <img src="logos/o2arena.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ticketmaster.png" class="h-12 inline-block mx-6" />
+      <img src="logos/venetian.png" class="h-12 inline-block mx-6" />
+      <!-- Repeat logos for seamless scroll -->
+      <img src="logos/acehotel.png" class="h-12 inline-block mx-6" />
+      <img src="logos/amg.png" class="h-12 inline-block mx-6" />
+      <img src="logos/cosmopolitan.png" class="h-12 inline-block mx-6" />
+      <img src="logos/crowdplzr.png" class="h-12 inline-block mx-6" />
+      <img src="logos/dice.png" class="h-12 inline-block mx-6" />
+      <img src="logos/gastonbury.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ibizarocks.png" class="h-12 inline-block mx-6" />
+      <img src="logos/livenation.png" class="h-12 inline-block mx-6" />
+      <img src="logos/o2arena.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ticketmaster.png" class="h-12 inline-block mx-6" />
+      <img src="logos/venetian.png" class="h-12 inline-block mx-6" />
+    </div>
+  </div>
+</div>
+
+<!-- Add this to your <head> or inside <style> block -->
+<style>
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-scroll {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scroll 30s linear infinite;
+  }
+</style>
 
   <!-- ────────── FOOTER ────────── -->
   <footer class="py-8 text-center text-xs text-gray-500 bg-black/90">
