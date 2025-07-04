@@ -43,6 +43,16 @@
         height: 3rem;
       }
     }
+    /* Marquee scrolling text */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee 20s linear infinite;
+    }
   </style>
 </head>
 
@@ -71,6 +81,20 @@
       </button>
     </div>
   </section>
+  
+<!-- ───── MARQUEE TEXT SCROLLER ───── -->
+<div class="overflow-hidden whitespace-nowrap border-y border-white/20 bg-black py-2">
+  <div class="animate-marquee inline-block text-center text-base md:text-lg font-semibold text-white">
+    🎉 Download the Crowdplzr File to your system - Just Press Play 🎟️ Detailed 3D walkthrough 💥 Crwodplzr team procide perfomers &nbsp; &nbsp; &nbsp;
+    🎉 Download the Crowdplzr File to your system - Just Press Play 🎟️ Detailed 3D walkthrough 💥 Crwodplzr team procide perfomers &nbsp; &nbsp; &nbsp;
+  </div>
+</div>
+
+<!-- ───── ROW : Popular Now ───── -->
+<section class="space-y-3 px-6 py-8">
+  <h3 class="text-lg md:text-xl font-bold px-1">Popular Now</h3>
+  <div class="relative min-h-[13rem]">
+    ...
 
 <!-- ───── ROW : Popular Now ───── -->
 <section class="space-y-3 px-6 py-8">
