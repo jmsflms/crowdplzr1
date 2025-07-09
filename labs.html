@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Equip Your Venue – Crowdplzr</title>
+
+  <!-- TailwindCSS with forms & aspect-ratio plugins for consistency with existing site -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,aspect-ratio"></script>
+  <style>
+    body,html{height:100%}
+  </style>
+</head>
+
+<body class="bg-black text-white flex flex-col font-sans">
+  <!-- ───── HEADER (mirrors existing) ───── -->
+  <header class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-4 bg-black/80 backdrop-blur-sm">
+    <h1 class="text-2xl font-extrabold tracking-tight">Crowdplzr</h1>
+    <nav class="hidden md:flex space-x-6 text-sm font-medium">
+      <a href="index.html" class="hover:text-red-500">Home</a>
+      <a href="hardware.html" class="hover:text-red-500 font-semibold text-red-600">Get The System</a>
+      <a href="experiences.html" class="hover:text-red-500">Experiences</a>
+    </nav>
+    <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
+  </header>
+
+  <!-- ────────── HERO ────────── -->
+  <section class="relative flex-1 flex flex-col items-center justify-center text-center pt-24 px-6 gap-6">
+    <img src="assets/hardware.png" alt="Crowdplzr Core Server & Controller" class="w-full max-w-3xl aspect-video object-cover rounded-xl shadow-2xl" />
+    <div class="space-y-3">
+      <h2 class="text-4xl md:text-5xl font-extrabold">Crowdplzr Core</h2>
+      <p class="text-lg md:text-xl max-w-2xl mx-auto">A turnkey server & tablet that downloads blockbuster‑scale productions straight into your existing AV in one click.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div class="text-3xl font-bold">$17,000 <span class="text-base font-normal">one‑off install</span></div>
+        <div class="text-xl font-semibold">+ $200 / month<span class="text-base font-normal"> maintenance & updates</span></div>
+      </div>
+      <a href="#book-demo" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 rounded-md px-8 py-3 font-semibold text-lg">Book Installation ▶</a>
+      <p class="text-sm text-gray-400">Founding Venue pricing • Limited to first 50 installs</p>
+    </div>
+  </section>
+
+  <!-- ────────── BENEFITS ────────── -->
+  <section class="max-w-5xl mx-auto px-6 py-16 space-y-12">
+    <h3 class="text-3xl md:text-4xl font-extrabold text-center mb-6">Why It Pays For Itself</h3>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="space-y-2">
+        <h4 class="text-xl font-bold">Unlock New Revenue</h4>
+        <p class="text-gray-300">Access a growing catalogue of proven shows that boost footfall & ticket yield without extra production overhead.</p>
+      </div>
+      <div class="space-y-2">
+        <h4 class="text-xl font-bold">Slash Set‑Up Time</h4>
+        <p class="text-gray-300">Full light, video & audio presets map to your desk in minutes—not hours—freeing your crew for higher‑value tasks.</p>
+      </div>
+      <div class="space-y-2">
+        <h4 class="text-xl font-bold">De‑Risk Programming</h4>
+        <p class="text-gray-300">Every show ships pre‑tested across the network. You know exactly what you’re getting long before doors open.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── COST BREAKDOWN ────────── -->
+  <section id="costs" class="bg-gray-900/60 py-16 px-6">
+    <div class="max-w-4xl mx-auto space-y-8">
+      <h3 class="text-3xl font-extrabold text-center">Transparent Pricing</h3>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="border border-gray-700 rounded-lg p-6 space-y-3">
+          <h4 class="text-2xl font-bold">Install & Mapping <span class="block text-red-500 mt-1">$17,000</span></h4>
+          <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
+            <li>Server & tablet controller</li>
+            <li>On‑site integration with existing AV</li>
+            <li>Staff onboarding & documentation</li>
+            <li>Lifetime hardware warranty while subscribed</li>
+          </ul>
+        </div>
+        <div class="border border-gray-700 rounded-lg p-6 space-y-3">
+          <h4 class="text-2xl font-bold">Maintenance <span class="block text-red-500 mt-1">$200 / month</span></h4>
+          <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
+            <li>24/7 remote monitoring</li>
+            <li>Automatic software & show updates</li>
+            <li>Priority support & replacement</li>
+          </ul>
+        </div>
+      </div>
+      <p class="text-center text-sm text-gray-400 max-w-2xl mx-auto">Each show runs under a standard promoter agreement with revenue share. No hidden fees—just the same split you already know.</p>
+    </div>
+  </section>
+
+  <!-- ────────── CTA ────────── -->
+  <section id="book-demo" class="flex flex-col items-center justify-center py-24 space-y-6 bg-black/80">
+    <h3 class="text-3xl md:text-4xl font-extrabold text-center">Ready to Equip Your Venue?</h3>
+    <p class="text-lg text-center max-w-2xl">Join our Founding Venues and get white‑glove installation within 30 days.</p>
+    <form action="mailto:sales@crowdplzr.com" method="post" enctype="text/plain" class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+      <input type="email" name="email" required placeholder="Work email" class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500">
+      <button type="submit" class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold flex items-center justify-center min-w-[9rem]">Request Quote ▶</button>
+    </form>
+    <a href="investor.html" class="underline text-sm text-gray-400 hover:text-red-400">Investor? View our deck</a>
+  </section>
+
+ <!-- ───── CLIENT LOGO SCROLLER ───── -->
+<div class="bg-black text-white py-8">
+  <div class="text-center text-xl font-semibold mb-4">We've produced shows for</div>
+  <div class="overflow-hidden whitespace-nowrap relative">
+    <div class="animate-scroll inline-block">
+      <img src="logos/acehotel.png" class="h-12 inline-block mx-6" />
+      <img src="logos/amg.png" class="h-12 inline-block mx-6" />
+      <img src="logos/cosmopolitan.png" class="h-12 inline-block mx-6" />
+      <img src="logos/crowdplzr.png" class="h-12 inline-block mx-6" />
+      <img src="logos/dice.png" class="h-12 inline-block mx-6" />
+      <img src="logos/gastonbury.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ibizarocks.png" class="h-12 inline-block mx-6" />
+      <img src="logos/livenation.png" class="h-12 inline-block mx-6" />
+      <img src="logos/o2arena.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ticketmaster.png" class="h-12 inline-block mx-6" />
+      <img src="logos/venetian.png" class="h-12 inline-block mx-6" />
+      <!-- Repeat logos for seamless scroll -->
+      <img src="logos/acehotel.png" class="h-12 inline-block mx-6" />
+      <img src="logos/amg.png" class="h-12 inline-block mx-6" />
+      <img src="logos/cosmopolitan.png" class="h-12 inline-block mx-6" />
+      <img src="logos/crowdplzr.png" class="h-12 inline-block mx-6" />
+      <img src="logos/dice.png" class="h-12 inline-block mx-6" />
+      <img src="logos/gastonbury.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ibizarocks.png" class="h-12 inline-block mx-6" />
+      <img src="logos/livenation.png" class="h-12 inline-block mx-6" />
+      <img src="logos/o2arena.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ticketmaster.png" class="h-12 inline-block mx-6" />
+      <img src="logos/venetian.png" class="h-12 inline-block mx-6" />
+    </div>
+  </div>
+</div>
+
+<!-- Add this to your <head> or inside <style> block -->
+<style>
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-scroll {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scroll 30s linear infinite;
+  }
+</style>
+ 
+
+  <!-- ────────── FOOTER ────────── -->
+  <footer class="py-8 text-center text-xs text-gray-500 bg-black/90">
+    © 2025 Crowdplzr Inc. All rights reserved.
+  </footer>
+</body>
+</html>
