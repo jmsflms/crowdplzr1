@@ -23,24 +23,30 @@
     <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
   </header>
 
-  <!-- ────────── HERO ────────── -->
-  <section class="relative flex-1 flex flex-col items-center justify-center text-center pt-24 px-6 gap-6">
-    <video autoplay loop muted playsinline
-  class="w-full max-w-3xl aspect-video object-cover rounded-xl shadow-2xl">
-  <source src="assets/lablights.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
-    <div class="space-y-3">
-      <h2 class="text-4xl md:text-5xl font-extrabold">Crowdplzr Core</h2>
-      <p class="text-lg md:text-xl max-w-2xl mx-auto">A turnkey server & tablet that downloads blockbuster‑scale productions straight into your existing AV in one click.</p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <div class="text-3xl font-bold">$17,000 <span class="text-base font-normal">one‑off install</span></div>
-        <div class="text-xl font-semibold">+ $200 / month<span class="text-base font-normal"> maintenance & updates</span></div>
-      </div>
-      <a href="#book-demo" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 rounded-md px-8 py-3 font-semibold text-lg">Book Installation ▶</a>
-      <p class="text-sm text-gray-400">Founding Venue pricing • Limited to first 50 installs</p>
+<!-- ────────── HERO ────────── -->
+<section class="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen px-6 gap-6 overflow-hidden">
+  <!-- Video background -->
+  <video autoplay loop muted playsinline 
+    class="absolute inset-0 w-full h-full object-cover z-0">
+    <source src="assets/lablight.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Overlay (optional: add bg-black/50 for a dark tint) -->
+  <div class="absolute inset-0 bg-black/40 z-10"></div>
+
+  <!-- Content on top -->
+  <div class="relative z-20 space-y-3 flex flex-col items-center justify-center w-full">
+    <h2 class="text-4xl md:text-5xl font-extrabold">Crowdplzr Core</h2>
+    <p class="text-lg md:text-xl max-w-2xl mx-auto">A turnkey server & tablet that downloads blockbuster‑scale productions straight into your existing AV in one click.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <div class="text-3xl font-bold">$17,000 <span class="text-base font-normal">one‑off install</span></div>
+      <div class="text-xl font-semibold">+ $200 / month<span class="text-base font-normal"> maintenance & updates</span></div>
     </div>
-  </section>
+    <a href="#book-demo" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 rounded-md px-8 py-3 font-semibold text-lg">Book Installation ▶</a>
+    <p class="text-sm text-gray-200">Founding Venue pricing • Limited to first 50 installs</p>
+  </div>
+</section>
 
   <!-- ────────── BENEFITS ────────── -->
   <section class="max-w-5xl mx-auto px-6 py-16 space-y-12">
