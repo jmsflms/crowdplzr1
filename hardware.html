@@ -43,26 +43,6 @@
     <p class="text-sm text-gray-400 italic">Founding Venue pricing — limited to first 50 installs</p>
   </div>
 </section>
-
-<!-- ────────── PRICING & MODEL SECTION ────────── -->
-<section class="flex flex-col items-center text-center px-6 py-16 space-y-6 bg-black text-white">
-  <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
-    <div class="text-3xl font-bold">
-      $POA <span class="text-base font-normal block sm:inline">one-off install</span>
-    </div>
-    <div class="text-xl font-semibold">
-      + $POA / month <span class="text-base font-normal block sm:inline">maintenance & updates</span>
-    </div>
-  </div>
-
-  <p class="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-    Cloudplzr is building the AV operating system for venues and producers.
-    Our plug-and-play hardware and software simplify complex tech, enabling live experiences to be deployed as easily as streaming Netflix.
-    We monetize through SaaS subscriptions, marketplace content, and revenue share with creators.
-    This model scales globally—turning venues into distribution points for immersive formats, shows, and event IP.
-  </p>
-</section>
-
 <!-- Venue Readiness Form - Custom HTML Form -->
 <!DOCTYPE html>
 <html lang="en">
@@ -92,10 +72,13 @@
       width: 100%;
       padding: 8px;
       margin-top: 5px;
-      background-color: #222;
-      color: white;
+      background-color: #fff;
+      color: #000;
       border: 1px solid #444;
       border-radius: 5px;
+    }
+    select[multiple] {
+      height: auto;
     }
     button {
       margin-top: 20px;
@@ -112,7 +95,7 @@
   </style>
 </head>
 <body>
-  <form name="venueForm" id="venueForm" action="https://script.google.com/macros/s/AKfycbwko2kckEzYQFujuyTmf2PoARYwVX9iEGCimVWIV6rIcSY2mEJO8R1KEYO9iTs6o1Y0gA/exec" method="POST">
+  <form name="venueForm" id="venueForm" action="https://script.google.com/macros/s/AKfycbwko2kckEzYQFujuyTmf2PoARYwVX9iEGCimVWIV6rIcSY2mEJO8R1KEYO9iTs6o1Y0gA/exec" method="POST" onsubmit="return handleSubmit(event)">
     <h2>Venue Readiness Form</h2>
 
     <label for="lighting">What lighting desk do you use?</label>
@@ -167,7 +150,7 @@
     </select>
 
     <label for="goals">What are you looking to achieve? (check all that apply)</label>
-    <select name="goals" id="goals" multiple>
+    <select name="goals" id="goals" multiple size="5">
       <option value="New Revenue">New recurring revenue</option>
       <option value="Utilize AV">Higher utilization of AV system</option>
       <option value="Low-staff shows">Low-staff immersive shows</option>
@@ -193,8 +176,52 @@
 
     <button type="submit">Submit</button>
   </form>
+
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const form = event.target;
+      const data = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: data
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Thanks! Your info was submitted.');
+          form.reset();
+        } else {
+          alert('Submission failed. Please try again.');
+        }
+      })
+      .catch(() => {
+        alert('Something went wrong. Please try again later.');
+      });
+      return false;
+    }
+  </script>
 </body>
 </html>
+
+<!-- ────────── PRICING & MODEL SECTION ────────── -->
+<section class="flex flex-col items-center text-center px-6 py-16 space-y-6 bg-black text-white">
+  <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+    <div class="text-3xl font-bold">
+      $POA <span class="text-base font-normal block sm:inline">one-off install</span>
+    </div>
+    <div class="text-xl font-semibold">
+      + $POA / month <span class="text-base font-normal block sm:inline">maintenance & updates</span>
+    </div>
+  </div>
+
+  <p class="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+    Cloudplzr is building the AV operating system for venues and producers.
+    Our plug-and-play hardware and software simplify complex tech, enabling live experiences to be deployed as easily as streaming Netflix.
+    We monetize through SaaS subscriptions, marketplace content, and revenue share with creators.
+    This model scales globally—turning venues into distribution points for immersive formats, shows, and event IP.
+  </p>
+</section>
 
 
   <!-- ────────── BENEFITS ────────── -->
