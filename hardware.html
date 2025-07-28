@@ -24,25 +24,57 @@
     <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
   </header>
 
-<!-- ────────── HERO SECTION ────────── -->
-<section class="relative flex flex-col items-center justify-center text-center pt-24 px-6 gap-6">
-  <figure>
-    <img src="assets/hardware.png" alt="Cloudplzr Core hardware unit with controller" class="w-full max-w-3xl aspect-video object-cover rounded-xl shadow-2xl" />
-    <!-- Optionally: <figcaption class="sr-only">Cloudplzr Core Server and Controller</figcaption> -->
-  </figure>
-  <div class="space-y-4">
-    <h2 class="text-4xl md:text-5xl font-extrabold">Cloudplzr Core</h2>
-    <p class="text-lg md:text-xl max-w-2xl mx-auto">
-      A turnkey system that downloads productions straight into your existing AV:
-      <br class="hidden sm:block" />
-      Think Xbox, but for shows not games.
-    </p>
-    <a href="#book-demo" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 rounded-md px-8 py-3 font-semibold text-lg">
-      Book Installation <span aria-hidden="true">▶</span>
-    </a>
-    <p class="text-sm text-gray-400 italic">Founding Venue pricing — limited to first 50 installs</p>
+<!-- ────────── DOWNLOAD SECTION ────────── -->
+<section class="w-full px-6 py-16 bg-black text-white flex flex-col items-center space-y-10 border-b border-gray-800">
+  <h2 class="text-3xl md:text-4xl font-extrabold text-center">Download Cloudplzr Runtime</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl">
+    <!-- Windows -->
+    <div class="flex flex-col items-center space-y-4 bg-gray-900 rounded-lg p-6 shadow-md">
+      <img src="logos/windows.png" alt="Download for Windows" class="h-20" />
+      <div class="group relative">
+        <button disabled class="bg-red-600 opacity-50 cursor-not-allowed text-white font-semibold px-6 py-2 rounded shadow">
+          Download for Windows
+        </button>
+        <div class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-max text-xs text-gray-400 bg-black px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+          Coming Soon
+        </div>
+      </div>
+      <ul class="text-sm text-gray-400 space-y-1 mt-2 text-left">
+        <li>• Windows 10 or 11 (64-bit)</li>
+        <li>• Intel i7 or Ryzen 7 (or higher)</li>
+        <li>• 16GB RAM minimum</li>
+        <li>• Dedicated GPU (NVIDIA/AMD)</li>
+        <li>• 2GB free disk space</li>
+      </ul>
+    </div>
+
+    <!-- macOS -->
+    <div class="flex flex-col items-center space-y-4 bg-gray-900 rounded-lg p-6 shadow-md">
+      <img src="logos/mac.png" alt="Download for macOS" class="h-20" />
+      <div class="group relative">
+        <button disabled class="bg-red-600 opacity-50 cursor-not-allowed text-white font-semibold px-6 py-2 rounded shadow">
+          Download for macOS
+        </button>
+        <div class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-max text-xs text-gray-400 bg-black px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+          Coming Soon
+        </div>
+      </div>
+      <ul class="text-sm text-gray-400 space-y-1 mt-2 text-left">
+        <li>• macOS 12+ (Monterey or later)</li>
+        <li>• Apple M1/M2 chip or Intel i7+</li>
+        <li>• 16GB RAM minimum</li>
+        <li>• Dedicated or integrated GPU</li>
+        <li>• 2GB free disk space</li>
+      </ul>
+    </div>
   </div>
+
+  <p class="text-sm text-gray-500 text-center max-w-2xl">
+    The Cloudplzr Runtime is powered by TouchDesigner. Please ensure your device meets the minimum specs for smooth playback and AV performance.
+  </p>
 </section>
+
 <!-- Venue Readiness Form - Custom HTML Form -->
 <!DOCTYPE html>
 <html lang="en">
@@ -258,7 +290,7 @@
           </ul>
         </div>
         <div class="border border-gray-700 rounded-lg p-6 space-y-3">
-          <h4 class="text-2xl font-bold">Maintenance <span class="block text-red-500 mt-1">$200 / month</span></h4>
+          <h4 class="text-2xl font-bold">Maintenance <span class="block text-red-500 mt-1">$POA / month</span></h4>
           <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
             <li>24/7 remote monitoring</li>
             <li>Automatic software & show updates</li>
