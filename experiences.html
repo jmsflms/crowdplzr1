@@ -70,18 +70,33 @@
     <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
   </header>
 
-  <!-- ───── HERO ───── -->
-  <section class="relative h-[60vh] w-full overflow-hidden pt-16">
-    <video src="assets/rb.mp4" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
-    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-    <div class="relative z-10 max-w-xl p-8 mt-24 space-y-4">
-      <h2 class="text-4xl md:text-5xl font-extrabold">Featured Experience</h2>
-      <p class="text-sm md:text-base">Drop audiences straight into blockbuster-scale worlds.</p>
-      <button class="flex items-center gap-2 px-5 py-2 bg-red-600 rounded-md text-sm font-semibold hover:bg-red-700">
-        ▶ Play Trailer
-      </button>
-    </div>
-  </section>
+<!-- ───── HERO ───── -->
+<section class="relative h-[60vh] w-full overflow-hidden pt-16">
+  <video src="assets/rb.mp4" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+  <div class="relative z-10 max-w-xl p-8 mt-24 space-y-4">
+    <h2 class="text-4xl md:text-5xl font-extrabold">Introduction</h2>
+    <p class="text-sm md:text-base">Drop audiences straight into blockbuster-scale worlds.</p>
+    <button onclick="document.getElementById('trailerModal').classList.remove('hidden'); document.getElementById('trailerVideo').play();" class="flex items-center gap-2 px-5 py-2 bg-red-600 rounded-md text-sm font-semibold hover:bg-red-700">
+      ▶ Play Trailer
+    </button>
+  </div>
+</section>
+
+<!-- ───── TRAILER MODAL ───── -->
+<div id="trailerModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex items-center justify-center">
+  <div class="relative w-full max-w-3xl aspect-video">
+    <video id="trailerVideo" controls class="w-full h-full bg-black">
+      <source src="assets/cloudplz.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <button onclick="document.getElementById('trailerModal').classList.add('hidden'); document.getElementById('trailerVideo').pause();" 
+            class="absolute top-2 right-2 text-white text-xl bg-black bg-opacity-50 rounded-full px-3 py-1 hover:bg-opacity-80">
+      ✕
+    </button>
+  </div>
+</div>
+
   
 <!-- ───── ROW : Popular Now ───── -->
 <section class="space-y-3 px-6 py-8">
