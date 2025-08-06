@@ -3,72 +3,553 @@
 <head>
   <meta charset="utf-8" />
   <title>Crowdplzr Streaming</title>
+
+  <!-- Tailwind with aspect-ratio plugin -->
   <script src="https://cdn.tailwindcss.com?plugins=aspect-ratio"></script>
+
   <style>
     .scrollbar-hide::-webkit-scrollbar{display:none}
     .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
-    @media (max-width:640px){#closeBtn{width:3rem;height:2.5rem;font-size:2.5rem}}
+    @media (max-width:640px){
+      #closeBtn{width:3rem;height:2.5rem;font-size:2.5rem}
+    }
     #closeBtn{position:relative}
     #closeBtn::after{content:"";position:absolute;inset:-0.75rem}
-    .chevron-btn{transition:opacity 0.2s;opacity:0.85;width:3rem;height:3rem;display:flex;align-items:center;justify-content:center}
-    .chevron-btn svg{width:2.25rem;height:2.25rem}
-    .chevron-btn:hover{opacity:1;background:white}
-    @media (max-width:640px){.chevron-btn{width:4rem;height:4rem;padding:1rem}.chevron-btn svg{width:3rem;height:3rem}}
+    .chevron-btn {
+      transition: opacity 0.2s;
+      opacity: 0.85;
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chevron-btn svg {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+    .chevron-btn:hover {
+      opacity: 1;
+      background: white;
+    }
+    @media (max-width: 640px) {
+      .chevron-btn {
+        width: 4rem;
+        height: 4rem;
+        padding: 1rem;
+      }
+      .chevron-btn svg {
+        width: 3rem;
+        height: 3rem;
+      }
+    }
+    /* Marquee scrolling text */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee 20s linear infinite;
+    }
   </style>
 </head>
+
 <body class="bg-black text-white font-sans">
+
+  <!-- ───── HEADER ───── -->
   <header class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-4 bg-black/80 backdrop-blur-sm">
     <h1 class="text-2xl font-extrabold tracking-tight">Crowdplzr</h1>
     <nav class="hidden md:flex space-x-6 text-sm font-medium">
-      <a href="index.html" class="hover:text-red-500">Home</a>
-      <a href="hardware.html" class="hover:text-red-500">Get The System</a>
-      <a href="labs.html" class="hover:text-red-500">Crowdplzr Labs</a>
+            <a href="index.html" class="hover:text-red-500">Home</a>
+      <a href="hardware.html" class="hover:text-red-500">System</a>
+      <a href="labs.html" class="hover:text-red-500">Cloudplzr Labs</a>
+      <a href="experiences.html" class="hover:text-red-500">Experiences</a>
     </nav>
     <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
   </header>
 
+  <!-- ───── HERO ───── -->
   <section class="relative h-[60vh] w-full overflow-hidden pt-16">
     <video src="assets/rb.mp4" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
     <div class="relative z-10 max-w-xl p-8 mt-24 space-y-4">
       <h2 class="text-4xl md:text-5xl font-extrabold">Featured Experience</h2>
       <p class="text-sm md:text-base">Drop audiences straight into blockbuster-scale worlds.</p>
-      <button onclick="openTrailer()" class="flex items-center gap-2 px-5 py-2 bg-red-600 rounded-md text-sm font-semibold hover:bg-red-700">
+      <button class="flex items-center gap-2 px-5 py-2 bg-red-600 rounded-md text-sm font-semibold hover:bg-red-700">
         ▶ Play Trailer
       </button>
     </div>
   </section>
+  
+<!-- ───── ROW : Popular Now ───── -->
+<section class="space-y-3 px-6 py-8">
+  <h3 class="text-lg md:text-xl font-bold px-1">Popular Now</h3>
+  <div class="relative min-h-[13rem]">
+    <!-- Chevrons with spacing and larger size -->
+    <button class="chevron-btn left-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="left" aria-label="Scroll left">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <button class="chevron-btn right-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="right" aria-label="Scroll right">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
+      <!-- EOTW -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/eotw.mp4">
+        <img src="assets/eotw.jpg" alt="End of the World" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/eotw.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+      <!-- URGC -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/Urgc.mp4">
+        <img src="assets/urgc.jpg" alt="Underground Rebel Gameshow" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/Urgc.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+      <!-- TTM -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/Ttm.mp4">
+        <img src="assets/ttm.jpg" alt="Twisted Time Machine" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/Ttm.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+      <!-- RB -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/rb.mp4">
+        <img src="assets/rb.jpg" alt="Rebel Bingo" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/rb.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+      <!-- Cat Face -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/CatFace.mp4">
+        <img src="assets/catface.png" alt="Cat Face" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/CatFace.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+      <!-- Lycra -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/Lycra.mp4">
+        <img src="assets/lycra.png" alt="Lycra 80s Party" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/Lycra.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <!-- Fullscreen Trailer Modal -->
-  <div id="trailerModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-90 flex items-center justify-center">
-    <video id="trailerVideo" class="max-h-[90vh] w-auto" controls autoplay playsinline>
-      <source src="/assets/cloudplzr.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <button onclick="closeTrailer()" class="absolute top-4 right-4 text-white text-4xl">&times;</button>
+<!-- ───── ROW : Coming Soon ───── -->
+<section class="space-y-3 px-6 py-8">
+  <h3 class="text-lg md:text-xl font-bold px-1">Coming Soon</h3>
+  <div class="relative min-h-[13rem]">
+    <button class="chevron-btn left-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="left" aria-label="Scroll left">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <button class="chevron-btn right-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="right" aria-label="Scroll right">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
+      <!-- SNOOZEFEST -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/SNZF.mp4">
+        <img src="assets/SNOOZEFESTSQ.png" alt="Snoozefest Pajama Party" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/SNZF.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+      <!-- HOEDOWN -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/hoedown.mp4">
+        <img src="assets/hoedown.png" alt="Hoedown Showdown" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/hoedown.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── ROW : Corporate ───── -->
+<section class="space-y-3 px-6 py-8">
+  <h3 class="text-lg md:text-xl font-bold px-1">Corporate Events & Keynotes</h3>
+  <div class="relative min-h-[13rem]">
+    <button class="chevron-btn left-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="left" aria-label="Scroll left">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <button class="chevron-btn right-2 top-1/2 -translate-y-1/2 absolute z-10 bg-white/80 text-black rounded-full p-3 shadow" data-chevron="right" aria-label="Scroll right">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="flex items-center gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-row">
+      <!-- KILLER KEYNOTE -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/keynote.mp4">
+        <img src="assets/keynote.png" alt="Killer Keynote" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/keynote.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+      <!-- PERFECT PANEL -->
+      <div class="relative w-48 flex-shrink-0 group cursor-pointer" data-src="assets/keynote.mp4">
+        <img src="assets/PANELS.png" alt="Perfect Panel" class="w-full aspect-square object-cover rounded-xl" loading="lazy">
+        <video src="assets/keynote.mp4" muted loop playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── OVERLAY PLAYER ───── -->
+<div id="overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 hidden">
+  <div class="relative flex flex-col items-center w-full max-w-2xl px-4">
+    <video id="overlayVid" class="max-h-[45vh] w-full rounded-xl mb-6" controls></video>
+    <div id="overlayText" class="w-full text-white text-left mt-2 mb-4"></div>
+    <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl font-bold leading-none">&times;</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+
+  /* ---------- Overlay logic ---------- */
+  const overlay    = document.getElementById('overlay');
+  const overlayVid = document.getElementById('overlayVid');
+  const overlayText = document.getElementById('overlayText');
+  const closeBtn   = document.getElementById('closeBtn');
+
+  // Map video src to title/description (replace with real content later)
+  const videoMeta = {
+    "assets/eotw.mp4": {
+      title: "End of the World",
+      desc: `<p>If there was no tomorrow, what would you do tonight?</p>
+             <p>In this festival favorite (Download, Might Hoopla) News bulletins and menacing transmissions from Aliens whip the crowd up into a frenzy as a clock ticks down to The End of the World. Attendees have already submitted 'their last requests' in communications before the event, and DJs play hyped up guilty pleasures for our final moments. Producers supply banners and activities (last wish wall) and the experience prompts unexpectedly wholesome moments (text your mom and tell her you love her). Make sure your bar is fully stocked. </p>`
+    },
+    "assets/Urgc.mp4": {
+      title: "Underground Rebel Gameshow",
+      desc: `<p>While DJs hype the crowd, multiple contestants are randomly chosen from the audience to compete in a game on stage. They are under pressure and their faces are broadcast to the room via webcams. It's an adrenaline fuelled night that brings the silliness of WWE to games that are accessible to all.</p>`
+             
+    },
+    "assets/Ttm.mp4": {
+      title: "Twisted Time Machine",
+      desc: `<p>A wild ride through time with music from across the ages.</p>`
+    },
+    "assets/rb.mp4": {
+      title: "Rebel Bingo",
+      desc: `<p>This is the most dangerous form of all the bingos, a sure fire format that has been exciting crowds globally since 2008. </p>`
+    },
+    "assets/CatFace.mp4": {
+      title: "Cat Face",
+      desc: `<p>What started as an after party became a global phenomenon, no access unless you draw a cat face on your face. </p>`
+    },
+    "assets/Lycra.mp4": {
+      title: "Lycra 80s Party",
+      desc: `<p>A breathless night of aerobic excercise dancing led by your favourite 80s TV workout stars</p>`
+    },
+    "assets/SNZF.mp4": {
+      title: "Snoozefest Pajama Party",
+      desc: `<p>Wellness meets wildness in this sensationally soporific evening complete with guided mediations and pillow fighting</p>`
+    },
+    "assets/hoedown.mp4": {
+      title: "Hoedown Showdown",
+      desc: `<p>Nothing brings people together like an old fashioned hoe down, except incredible visuals and guided routines raise the stakes - this is the hoe-eist hoedown of all</p>`
+    },
+    "assets/keynote.mp4": {
+      title: "Killer Keynote",
+      desc: `<p>A keynote speech isn't a speech anymore, it's a captivating and unique show. Producers design and share their vision in Crowdplzr and can take it to any venue in the world</p>`
+    }
+  };
+
+  // Detect iOS (iPhone/iPad)
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  closeBtn.addEventListener('click',()=>{
+    overlayVid.pause();
+    overlayVid.removeAttribute('src');
+    overlayVid.load();
+    overlay.classList.add('hidden');
+    overlayText.innerHTML = "";
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  });
+
+  function showOverlay(src) {
+    overlayVid.src = src;
+    overlay.classList.remove('hidden');
+    overlayVid.play();
+    // Set overlay text
+    const meta = videoMeta[src] || {title: "Experience", desc: "<p>Lorem ipsum dolor sit amet.</p>"};
+    overlayText.innerHTML = `<h2 class="text-2xl md:text-3xl font-bold mb-2">${meta.title}</h2>
+      <div class="text-base md:text-lg leading-relaxed">${meta.desc}</div>`;
+
+    // Only request fullscreen if NOT iOS
+    if (!isIOS() && document.fullscreenEnabled && !document.fullscreenElement) {
+      overlay.requestFullscreen().catch(()=>{});
+    }
+  }
+
+  function isTouchDevice() {
+    return matchMedia('(pointer: coarse)').matches;
+  }
+
+  // Attach all card events (for originals and clones)
+  function attachCardEvents(card) {
+    const preview = card.querySelector('video');
+    preview.preload = 'metadata';
+
+    const startPreview = ()=>{
+      preview.currentTime = preview.duration > 2 ? 2 : 0.1;
+      preview.play();
+    };
+
+    card.addEventListener('mouseenter',()=>{
+      if(preview.readyState>=2){
+        startPreview();
+      }else{
+        preview.addEventListener('loadedmetadata',startPreview,{once:true});
+      }
+    });
+
+    card.addEventListener('mouseleave',()=>{
+      preview.pause();
+      preview.currentTime = 0;
+    });
+
+    if(isTouchDevice()){
+      let tapped = false;
+      card.addEventListener('touchend',e=>{
+        e.preventDefault();
+        if(!tapped){
+          tapped = true;
+          preview.currentTime = preview.duration > 2 ? 2 : 0.1;
+          preview.play();
+          preview.style.opacity = 1;
+          setTimeout(()=>{ tapped = false; }, 400);
+        }else{
+          preview.pause();
+          preview.currentTime = 0;
+          preview.style.opacity = 0;
+          showOverlay(card.dataset.src);
+          tapped = false;
+        }
+      },{passive:false});
+    } else {
+      card.addEventListener('click',()=>{
+        showOverlay(card.dataset.src);
+      });
+    }
+  }
+
+  // Attach events to all original cards
+  document.querySelectorAll('[data-src]').forEach(attachCardEvents);
+
+  // Infinite Chevron scroll logic
+  document.querySelectorAll('.scroll-row').forEach(row => {
+    const container = row;
+    const parent = container.parentElement;
+    const leftBtn = parent.querySelector('[data-chevron="left"]');
+    const rightBtn = parent.querySelector('[data-chevron="right"]');
+    const cards = Array.from(container.children);
+    const cardCount = cards.length;
+    const cloneCount = Math.min(3, cardCount);
+
+    // Only enable infinite scroll if there are 6 or more cards
+    if(cardCount >= 6) {
+      for(let i=0;i<cloneCount;i++){
+        const cloneAfter = cards[i].cloneNode(true);
+        const cloneBefore = cards[cardCount-1-i].cloneNode(true);
+        container.appendChild(cloneAfter);
+        container.insertBefore(cloneBefore, container.firstChild);
+        attachCardEvents(cloneAfter);
+        attachCardEvents(cloneBefore);
+      }
+
+      function setToRealStart() {
+        const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
+        container.scrollLeft = cardWidth * cloneCount;
+      }
+      setTimeout(setToRealStart, 50);
+
+      container.addEventListener('scroll', () => {
+        const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
+        if (container.scrollLeft < cardWidth * 0.5) {
+          container.scrollLeft = cardWidth * cardCount + container.scrollLeft;
+        } else if (container.scrollLeft > cardWidth * (cardCount + cloneCount - 0.5)) {
+          container.scrollLeft = container.scrollLeft - cardWidth * cardCount;
+        }
+      });
+
+      window.addEventListener('resize', setToRealStart);
+    }
+
+    // Chevrons always visible
+    function updateChevrons() {
+      leftBtn.classList.remove('hidden');
+      rightBtn.classList.remove('hidden');
+    }
+    updateChevrons();
+
+    leftBtn.addEventListener('click', () => {
+      const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
+      container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    });
+    rightBtn.addEventListener('click', () => {
+      const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
+      container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    });
+  });
+});
+</script>
+<!-- ───── CLIENT LOGO SCROLLER ───── -->
+<div class="bg-black text-white py-8">
+  <div class="text-center text-xl font-semibold mb-4">We've produced shows for</div>
+  <div class="overflow-hidden whitespace-nowrap relative">
+    <div class="animate-scroll inline-block">
+      <img src="logos/acehotel.png" class="h-12 inline-block mx-6" />
+      <img src="logos/amg.png" class="h-12 inline-block mx-6" />
+      <img src="logos/cosmopolitan.png" class="h-12 inline-block mx-6" />
+      <img src="logos/amersham.png" class="h-12 inline-block mx-6" />
+      <img src="logos/dice.png" class="h-12 inline-block mx-6" />
+      <img src="logos/gastonbury.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ibizarocks.png" class="h-12 inline-block mx-6" />
+      <img src="logos/livenation.png" class="h-12 inline-block mx-6" />
+      <img src="logos/o2arena.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ticketmaster.png" class="h-12 inline-block mx-6" />
+      <img src="logos/venetian.png" class="h-12 inline-block mx-6" />
+      <!-- Repeat logos for seamless scroll -->
+      <img src="logos/acehotel.png" class="h-12 inline-block mx-6" />
+      <img src="logos/amg.png" class="h-12 inline-block mx-6" />
+      <img src="logos/cosmopolitan.png" class="h-12 inline-block mx-6" />
+      <img src="logos/amersham.png" class="h-12 inline-block mx-6" />
+      <img src="logos/dice.png" class="h-12 inline-block mx-6" />
+      <img src="logos/gastonbury.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ibizarocks.png" class="h-12 inline-block mx-6" />
+      <img src="logos/livenation.png" class="h-12 inline-block mx-6" />
+      <img src="logos/o2arena.png" class="h-12 inline-block mx-6" />
+      <img src="logos/ticketmaster.png" class="h-12 inline-block mx-6" />
+      <img src="logos/venetian.png" class="h-12 inline-block mx-6" />
+    </div>
+  </div>
+</div>
+
+<!-- Add this to your <head> or inside <style> block -->
+<style>
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-scroll {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scroll 15s linear infinite;
+  }
+</style>
+
+<!-- ────────── FAQ SECTION ────────── -->
+<section class="max-w-3xl mx-auto px-6 py-16 space-y-6">
+  <h2 class="text-3xl font-extrabold text-center mb-4">Frequently Asked Questions</h2>
+
+  <!-- FAQ 1 -->
+  <div class="border-b border-gray-700">
+    <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+      <span class="font-medium">Will this work in my venue?</span>
+      <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+      <p>Easily installed &amp; configured by your own technical team.</p>
+      <p>We don't mess with your set up - which can can be used as normal.</p>
+      <p>This is like an Xbox, but for productions not games</p>
+      <p>Minimum requirements: Video screens (projectors/TVs etc.), lighting desk &amp; PA.</p>
+    </div>
   </div>
 
-  <script>
-    function openTrailer() {
-      document.getElementById('trailerModal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      const video = document.getElementById('trailerVideo');
-      video.currentTime = 0;
-      video.play();
-    }
+  <!-- FAQ 2 -->
+  <div class="border-b border-gray-700">
+    <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+      <span class="font-medium">Will this work for my production?</span>
+      <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+      <p>Yes, we capture your creative vision &amp; lock it down so you can be confident of it meeting your high standards whether it's playing in Sydney, Lagos, London or LA </p>
+      <p>Our tools allow you to make regional changes & adjustments</p>
+      <p>You have your own login &amp; are in complete control of your creation</p>
+    </div>
+  </div>
 
-    function closeTrailer() {
-      document.getElementById('trailerModal').classList.add('hidden');
-      document.body.style.overflow = '';
-      const video = document.getElementById('trailerVideo');
-      video.pause();
-      video.currentTime = 0;
-    }
-  </script>
+  <!-- FAQ 3 -->
+  <div class="border-b border-gray-700">
+    <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+      <span class="font-medium">Will this benefit my business?</span>
+      <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+      <p>This software is designed to increase revenue, reduce costs & lower financial risks</p>
+      <p>Revenue: delivering consistent, premium productions to you that are shown to drive footfall &amp; enhance ticket yield &amp; bar spends</p>
+      <p>Costs: Get-in times, set up &amp; venue turnaround times are reduced from hours to minutes</p>
+      <p>Risks: Our network is constantly A/B testing productions &amp; marketing impact of our content; successful shows are repeatable with less reliance on 3rd party scheduling/availability</p>
+      <p>Crowdplzr is designed to make your life EASIER</p>
+    </div>
+  </div>
 
-  <!-- FOOTER RESTORED -->
+  <!-- FAQ 4 -->
+  <div class="border-b border-gray-700">
+    <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+      <span class="font-medium">Will this enhance the customer experience?</span>
+      <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+      <p>Cue-perfect light, video and audio shows once reserved for global tours now run on a one-click preset.</p>
+      <p>Your in house team has more time to demonstrate their expertise &amp; push your existing AV to it's full potential</p>
+    </div>
+  </div>
+
+  <!-- FAQ 5 -->
+  <div class="border-b border-gray-700">
+    <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+      <span class="font-medium">What does it cost?</span>
+      <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+      <p>There is a venue set up fee and a monthly maintenance fee, then your standard promoter agreement for each production which can be negotiated to share/include costs of this software</p>
+    </div>
+  </div>
+
+  <!-- FAQ 8 -->
+  <div class="border-b border-gray-700">
+    <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+      <span class="font-medium">I’m an independent promoter / producer / performer—what’s in it for me?</span>
+      <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+      <p>We can take your show global: instant distribution to every subscribing venue.</p>
+    </div>
+  </div>
+
+  <!-- FAQ 9 -->
+  <div class="border-b border-gray-700">
+    <button class="w-full flex justify-between items-center py-4 text-left faq-btn">
+      <span class="font-medium">I’m a major brand, corporate, or label—what’s in it for me?</span>
+      <svg class="faq-icon w-5 h-5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 8l5 5 5-5H5z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <div class="faq-panel hidden pb-4 text-gray-300 space-y-2">
+      <p>Scale on tap. Drop your IP into a nationwide venue network, capture first-party engagement data, and activate local audiences. Networked and hybrid events are baked into the system.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+// FAQ toggle
+document.querySelectorAll('.faq-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const panel = btn.nextElementSibling;
+    const icon  = btn.querySelector('.faq-icon');
+    const open  = !panel.classList.toggle('hidden');
+    icon.classList.toggle('rotate-180', open);
+    btn.setAttribute('aria-expanded', open);
+  });
+});
+</script>
+
+  <!-- ────────── FOOTER ────────── -->
   <footer class="py-8 text-center text-xs text-gray-500 bg-black/90">
     © 2025 Crowdplzr Inc. All rights reserved.
   </footer>
+  
 </body>
 </html>
