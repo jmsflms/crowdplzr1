@@ -1,55 +1,70 @@
-<!-- Play Trailer Button -->
-<button onclick="openTrailer()" style="font-size:18px; padding:10px 20px;">Play Trailer</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Crowdplzr Streaming</title>
+  <script src="https://cdn.tailwindcss.com?plugins=aspect-ratio"></script>
+  <style>
+    .scrollbar-hide::-webkit-scrollbar{display:none}
+    .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+    @media (max-width:640px){#closeBtn{width:3rem;height:2.5rem;font-size:2.5rem}}
+    #closeBtn{position:relative}
+    #closeBtn::after{content:"";position:absolute;inset:-0.75rem}
+    .chevron-btn{transition:opacity 0.2s;opacity:0.85;width:3rem;height:3rem;display:flex;align-items:center;justify-content:center}
+    .chevron-btn svg{width:2.25rem;height:2.25rem}
+    .chevron-btn:hover{opacity:1;background:white}
+    @media (max-width:640px){.chevron-btn{width:4rem;height:4rem;padding:1rem}.chevron-btn svg{width:3rem;height:3rem}}
+  </style>
+</head>
 
-<!-- Fullscreen Modal -->
-<div id="trailerModal" style="
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100vw;
-  height:100vh;
-  background:rgba(0,0,0,0.95);
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-  overflow:hidden;
-  flex-direction:column;
-">
+<body class="bg-black text-white font-sans">
+  <header class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-4 bg-black/80 backdrop-blur-sm">
+    <h1 class="text-2xl font-extrabold tracking-tight">Crowdplzr</h1>
+    <nav class="hidden md:flex space-x-6 text-sm font-medium">
+      <a href="index.html" class="hover:text-red-500">Home</a>
+      <a href="hardware.html" class="hover:text-red-500">Get The System</a>
+      <a href="labs.html" class="hover:text-red-500">Crowdplzr Labs</a>
+    </nav>
+    <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
+  </header>
 
-  <!-- Video Player -->
-  <video id="trailerVideo" style="max-height:100vh; width:auto;" controls autoplay playsinline>
-    <source src="/assets/cloudplzr.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <section class="relative h-[60vh] w-full overflow-hidden pt-16">
+    <video src="assets/rb.mp4" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+    <div class="relative z-10 max-w-xl p-8 mt-24 space-y-4">
+      <h2 class="text-4xl md:text-5xl font-extrabold">Featured Experience</h2>
+      <p class="text-sm md:text-base">Drop audiences straight into blockbuster-scale worlds.</p>
+      <button onclick="openTrailer()" class="flex items-center gap-2 px-5 py-2 bg-red-600 rounded-md text-sm font-semibold hover:bg-red-700">
+        ▶ Play Trailer
+      </button>
+    </div>
+  </section>
 
-  <!-- Close Button -->
-  <button onclick="closeTrailer()" style="
-    position:absolute;
-    top:20px;
-    right:20px;
-    font-size:32px;
-    background:none;
-    border:none;
-    color:white;
-    cursor:pointer;
-  ">✖</button>
-</div>
+  <div id="trailerModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-90 flex items-center justify-center">
+    <video id="trailerVideo" class="h-[1350px] w-[1080px] max-w-full max-h-full" controls autoplay playsinline>
+      <source src="/assets/cloudplzr.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <button onclick="closeTrailer()" class="absolute top-4 right-4 text-white text-4xl">&times;</button>
+  </div>
 
-<script>
-function openTrailer() {
-  document.getElementById('trailerModal').style.display = 'flex';
-  document.body.style.overflow = 'hidden'; // Disable page scroll
-  const vid = document.getElementById('trailerVideo');
-  vid.currentTime = 0;
-  vid.play();
-}
+  <script>
+    function openTrailer() {
+      document.getElementById('trailerModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      const video = document.getElementById('trailerVideo');
+      video.currentTime = 0;
+      video.play();
+    }
 
-function closeTrailer() {
-  document.getElementById('trailerModal').style.display = 'none';
-  document.body.style.overflow = ''; // Re-enable page scroll
-  const vid = document.getElementById('trailerVideo');
-  vid.pause();
-  vid.currentTime = 0;
-}
-</script>
+    function closeTrailer() {
+      document.getElementById('trailerModal').classList.add('hidden');
+      document.body.style.overflow = '';
+      const video = document.getElementById('trailerVideo');
+      video.pause();
+      video.currentTime = 0;
+    }
+  </script>
+
+</body>
+</html>
