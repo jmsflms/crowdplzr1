@@ -4,15 +4,16 @@
   <meta charset="utf-8" />
   <title>Equip Your Venue – Cloudplzr</title>
 
-  <!-- TailwindCSS with forms & aspect-ratio plugins for consistency with existing site -->
+  <!-- TailwindCSS with forms & aspect-ratio plugins -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,aspect-ratio"></script>
   <style>
     body,html{height:100%}
   </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 
 <body class="bg-black text-white flex flex-col font-sans">
-  <!-- ───── HEADER (mirrors existing) ───── -->
+  <!-- ───── HEADER ───── -->
   <header class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-4 bg-black/80 backdrop-blur-sm">
     <h1 class="text-2xl font-extrabold tracking-tight">Cloudplzr</h1>
     <nav class="hidden md:flex space-x-6 text-sm font-medium">
@@ -24,167 +25,42 @@
     <button class="px-3 py-1.5 bg-red-600 rounded text-sm font-semibold hover:bg-red-700">Sign In</button>
   </header>
 
-<!-- ────────── HERO ────────── -->
-<section class="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen px-6 gap-6 overflow-hidden">
-  <!-- Video background -->
-  <video autoplay loop muted playsinline 
-    class="absolute inset-0 w-full h-full object-cover z-0">
-    <source src="assets/lablights.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
+  <!-- ────────── HERO ────────── -->
+  <section class="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen px-6 gap-6 overflow-hidden">
+    <!-- Video background -->
+    <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+      <source src="assets/lablights.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
 
-  <!-- Overlay (optional: add bg-black/50 for a dark tint) -->
-  <div class="absolute inset-0 bg-black/40 z-10"></div>
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/40 z-10"></div>
 
-  <!-- Content on top -->
-<div class="relative z-20 space-y-6 flex flex-col items-center justify-center w-full">
-  <!-- keep your logo -->
-  <img src="logos/cloudplzrlabs.png" alt="Cloudplzr Labs Logo" class="h-20 md:h-28 mx-auto" />
+    <!-- Content on top -->
+    <div class="relative z-20 space-y-6 flex flex-col items-center justify-center w-full pt-20">
+      <!-- Logo -->
+      <img src="logos/cloudplzrlabs.png" alt="Cloudplzr Labs Logo" class="h-20 md:h-28 mx-auto" />
 
-  <!-- EMBED BLOCKS -->
-  <div class="w-full max-w-4xl mx-auto grid gap-8">
-
-    <!-- Block 1: DICE bundle -->
-    <div class="embed-card">
-      <div class="relative w-full aspect-square rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-xl">
-        <iframe
-          src="https://dice.fm/bundles/rebel-bingo-at-the-amersham-arms-orer?dice_id=Zbe44a1a5f29&_branch_match_id=1470391313448174531&utm_source=web&utm_campaign=visit_bundle&utm_medium=bundle&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXz8nMy9ZLyUxO1UvL1Y9KSjUxSTRMNE0zsrSvK0pNSy0qysxLj08qyi8vTi2ydc4oys9NBQDOO0x1OwAAAA%3D%3D"
-          title="Rebel Bingo – DICE"
-          class="absolute inset-0 w-full h-full"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          allow="clipboard-read; clipboard-write; fullscreen">
-        </iframe>
-      </div>
-      <p class="mt-2 text-center text-sm text-gray-300">
-        If the embed doesn’t load in your browser, open it directly:
-        <a href="https://dice.fm/bundles/rebel-bingo-at-the-amersham-arms-orer?dice_id=Zbe44a1a5f29&_branch_match_id=1470391313448174531&utm_source=web&utm_campaign=visit_bundle&utm_medium=bundle&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXz8nMy9ZLyUxO1UvL1Y9KSjUxSTRMNE0zsrSvK0pNSy0qysxLj08qyi8vTi2ydc4oys9NBQDOO0x1OwAAAA%3D%3D"
-           target="_blank" rel="noopener" class="underline hover:text-red-400">Open on DICE →</a>
-      </p>
-    </div>
-
-    <!-- Block 2: duplicate this for the “another” site later -->
-    <!--
-    <div class="embed-card">
-      <div class="relative w-full aspect-square rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-xl">
-        <iframe
-          src="https://example.com/your-second-link"
-          title="Second embedded site"
-          class="absolute inset-0 w-full h-full"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          allow="clipboard-read; clipboard-write; fullscreen">
-        </iframe>
-      </div>
-      <p class="mt-2 text-center text-sm text-gray-300">
-        If the embed doesn’t load, <a href="https://example.com/your-second-link" target="_blank" rel="noopener" class="underline hover:text-red-400">open directly →</a>
-      </p>
-    </div>
-    -->
-  </div>
-</div>
-
-  <!-- ────────── BENEFITS ────────── -->
-  <section class="max-w-5xl mx-auto px-6 py-16 space-y-12">
-    <h3 class="text-3xl md:text-4xl font-extrabold text-center mb-6">Why It Pays For Itself</h3>
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="space-y-2">
-        <h4 class="text-xl font-bold">Unlock New Revenue</h4>
-        <p class="text-gray-300">Access a growing catalogue of proven shows that boost footfall & ticket yield without extra production overhead.</p>
-      </div>
-      <div class="space-y-2">
-        <h4 class="text-xl font-bold">Slash Set‑Up Time</h4>
-        <p class="text-gray-300">Full light, video & audio presets map to your desk in minutes—not hours—freeing your crew for higher‑value tasks.</p>
-      </div>
-      <div class="space-y-2">
-        <h4 class="text-xl font-bold">De‑Risk Programming</h4>
-        <p class="text-gray-300">Every show ships pre‑tested across the network. You know exactly what you’re getting long before doors open.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ────────── COST BREAKDOWN ────────── -->
-  <section id="costs" class="bg-gray-900/60 py-16 px-6">
-    <div class="max-w-4xl mx-auto space-y-8">
-      <h3 class="text-3xl font-extrabold text-center">Transparent Pricing</h3>
-      <div class="grid md:grid-cols-2 gap-8">
-        <div class="border border-gray-700 rounded-lg p-6 space-y-3">
-          <h4 class="text-2xl font-bold">Install & Mapping <span class="block text-red-500 mt-1">$POA</span></h4>
-          <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
-            <li>Server & tablet controller</li>
-            <li>On‑site integration with existing AV</li>
-            <li>Staff onboarding & documentation</li>
-            <li>Lifetime hardware warranty while subscribed</li>
-          </ul>
+      <!-- EMBED BLOCK -->
+      <div class="w-full max-w-4xl mx-auto">
+        <div class="relative w-full aspect-square rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-xl bg-black/50">
+          <iframe
+            src="https://dice.fm/bundles/rebel-bingo-at-the-amersham-arms-orer?dice_id=Zbe44a1a5f29&_branch_match_id=1470391313448174531&utm_source=web&utm_campaign=visit_bundle&utm_medium=bundle&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXz8nMy9ZLyUxO1UvL1Y9KSjUxSTRMNE0zsrSvK0pNSy0qysxLj08qyi8vTi2ydc4oys9NBQDOO0x1OwAAAA%3D%3D"
+            title="Rebel Bingo – DICE"
+            class="absolute inset-0 w-full h-full"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allow="clipboard-read; clipboard-write; fullscreen">
+          </iframe>
         </div>
-        <div class="border border-gray-700 rounded-lg p-6 space-y-3">
-          <h4 class="text-2xl font-bold">Maintenance <span class="block text-red-500 mt-1">$200 / month</span></h4>
-          <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
-            <li>24/7 remote monitoring</li>
-            <li>Automatic software & show updates</li>
-            <li>Priority support & replacement</li>
-          </ul>
-        </div>
+        <p class="mt-2 text-center text-sm text-gray-300">
+          If the embed doesn’t load, open it directly:
+          <a href="https://dice.fm/bundles/rebel-bingo-at-the-amersham-arms-orer?dice_id=Zbe44a1a5f29&_branch_match_id=1470391313448174531&utm_source=web&utm_campaign=visit_bundle&utm_medium=bundle&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXz8nMy9ZLyUxO1UvL1Y9KSjUxSTRMNE0zsrSvK0pNSy0qysxLj08qyi8vTi2ydc4oys9NBQDOO0x1OwAAAA%3D%3D"
+             target="_blank" rel="noopener" class="underline hover:text-red-400">Open on DICE →</a>
+        </p>
       </div>
-      <p class="text-center text-sm text-gray-400 max-w-2xl mx-auto">Each show runs under a standard promoter agreement with revenue share. No hidden fees—just the same split you already know.</p>
     </div>
   </section>
-
-  <!-- ────────── CTA ────────── -->
-  <section id="book-demo" class="flex flex-col items-center justify-center py-24 space-y-6 bg-black/80">
-    <h3 class="text-3xl md:text-4xl font-extrabold text-center">Ready to Equip Your Venue?</h3>
-    <p class="text-lg text-center max-w-2xl">Join our Founding Venues and get white‑glove installation within 30 days.</p>
-    <form action="mailto:sales@crowdplzr.com" method="post" enctype="text/plain" class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
-      <input type="email" name="email" required placeholder="Work email" class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500">
-      <button type="submit" class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold flex items-center justify-center min-w-[9rem]">Request Quote ▶</button>
-    </form>
-    <a href="investor.html" class="underline text-sm text-gray-400 hover:text-red-400">Investor? View our deck</a>
-  </section>
-
- <!-- ───── CLIENT LOGO SCROLLER ───── -->
-<div class="bg-black text-white py-8">
-  <div class="text-center text-xl font-semibold mb-4">We've produced shows for</div>
-  <div class="overflow-hidden whitespace-nowrap relative">
-    <div class="animate-scroll inline-block">
-      <img src="logos/acehotel.png" class="h-12 inline-block mx-6" />
-      <img src="logos/amg.png" class="h-12 inline-block mx-6" />
-      <img src="logos/cosmopolitan.png" class="h-12 inline-block mx-6" />
-      <img src="logos/crowdplzr.png" class="h-12 inline-block mx-6" />
-      <img src="logos/dice.png" class="h-12 inline-block mx-6" />
-      <img src="logos/gastonbury.png" class="h-12 inline-block mx-6" />
-      <img src="logos/ibizarocks.png" class="h-12 inline-block mx-6" />
-      <img src="logos/livenation.png" class="h-12 inline-block mx-6" />
-      <img src="logos/o2arena.png" class="h-12 inline-block mx-6" />
-      <img src="logos/ticketmaster.png" class="h-12 inline-block mx-6" />
-      <img src="logos/venetian.png" class="h-12 inline-block mx-6" />
-      <!-- Repeat logos for seamless scroll -->
-      <img src="logos/acehotel.png" class="h-12 inline-block mx-6" />
-      <img src="logos/amg.png" class="h-12 inline-block mx-6" />
-      <img src="logos/cosmopolitan.png" class="h-12 inline-block mx-6" />
-      <img src="logos/dice.png" class="h-12 inline-block mx-6" />
-      <img src="logos/gastonbury.png" class="h-12 inline-block mx-6" />
-      <img src="logos/ibizarocks.png" class="h-12 inline-block mx-6" />
-      <img src="logos/livenation.png" class="h-12 inline-block mx-6" />
-      <img src="logos/o2arena.png" class="h-12 inline-block mx-6" />
-      <img src="logos/ticketmaster.png" class="h-12 inline-block mx-6" />
-      <img src="logos/venetian.png" class="h-12 inline-block mx-6" />
-    </div>
-  </div>
-</div>
-
-<!-- Add this to your <head> or inside <style> block -->
-<style>
-  @keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .animate-scroll {
-    display: inline-block;
-    white-space: nowrap;
-    animation: scroll 30s linear infinite;
-  }
-</style>
- 
 
   <!-- ────────── FOOTER ────────── -->
   <footer class="py-8 text-center text-xs text-gray-500 bg-black/90">
