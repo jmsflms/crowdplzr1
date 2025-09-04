@@ -55,44 +55,7 @@ SIGN UP BELOW
   </a>
 </div>
 
-          // Email form: validate, POST to Apps Script, then redirect
-    document.getElementById('emailForm').addEventListener('submit', async e=>{
-      e.preventDefault();
-      const form  = e.target;
-      const email = form.email.value.trim();
-      const button = form.querySelector('button[type="submit"]');
-      const originalText = button.innerHTML;
-
-      // simple regex validation
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-        alert('Please enter a valid email address.');
-        form.email.focus();
-        return;
-      }
-
-      // Show loading state
-      button.disabled = true;
-      button.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>Loading...`;
-
-      try{
-        const res = await fetch(form.action, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ email })
-        });
-        if (res.type === 'opaque' || res.ok) {
-          window.location.href = 'experiences.html';
-        } else {
-          throw new Error('submit failed');
-        }
-      }catch{
-        alert('Sorry, something went wrong. Please try again.');
-        button.disabled = false;
-        button.innerHTML = originalText;
-      }
-    });
-  </script>
+         
 
   <!-- ────────── FOOTER ────────── -->
   <footer class="py-8 text-center text-xs text-gray-500 bg-black/90">
