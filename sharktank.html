@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Cloudplzr – SharkTank Night (Early Access)</title>
+  <title>Cloudplzr – SharkTank Moment (Early Access)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="We’re hijacking 1000's of live entertainment venues with our own mad stuff. JUST PRESS PLAY. On Friday 24th October 2025 we are updating our early investors: SEED ROUND CAPITAL and their network of to see just how fast we can scale." />
+  <meta name="description" content="We’re hijacking live venues. Press play and the whole show runs. Join our SharkTank moment – early access for operators and investors." />
 
   <!-- Open Graph / LinkedIn preview -->
-  <meta property="og:title" content="Cloudplzr – SharkTank Night (Early Access)" />
-  <meta property="og:description" content="We’re hijacking 1000's of live entertainment venues. Just press play." />
+  <meta property="og:title" content="Cloudplzr – SharkTank Moment (Early Access)" />
+  <meta property="og:description" content="We’re hijacking live venues. Press play and the whole show runs. Early access for operators and investors." />
   <meta property="og:image" content="https://www.cloudplzr.com/assets/hardware.png" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.cloudplzr.com/sharktank.html" />
@@ -17,6 +17,7 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 
   <style>
+    /* Optional: smooth font rendering + hide scrollbars if needed */
     body,html{height:100%}
     .scrollbar-hide::-webkit-scrollbar{display:none}
     .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
@@ -24,7 +25,6 @@
 </head>
 
 <body class="bg-black text-white flex flex-col min-h-screen">
-
   <!-- Header -->
   <header class="flex items-center justify-between px-6 md:px-10 py-4">
     <a href="/" class="text-xl font-extrabold tracking-tight">Cloudplzr</a>
@@ -36,36 +36,50 @@
     </nav>
   </header>
 
-  <!-- Hero -->
-  <section class="px-6 md:px-10 py-6 md:py-10">
+  <!-- Main -->
+  <main class="px-6 md:px-10 pb-10">
     <!-- Image placeholder -->
-    <img src="assets/tech.png" alt="Cloudplzr show-control tech preview" class="w-full rounded-2xl mb-6 md:mb-8 shadow-lg" />
+    <img src="assets/hardware.png" alt="Cloudplzr show-control tech preview"
+         class="w-full h-auto rounded-2xl mb-6 md:mb-8 shadow-lg" loading="eager" />
 
-    <div class="max-w-3xl">
+    <section class="max-w-3xl">
+      <!-- Headline -->
       <h1 class="text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight mb-4">
-        We’re hijacking live venues.<br class="hidden md:block" />
-        <span class="text-red-500">Push play. The whole show runs.</span>
+        We’re hijacking 1,000+ live entertainment venues. All at once.
       </h1>
 
-      <p class="text-lg md:text-xl text-gray-200 mb-4">
-        Lights, sound, screens, voiceovers, cues—synchronised and executed at the push of a button.
+      <!-- Hook -->
+      <p class="text-xl md:text-2xl font-semibold mb-3">
+        Just Press Play &amp; the whole show runs.
+      </p>
+      <p class="text-lg md:text-xl text-gray-200 mb-6">
+        Lights, sound, screens, voiceovers, cues, videos… <span class="font-bold">HOLOGRAMS</span> — synchronised and played out at the push of a button.
       </p>
 
-      <p class="text-base md:text-lg text-gray-300 mb-6">
-        This is a bit like a streaming service. But for <span class="font-semibold">massive venues</span>:
-        cloud based crowd-pleasers, delivered as software, repeatable precision and zero production chaos.
+      <!-- Body -->
+      <p class="text-base md:text-lg text-gray-300 mb-8">
+        It’s like a streaming platform — <span class="font-semibold">but for massive venues and massive shows.</span>
+        Cloud-based crowd-pleasers, delivered as software, with repeatable precision and zero production chaos.
       </p>
 
-      <!-- SharkTank pitch blurb -->
-      <div class="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5 mb-6">
+      <!-- SharkTank moment -->
+      <div class="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5 mb-8">
+        <p class="text-sm md:text-base mb-3"><span class="font-semibold">Friday October 24th, 2025</span></p>
+        <p class="text-sm md:text-base mb-3">
+          We’re having our own <span class="font-semibold">SharkTank moment</span>.
+        </p>
+        <p class="text-sm md:text-base mb-3">
+          We’ll get grilled by early investors at
+          <a href="https://seedroundcapital.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-red-500 font-semibold">Seed Round Capital</a>,
+          and meet new ones.
+        </p>
         <p class="text-sm md:text-base">
-          <span class="font-semibold">SharkTank Night</span> — a fast, fun early-access session for
-          venue operators and investors. Five-minute product demo, sixty-second pitch, ruthless Q&A.
-          First pilot slots are limited.
+          We’ve got five minutes to reveal our massive pipeline, what we need to activate and execute the plan,
+          and find out if we’ll be <span class="font-semibold">shark bait… or billionaires</span>.
         </p>
       </div>
 
-      <!-- Benefits -->
+      <!-- Quick benefits -->
       <ul class="grid md:grid-cols-3 gap-3 md:gap-4 mb-8">
         <li class="rounded-lg bg-white/5 p-3 border border-white/10 text-sm">
           <span class="font-semibold">Operational snap-in</span><br/>Runs on venue infrastructure.
@@ -79,10 +93,10 @@
       </ul>
 
       <!-- Email capture -->
-      <div class="bg-white/5 border border-white/10 rounded-2xl p-4 md:p-5">
-        <h2 class="text-xl md:text-2xl font-bold mb-2">Join SharkTank Night (Early Access)</h2>
+      <section class="bg-white/5 border border-white/10 rounded-2xl p-4 md:p-5">
+        <h2 class="text-xl md:text-2xl font-bold mb-2">Sign up to get involved</h2>
         <p class="text-sm text-gray-300 mb-4">
-          Drop your email. We’ll send the invite and booking link. Limited slots.
+          Drop your email. We’ll send the SharkTank access &amp; pilot info. Limited slots.
         </p>
 
         <form id="emailForm"
@@ -91,8 +105,8 @@
               class="flex flex-col sm:flex-row gap-3 w-full">
 
           <input type="email" name="email" required
-                placeholder="your@email.com"
-                class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500" />
+                 placeholder="your@email.com"
+                 class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500" />
 
           <!-- honeypot -->
           <input type="text" name="company" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
@@ -109,16 +123,16 @@
           By submitting, you agree to be contacted about early-access sessions and pilots.
           We don’t sell data. Unsubscribe anytime.
         </p>
-      </div>
+      </section>
 
-      <!-- “How it works” (tight) -->
+      <!-- How it works (tight) -->
       <div class="mt-8 grid md:grid-cols-3 gap-4 text-sm">
         <div class="bg-white/5 border border-white/10 rounded-xl p-4">
           <p class="font-semibold mb-1">1) Pick a slot</p>
           <p class="text-gray-300">We send you the SharkTank link; you book a five-minute demo.</p>
         </div>
         <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-          <p class="font-semibold mb-1">2) Watch us “push play”</p>
+          <p class="font-semibold mb-1">2) Watch us “press play”</p>
           <p class="text-gray-300">See a complete show fire with a single control action.</p>
         </div>
         <div class="bg-white/5 border border-white/10 rounded-xl p-4">
@@ -127,13 +141,13 @@
         </div>
       </div>
 
-      <!-- Legal tone-safe note -->
+      <!-- Legal-safe note -->
       <p class="mt-8 text-xs text-gray-500">
         Cloudplzr provides original software and show-control tooling.
         Any references to venues or events are illustrative and do not claim ownership of third-party IP or past productions.
       </p>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <!-- Footer -->
   <footer class="mt-auto py-8 text-center text-xs text-gray-500">
@@ -151,7 +165,7 @@
       const email = (data.get('email') || '').trim();
 
       // Simple validation
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
         msg.textContent = 'Enter a valid email.';
         msg.style.color = '#fca5a5'; // red-300
         return;
@@ -167,10 +181,10 @@
       const btn = form.querySelector('button[type="submit"]');
       const original = btn.innerHTML;
       btn.disabled = true;
-      btn.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Submitting…`;
+      btn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Submitting…';
 
       try {
-        const res = await fetch(form.action, {
+        await fetch(form.action, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
