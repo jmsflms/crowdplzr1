@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Cloudplzr – SharkTank Moment (Join in!)</title>
+  <title>Cloudplzr – SharkTank Moment (Early Access)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="We’re hijacking live venues. Press play and the whole show runs. Join our SharkTank moment – early access for operators and investors." />
 
   <!-- Open Graph / LinkedIn preview -->
-  <meta property="og:title" content="Cloudplzr – SharkTank Moment (Join in!)" />
+  <meta property="og:title" content="Cloudplzr – SharkTank Moment (Early Access)" />
   <meta property="og:description" content="We’re hijacking live venues. Press play and the whole show runs. Early access for operators and investors." />
   <meta property="og:image" content="https://www.cloudplzr.com/assets/hardware.png" />
   <meta property="og:type" content="website" />
@@ -62,4 +62,117 @@
       </p>
 
       <!-- SharkTank moment (date BIG) -->
-      <div class="rounded-xl border border-white/10 bg-white/5 p
+      <div class="rounded-xl border border-white/10 bg-white/5 p-4 md:p-6 mb-8">
+        <p class="text-3xl md:text-5xl font-extrabold mb-3">
+          Friday October 24th, 2025
+        </p>
+        <p class="text-base md:text-lg mb-3">
+          We’re having our own <span class="font-semibold">SharkTank moment</span>.
+        </p>
+        <p class="text-base md:text-lg mb-3">
+          We’ll get grilled by early investors at
+          <a href="https://seedroundcapital.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-red-500 font-semibold">Seed Round Capital</a>,
+          and meet new ones.
+        </p>
+        <p class="text-base md:text-lg">
+          We’ve got five minutes to reveal our massive pipeline, what we need to activate and execute the plan,
+          and find out if we’ll be <span class="font-semibold">shark bait… or billionaires</span>.
+        </p>
+      </div>
+
+      <!-- Email capture -->
+      <section class="bg-white/5 border border-white/10 rounded-2xl p-4 md:p-5">
+        <h2 class="text-xl md:text-2xl font-bold mb-2">Sign up to get involved</h2>
+        <p class="text-sm text-gray-300 mb-4">
+          Drop your email. We’ll send the SharkTank access &amp; pilot info. Limited slots.
+        </p>
+
+        <form id="emailForm"
+              action="https://script.google.com/macros/s/AKfycbzUfRw-L2U8wxV3fv8GDRic8JNwtxKEBsJhbrQtwNNiqe9CoJOTlq-DROinO-jVAARM3w/exec"
+              method="POST"
+              class="flex flex-col sm:flex-row gap-3 w-full">
+
+          <input type="email" name="email" required
+                 placeholder="your@email.com"
+                 class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500" />
+
+          <!-- honeypot -->
+          <input type="text" name="company" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+          <button type="submit"
+                  class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold flex items-center justify-center min-w-[11rem]">
+            Join Early Access ▶
+          </button>
+        </form>
+
+        <p id="msg" class="mt-3 text-sm text-gray-300"></p>
+
+        <p class="mt-4 text-[12px] leading-snug text-gray-400">
+          By submitting, you agree to be contacted about early-access sessions and pilots.
+          We don’t sell data. Unsubscribe anytime.
+        </p>
+      </section>
+
+      <!-- Legal-safe note -->
+      <p class="mt-8 text-xs text-gray-500">
+        Cloudplzr provides original software and show-control tooling.
+        Any references to venues or events are illustrative and do not claim ownership of third-party IP or past productions.
+      </p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto py-8 text-center text-xs text-gray-500">
+    © 2025 Cloudplzr Inc. All rights reserved.
+  </footer>
+
+  <!-- Email submit script -->
+  <script>
+    const form = document.getElementById('emailForm');
+    const msg  = document.getElementById('msg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const email = (data.get('email') || '').trim();
+
+      // Simple validation
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        msg.textContent = 'Enter a valid email.';
+        msg.style.color = '#fca5a5'; // red-300
+        return;
+      }
+
+      // Honeypot
+      if ((data.get('company') || '').length > 0) {
+        msg.textContent = 'Thanks!';
+        msg.style.color = '#86efac';
+        return;
+      }
+
+      const btn = form.querySelector('button[type="submit"]');
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Submitting…';
+
+      try {
+        await fetch(form.action, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ email })
+        });
+        msg.textContent = 'Thanks — we’ll send your SharkTank invite shortly.';
+        msg.style.color = '#86efac'; // green-300
+        form.reset();
+      } catch (err) {
+        msg.textContent = 'Something went wrong. Please try again.';
+        msg.style.color = '#fca5a5';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    });
+  </script>
+</body>
+</html>
