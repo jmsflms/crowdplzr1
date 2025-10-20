@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cloudplzr – Early Access</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+<body class="min-h-screen bg-black text-white flex items-center justify-center p-6">
+  <main class="w-full max-w-lg">
+    <h1 class="text-3xl font-extrabold mb-3">Early Access</h1>
+    <p class="text-gray-300 mb-6">Drop your email to get product updates and pilot invites.</p>
+
+    <form id="emailForm"
+      action="https://script.google.com/macros/s/AKfycbzUfRw-L2U8wxV3fv8GDRic8JNwtxKEBsJhbrQtwNNiqe9CoJOTlq-DROinO-jVAARM3w/exec"
+      method="POST"
+      class="flex flex-col sm:flex-row gap-3">
+
+      <input type="email" name="email" required placeholder="your@email.com"
+        class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500" />
+
+      <!-- honeypot -->
+      <input type="text" name="company" tabindex="-1" autocomplete="off"
+        class="hidden" aria-hidden="true" />
+
+      <button type="submit"
+        class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold">
+        Get Updates
+      </button>
+    </form>
+
+    <p id="msg" class="mt-4 text-sm text-gray-300"></p>
+
+    <p class="mt-8 text-xs text-gray-500">
+      We’ll email occasionally. No spam. Unsubscribe anytime.
+    </p>
+  </main>
+
+  <script>
+  const form = document.getElementById('emailForm');
+  const msg  = document.getElementById('msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const email = (data.get('email') || '').trim();
+
+    // basic email check
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      msg.textContent = 'Enter a valid email.';
+      msg.style.color = '#f87171';
+      return;
+    }
+
+    // simple bot trap
+    if ((data.get('company') || '').length > 0) {
+      msg.textContent = 'Thanks!';
+      return;
+    }
+
+    const btn = form.querySelector('button[type="submit"]');
+    const original = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email })
+      });
+      // opaque response is expected; assume success
+      msg.textContent = 'Thanks — you’re on the list.';
+      msg.style.color = '#86efac';
+      form.reset();
+    } catch (err) {
+      msg.textContent = 'Something went wrong. Please try again.';
+      msg.style.color = '#f87171';
+    } finally {
+      btn.disabled = false; btn.textContent = original;
+    }
+  });
+  </script>
+</body>
+</html>
 
