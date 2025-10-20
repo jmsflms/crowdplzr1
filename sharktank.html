@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Cloudplzr – SharkTank Moment (Join in!)</title>
+  <title>Cloudplzr – SharkTank Moment</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="We’re hijacking live venues. Press play and the whole show runs. Join our SharkTank moment – early access for operators and investors." />
+  <meta name="description" content="We’re hijacking live venues. Press play and the whole show runs. Join our SharkTank moment." />
 
-  <!-- Open Graph / LinkedIn preview -->
-  <meta property="og:title" content="Cloudplzr – SharkTank Moment (Join in!)" />
-  <meta property="og:description" content="We’re hijacking live venues. Just press play!." />
+  <!-- Open Graph (use any image you like as a poster) -->
+  <meta property="og:title" content="Cloudplzr – SharkTank Moment" />
+  <meta property="og:description" content="We’re hijacking 1000s of live venues. Press play and the whole show runs." />
   <meta property="og:image" content="https://www.cloudplzr.com/assets/hardware.png" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.cloudplzr.com/sharktank.html" />
 
-  <!-- Tailwind with forms plugin -->
+  <!-- Tailwind + forms -->
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 
   <style>
@@ -24,8 +24,9 @@
 </head>
 
 <body class="bg-black text-white flex flex-col min-h-screen">
+
   <!-- Header -->
-  <header class="flex items-center justify-between px-6 md:px-10 py-4">
+  <header class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 md:px-10 py-4 bg-black/70 backdrop-blur-sm">
     <a href="/" class="text-xl font-extrabold tracking-tight">Cloudplzr</a>
     <nav class="hidden md:flex items-center gap-6 text-sm">
       <a href="/index.html" class="hover:text-red-500">Home</a>
@@ -35,13 +36,16 @@
     </nav>
   </header>
 
-  <!-- Main -->
-  <main class="px-6 md:px-10 pb-10">
-    <!-- Hero Image -->
-    <img src="/assets/hardware.png" alt="Cloudplzr show-control tech preview"
-         class="w-full h-auto rounded-2xl mb-6 md:mb-8 shadow-lg" loading="eager" />
+  <!-- HERO with background video -->
+  <section class="relative flex-1 flex items-center justify-center text-center px-6 pt-24 md:pt-28">
+    <!-- Background video -->
+    <video id="heroVideo" src="assets/RBBW.mp4" autoplay muted loop playsinline preload="metadata"
+           class="absolute inset-0 w-full h-full object-cover -z-10"></video>
+    <!-- Dark veil -->
+    <div class="absolute inset-0 bg-black/60 -z-10"></div>
 
-    <section class="max-w-3xl">
+    <!-- Overlay content -->
+    <div class="w-full max-w-3xl mx-auto">
       <!-- Headline -->
       <h1 class="text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight mb-4">
         We’re hijacking 1,000+ live entertainment venues. <span class="text-red-500">All at once.</span>
@@ -49,42 +53,41 @@
 
       <!-- Hook -->
       <p class="text-xl md:text-2xl font-semibold mb-3">
-        Just Press Play &amp; the whole show runs.
+        You're invited to find out how: FRIDAY 24th OCTOBER, ONLINE
       </p>
       <p class="text-lg md:text-xl text-gray-200 mb-6">
-        Lights, sound, screens, voiceovers, cues, videos… <span class="font-bold">HOLOGRAMS</span> — synchronised and played out at the push of a button.
+        Lights, sound, screens, voiceovers, cues, videos… <span class="font-bold">HOLOGRAMS</span> - synchronised and played out at the push of a button.
       </p>
 
       <!-- Body -->
-      <p class="text-base md:text-lg text-gray-300 mb-8">
-        It’s like a streaming platform — <span class="font-semibold">but for massive venues and massive shows.</span>
-        Cloud-based crowd-pleasers, delivered as software, with repeatable precision and zero production chaos.
+      <p class="text-base md:text-lg text-gray-200/90 mb-8">
+        It’s like a streaming platform - <span class="font-semibold">but for MASSIVE and MASSIVE shows.</span>
+        Cloud based crowd pleasers, delivered as software, with repeatable precision and zero production chaos.
       </p>
 
-      <!-- SharkTank moment (date BIG) -->
-      <div class="rounded-xl border border-white/10 bg-white/5 p-4 md:p-6 mb-8">
+      <!-- SharkTank moment (BIG date) -->
+      <div class="rounded-xl border border-white/10 bg-black/40 p-4 md:p-6 mb-8">
         <p class="text-3xl md:text-5xl font-extrabold mb-3">
-          Friday October 24th, 2025
+          FRIDAY OCTOBER 24th, 2025
         </p>
         <p class="text-base md:text-lg mb-3">
           We’re having our own <span class="font-semibold">SharkTank moment</span>.
         </p>
         <p class="text-base md:text-lg mb-3">
-          We’ll get grilled by early investors at
+          We’ll get grilled by our early investors at
           <a href="https://seedroundcapital.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-red-500 font-semibold">Seed Round Capital</a>,
           and meet new ones.
         </p>
         <p class="text-base md:text-lg">
-          We’ve got five minutes to reveal our massive pipeline, what we need to activate and execute the plan,
-          and find out if we’ll be <span class="font-semibold">shark bait… or billionaires</span>.
+          We’ve got five minutes to reveal our pipeline, what we need to activate and execute our ambitious plan.
         </p>
       </div>
 
       <!-- Email capture -->
-      <section class="bg-white/5 border border-white/10 rounded-2xl p-4 md:p-5">
+      <div class="bg-black/50 border border-white/10 rounded-2xl p-4 md:p-5">
         <h2 class="text-xl md:text-2xl font-bold mb-2">Sign up to get involved</h2>
-        <p class="text-sm text-gray-300 mb-4">
-          Drop your email. We’ll send the SharkTank access &amp; pilot info. Limited slots.
+        <p class="text-sm text-gray-200 mb-4">
+          Drop your email for a calender invite and zoom link.
         </p>
 
         <form id="emailForm"
@@ -101,28 +104,27 @@
 
           <button type="submit"
                   class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold flex items-center justify-center min-w-[11rem]">
-            Join Early Access ▶
+            Join in ▶
           </button>
         </form>
 
-        <p id="msg" class="mt-3 text-sm text-gray-300"></p>
+        <p id="msg" class="mt-3 text-sm text-gray-200"></p>
 
-        <p class="mt-4 text-[12px] leading-snug text-gray-400">
-          By submitting, you agree to be contacted about early-access sessions and pilots.
+        <p class="mt-4 text-[12px] leading-snug text-gray-300">
+          By submitting, you agree to be contacted and recieve a calender invite.
           We don’t sell data. Unsubscribe anytime.
         </p>
-      </section>
+      </div>
 
       <!-- Legal-safe note -->
-      <p class="mt-8 text-xs text-gray-500">
-        Cloudplzr provides original software and show-control tooling.
-        Any references to venues or events are illustrative and do not claim ownership of third-party IP or past productions.
+      <p class="mt-8 text-xs text-gray-300">
+        Cloudplzr provides original software and show-control tooling. References to venues or events are illustrative and do not claim ownership of third-party IP or past productions.
       </p>
-    </section>
-  </main>
+    </div>
+  </section>
 
   <!-- Footer -->
-  <footer class="mt-auto py-8 text-center text-xs text-gray-500">
+  <footer class="mt-auto py-8 text-center text-xs text-gray-400">
     © 2025 Cloudplzr Inc. All rights reserved.
   </footer>
 
@@ -136,14 +138,11 @@
       const data = new FormData(form);
       const email = (data.get('email') || '').trim();
 
-      // Simple validation
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         msg.textContent = 'Enter a valid email.';
-        msg.style.color = '#fca5a5'; // red-300
+        msg.style.color = '#fca5a5';
         return;
       }
-
-      // Honeypot
       if ((data.get('company') || '').length > 0) {
         msg.textContent = 'Thanks!';
         msg.style.color = '#86efac';
@@ -163,7 +162,7 @@
           body: new URLSearchParams({ email })
         });
         msg.textContent = 'Thanks — we’ll send your SharkTank invite shortly.';
-        msg.style.color = '#86efac'; // green-300
+        msg.style.color = '#86efac';
         form.reset();
       } catch (err) {
         msg.textContent = 'Something went wrong. Please try again.';
