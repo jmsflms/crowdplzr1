@@ -336,11 +336,7 @@
       overlay.classList.remove('hidden');
       overlayVid.play().catch(()=>{ /* user can press play */ });
 
-      const meta = videoMeta[src] || {title: "BAD DECISONS", desc: "<p>A massive interactive party where wild trivia collides with epic chaos. Expect outrageous rounds, unpredictable games, banging tunes, big top prize and non-stop laughs.
-
-Whether you’re a certified genius or a few sandwiches short of a picnic – it doesn’t matter!
-
-This will be the best Bad Decision you’ll ever make!</p>"};
+      const meta = videoMeta[src] || {title: "Experience", desc: "<p>Lorem ipsum dolor sit amet.</p>"};
       overlayText.innerHTML = `<h2 class="text-2xl md:text-3xl font-bold mb-2">${meta.title}</h2>
         <div class="text-base md:text-lg leading-relaxed">${meta.desc}</div>`;
 
