@@ -104,10 +104,10 @@
   ROTATING LOGOS
   --------------
   Put your PNGs in:
-    assets/streamers/...png
-    assets/movies/...png
-    assets/music/...png
-    assets/experience/...png
+    streamers/...png
+    movies/...png
+    music/...png
+    experience/...png
 
   Then list the filenames below. Add/remove freely.
   The script preloads and cycles each column independently.
@@ -116,7 +116,6 @@ const PLZR_CONFIG = {
   intervalMs: 1800,     // change speed if you like
   pauseOnHover: true,   // pause rotation when mouse over logo
   // Folders
-  basePath: 'assets',
   folders: {
     streamers: 'streamers',
     movies: 'movies',
@@ -145,7 +144,7 @@ const PLZR_CONFIG = {
   for (const [cat, list] of Object.entries(PLZR_CONFIG.images)) {
     list.forEach(file=>{
       const img = new Image();
-      img.src = `${PLZR_CONFIG.basePath}/${PLZR_CONFIG.folders[cat]}/${file}`;
+      img.src = `/${PLZR_CONFIG.folders[cat]}/${file}`;
     });
   }
 })();
@@ -164,7 +163,7 @@ document.querySelectorAll('.plzr-col').forEach(col=>{
 
   function setSrc(i){
     const file = files[i % files.length];
-    imgEl.src = `${PLZR_CONFIG.basePath}/${PLZR_CONFIG.folders[cat]}/${file}`;
+    imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${file}`;
   }
 
   setSrc(idx);
@@ -180,3 +179,4 @@ document.querySelectorAll('.plzr-col').forEach(col=>{
   }
 });
 </script>
+
