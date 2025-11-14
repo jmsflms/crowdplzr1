@@ -170,13 +170,26 @@
 
 <script>
 /*
-  ROTATING LOGOS
+  ROTATING LOGOS WITH FLICKER
 */
 const PLZR_CONFIG = {
-  intervalMs: 1800,
+  // default interval if no per-category value (ms)
+  intervalMs: 900,
+
+  // per-category base intervals (ms) – tweak to taste
+  intervals: {
+    streamers: 420,    // faster, more “blinky”
+    movies:   700,
+    music:    520,
+    experience: 610
+  },
+
+  // random jitter added/subtracted to each change (ms)
+  jitterRange: 220,
+
   pauseOnHover: true,
 
-  // FOLDERS at site root (NOT inside /test/)
+  // FOLDERS at site root
   folders: {
     streamers: 'streamers',
     movies: 'movies',
@@ -184,52 +197,61 @@ const PLZR_CONFIG = {
     experience: 'experience'
   },
 
+  // YOUR IMAGES – keep this as you have it
   images: {
-  streamers: [
-    'bbc.png',
-    'disney.png',
-    'netflix.png',
-    'paramount.png',
-    'prime.png',
-    'tencent.png',
-    'tubi.png',
-    'youtube.png'
-  ],
+    experience: [
+      'insomniac.png',
+      'aeg.png',
+      'amg.png',
+      'eventbrite.png',
+      'fever.png',
+      'hardrock.png',
+      'livenation.png',
+      'mgm.png',
+      'netflix.png',
+      'ticketmaster.png',
+      'westfield.png'
+    ],
 
-  movies: [
-    'amc.png',
-    'cineworld.png',
-    'loews.png',
-    'odeon.png',
-    'regal.png',
-    'vue.png'
-  ],
+    movies: [
+      'amc.png',
+      'cineworld.png',
+      'loews.png',
+      'odeon.png',
+      'regal.png',
+      'vue.png'
+    ],
 
-  music: [
-    'amazon.png',
-    'apple.png',
-    'deezer.png',
-    'iheart.png',
-    'spotify.png',
-    'tidal.png',
-    'tunein.png'
-  ],
+    music: [
+      'amazon.png',
+      'apple.png',
+      'deezer.png',
+      'iheart.png',
+      'spotify.png',
+      'tidal.png',
+      'tunein.png'
+    ],
 
-  experience: [
-    'insomniac.png',
-    'aeg.png',
-    'amg.png',
-    'eventbrite.png',
-    'fever.png',
-    'hardrock.png',
-    'livenation.png',
-    'mgm.png',
-    'netflix.png',
-    'ticketmaster.png',
-    'westfield.png'
-  ]
-}
+    streamers: [
+      'bbc.png',
+      'disney.png',
+      'netflix.png',
+      'paramount.png',
+      'prime.png',
+      'tencent.png',
+      'tubi.png',
+      'youtube.png'
+    ]
+  }
 };
+
+// helper: get interval for a category
+function getInterval(cat) {
+  const base = PLZR_CONFIG.intervals[cat] ?? PLZR_CONFIG.intervalMs;
+  const jitter = (Math.random() - 0.5) * PLZR_CONFIG.jitterRange;
+  // never go below 150ms, otherwise it’s too aggressive
+  return Math.max(150, base + jitter);
+}
 
 // PRELOAD
 (function preload() {
@@ -247,6 +269,7 @@ document.querySelectorAll('.plzr-col').forEach(col => {
   const imgEl = col.querySelector('.plzr-logo img');
   const files = PLZR_CONFIG.images[cat] || [];
   let idx = 0;
+  let timer = null;
 
   if (!files.length) {
     imgEl.alt = 'No images configured';
@@ -257,24 +280,37 @@ document.querySelectorAll('.plzr-col').forEach(col => {
     imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${files[i % files.length]}`;
   }
 
-  setSrc(idx);
+  function scheduleNext() {
+    const delay = getInterval(cat);
+    timer = setTimeout(() => {
+      idx = (idx + 1) % files.length;
+      // quick flicker / fade
+      imgEl.style.opacity = '0';
+      setTimeout(() => {
+        setSrc(idx);
+        imgEl.style.opacity = '1';
+      }, 110);  // fade-out duration should be <= CSS transition
+      scheduleNext();
+    }, delay);
+  }
 
-  let timer = setInterval(() => {
-    idx = (idx + 1) % files.length;
-    setSrc(idx);
-  }, PLZR_CONFIG.intervalMs);
+  // initial image
+  setSrc(idx);
+  imgEl.style.opacity = '1';
+  scheduleNext();
 
   if (PLZR_CONFIG.pauseOnHover) {
-    col.addEventListener('mouseenter', () => clearInterval(timer));
+    col.addEventListener('mouseenter', () => {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    });
     col.addEventListener('mouseleave', () => {
-      clearInterval(timer);
-      timer = setInterval(() => {
-        idx = (idx + 1) % files.length;
-        setSrc(idx);
-      }, PLZR_CONFIG.intervalMs);
+      if (!timer) {
+        scheduleNext();
+      }
     });
   }
 });
 </script>
-
-
