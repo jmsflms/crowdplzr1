@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <!-- Column: MOVIES (theatrical) -->
+    <!-- Column: MOVIES -->
     <div class="plzr-col" data-category="movies">
       <div class="plzr-logo"><img alt="movie exhibitor logo" /></div>
       <div class="plzr-stage">
@@ -70,110 +70,171 @@
 </section>
 
 <style>
-  .plzr-block{background:#0b0b0b;color:#f3f3f3;padding:32px 16px;font-family:Inter,Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  .plzr-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;max-width:1200px;margin:0 auto}
-  .plzr-col{display:flex;flex-direction:column;align-items:center;text-align:center}
-  .plzr-logo{height:96px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-  .plzr-logo img{max-height:96px;max-width:180px;object-fit:contain;filter:none}
-  .plzr-stage{width:100%;max-width:260px}
-  .plzr-label{font-size:16px;line-height:1.25;margin:10px 0;opacity:.95}
-  .plzr-label.bold{font-weight:700}
-  .plzr-sub{font-size:13px;opacity:.9;margin-top:6px}
-  .plzr-line{height:68px;margin:0 auto;border-left:2px solid rgba(255,255,255,.5);width:0}
-  .highlight{background:#2b2b2b;border-radius:6px;padding:10px 8px}
+  .plzr-block {
+    background:#0b0b0b;
+    color:#f3f3f3;
+    padding:32px 16px;
+    font-family:Inter,Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  }
+
+  .plzr-grid {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:28px;
+    max-width:1200px;
+    margin:0 auto;
+  }
+
+  .plzr-col {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+
+  .plzr-logo {
+    height:90px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:12px;
+  }
+
+  .plzr-logo img {
+    width:140px;     /* YOUR CHOSEN SIZE */
+    height:auto;
+    object-fit:contain;
+  }
+
+  .plzr-stage {
+    width:100%;
+    max-width:260px;
+  }
+
+  .plzr-label {
+    font-size:16px;
+    line-height:1.25;
+    margin:10px 0;
+    opacity:.95;
+  }
+
+  .plzr-label.bold { font-weight:700; }
+
+  .plzr-sub {
+    font-size:13px;
+    opacity:.9;
+    margin-top:6px;
+  }
+
+  .plzr-line {
+    height:68px;
+    margin:0 auto;
+    border-left:2px solid rgba(255,255,255,.5);
+    width:0;
+  }
+
+  .highlight {
+    background:#2b2b2b;
+    border-radius:6px;
+    padding:10px 8px;
+  }
+
   /* red strike lines */
-  .strike{position:relative}
-  .strike:after{content:"";position:absolute;left:50%;top:50%;width:120%;height:3px;background:#ff3b3b;transform:translate(-50%,-50%) rotate(-12deg);border-radius:2px}
-  /* broken column makes strikes a little bolder */
-  .plzr-col.broken .strike:after{height:4px}
+  .strike {
+    position:relative;
+  }
+  .strike:after {
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:120%;
+    height:3px;
+    background:#ff3b3b;
+    transform:translate(-50%,-50%) rotate(-12deg);
+    border-radius:2px;
+  }
+  .plzr-col.broken .strike:after { height:4px; }
 
   /* Responsive */
   @media (max-width: 980px){
-    .plzr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .plzr-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
   }
   @media (max-width: 560px){
-    .plzr-grid{grid-template-columns:1fr}
-    .plzr-logo{height:80px}
-    .plzr-stage{max-width:340px}
-    .plzr-line{height:56px}
+    .plzr-grid { grid-template-columns:1fr; }
+    .plzr-logo { height:80px; }
+    .plzr-stage { max-width:340px; }
+    .plzr-line { height:56px; }
   }
 </style>
 
 <script>
 /*
   ROTATING LOGOS
-  --------------
-  Put your PNGs in:
-    streamers/...png
-    movies/...png
-    music/...png
-    experience/...png
-
-  Then list the filenames below. Add/remove freely.
-  The script preloads and cycles each column independently.
 */
 const PLZR_CONFIG = {
-  intervalMs: 1800,     // change speed if you like
-  pauseOnHover: true,   // pause rotation when mouse over logo
-  // Folders
+  intervalMs: 1800,
+  pauseOnHover: true,
+
+  // FOLDERS at site root (NOT inside /test/)
   folders: {
     streamers: 'streamers',
     movies: 'movies',
     music: 'music',
     experience: 'experience'
   },
-  // Image file names per category (edit these lists)
- images: {
-  streamers: [
-    'bbc.png',
-    'disney.png',
-    'fox.png',
-    'nbc.png',
-    'netflix.png',
-    'paramount.png',
-    'prime.png',
-    'tencent.png',
-    'tubi.png',
-    'youtube.png'
-  ],
 
-  movies: [
-    'amc.png',
-    'loews.webp',
-    'odeon.png',
-    'cineworld.png',
-    'regal.png'
-  ],
+  images: {
+    streamers: [
+      'bbc.png',
+      'disney.png',
+      'fox.png',
+      'nbc.png',
+      'netflix.png',
+      'paramount.png',
+      'prime.png',
+      'tencent.png',
+      'tubi.png',
+      'youtube.png'
+    ],
 
-  music: [
-    'amazon.png',
-    'apple.png',
-    'deezer.jpg',
-    'deezer.png',
-    'heart.png',
-    'spotify.png',
-    'tidal.png',
-    'tunein.png'
-  ],
+    movies: [
+      'amc.png',
+      'loews.webp',
+      'odeon.png',
+      'cineworld.png',
+      'regal.png'
+    ],
 
-  experience: [
-    // add your experience logos here, e.g.:
-    // 'fever.png', 'eventbrite.png', 'live-nation.png'
-  ]
+    music: [
+      'amazon.png',
+      'apple.png',
+      'deezer.jpg',
+      'deezer.png',
+      'heart.png',
+      'spotify.png',
+      'tidal.png',
+      'tunein.png'
+    ],
+
+    experience: [
+      // add logos here
+    ]
+  }
 };
 
-// Preload all images
-(function preload(){
+// PRELOAD
+(function preload() {
   for (const [cat, list] of Object.entries(PLZR_CONFIG.images)) {
-    list.forEach(file=>{
+    list.forEach(file => {
       const img = new Image();
       img.src = `/${PLZR_CONFIG.folders[cat]}/${file}`;
     });
   }
 })();
 
-// Set up each column
-document.querySelectorAll('.plzr-col').forEach(col=>{
+// ROTATION
+document.querySelectorAll('.plzr-col').forEach(col => {
   const cat = col.getAttribute('data-category');
   const imgEl = col.querySelector('.plzr-logo img');
   const files = PLZR_CONFIG.images[cat] || [];
@@ -184,26 +245,26 @@ document.querySelectorAll('.plzr-col').forEach(col=>{
     return;
   }
 
-  function setSrc(i){
-    const file = files[i % files.length];
-    imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${file}`;
+  function setSrc(i) {
+    imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${files[i % files.length]}`;
   }
 
   setSrc(idx);
 
-  let timer = setInterval(()=>{ idx = (idx+1) % files.length; setSrc(idx); }, PLZR_CONFIG.intervalMs);
+  let timer = setInterval(() => {
+    idx = (idx + 1) % files.length;
+    setSrc(idx);
+  }, PLZR_CONFIG.intervalMs);
 
   if (PLZR_CONFIG.pauseOnHover) {
-    col.addEventListener('mouseenter', ()=> clearInterval(timer));
-    col.addEventListener('mouseleave', ()=>{
+    col.addEventListener('mouseenter', () => clearInterval(timer));
+    col.addEventListener('mouseleave', () => {
       clearInterval(timer);
-      timer = setInterval(()=>{ idx = (idx+1) % files.length; setSrc(idx); }, PLZR_CONFIG.intervalMs);
+      timer = setInterval(() => {
+        idx = (idx + 1) % files.length;
+        setSrc(idx);
+      }, PLZR_CONFIG.intervalMs);
     });
   }
 });
 </script>
-
-
-
-
-
