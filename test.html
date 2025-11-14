@@ -123,8 +123,8 @@ const PLZR_CONFIG = {
     experience: 'experience'
   },
   // Image file names per category (edit these lists)
-  images: {
-    streamers: [
+ images: {
+  streamers: [
     'bbc.png',
     'disney.png',
     'fox.png',
@@ -136,25 +136,31 @@ const PLZR_CONFIG = {
     'tubi.png',
     'youtube.png'
   ],
-    ],
-    movies: [
-      'amc.png','loews.webp','odeon.png','cineworld.png','regal.png'
-    ],
-    music: [
-        'amazon.png',
-  'apple.png',
-  'deezer.jpg',
-  'deezer.png',
-  'heart.png',
-  'spotify.png',
-  'tidal.png',
-  'tunein.png'
-    ],
-    experience: [
-      'fever.png','eventbrite.png','livenation.png','netflix.png', 'area15.webp', 'aeg.png', 'ticketmaster.png', 'amg.webp', 'Insomniac.webp'
-    ]
-  }
-};
+
+  movies: [
+    'amc.png',
+    'loews.webp',
+    'odeon.png',
+    'cineworld.png',
+    'regal.png'
+  ],
+
+  music: [
+    'amazon.png',
+    'apple.png',
+    'deezer.jpg',
+    'deezer.png',
+    'heart.png',
+    'spotify.png',
+    'tidal.png',
+    'tunein.png'
+  ],
+
+  experience: [
+    // add your experience logos here, e.g.:
+    // 'fever.png', 'eventbrite.png', 'live-nation.png'
+  ]
+}
 
 // Preload all images
 (function preload(){
@@ -196,6 +202,7 @@ document.querySelectorAll('.plzr-col').forEach(col=>{
   }
 });
 </script>
+
 
 
 
