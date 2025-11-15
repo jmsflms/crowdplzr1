@@ -1,316 +1,514 @@
-<!-- CLOUDPLZR: Problem/Solution comparison block with rotating logos -->
-<section class="plzr-block">
-  <div class="plzr-grid">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cloudplzr</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050505;
+      --fg: #f5f5f5;
+      --muted: #999999;
+      --accent: #ff3131;
+      --card: #161616;
+    }
 
-    <!-- Column: STREAMERS -->
-    <div class="plzr-col" data-category="streamers">
-      <div class="plzr-logo"><img alt="streamer logo" /></div>
-      <div class="plzr-stage">
-        <div class="plzr-label">Creative Production</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label bold">Standardised Format
-          <div class="plzr-sub">H.264 / H.265 / AV1</div>
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--fg);
+    }
+
+    .page-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    /* HEADER / HERO */
+
+    .hero-logo {
+      display: block;
+      height: 48px;
+      margin-bottom: 32px;
+    }
+
+    .hero {
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 3vw + 1.5rem, 3rem);
+      font-weight: 800;
+      margin: 0 0 12px;
+    }
+
+    .hero h2 {
+      font-size: clamp(1.1rem, 2vw + 0.4rem, 1.4rem);
+      font-weight: 500;
+      color: var(--muted);
+      margin: 0 0 24px;
+      max-width: 620px;
+    }
+
+    .hero-meta {
+      font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular,
+        Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    /* MAIN TEXT SECTION */
+
+    .intro {
+      max-width: 720px;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 48px;
+    }
+
+    .intro p {
+      margin: 0 0 16px;
+    }
+
+    /* CHART BLOCK (ROTATING LOGOS) */
+
+    .plzr-block {
+      background: #0b0b0b;
+      border-radius: 16px;
+      border: 1px solid #1f1f1f;
+      padding: 32px 16px;
+      margin-bottom: 40px;
+    }
+
+    .plzr-heading {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin: 0 0 16px 4px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+        Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .plzr-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .plzr-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .plzr-logo {
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .plzr-logo img {
+      width: 140px;
+      height: auto;
+      object-fit: contain;
+      transition: opacity 0.22s ease-in-out;
+    }
+
+    .plzr-stage {
+      width: 100%;
+      max-width: 260px;
+    }
+
+    .plzr-label {
+      font-size: 16px;
+      line-height: 1.25;
+      margin: 10px 0;
+      opacity: 0.95;
+    }
+
+    .plzr-label.bold {
+      font-weight: 700;
+    }
+
+    .plzr-sub {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 6px;
+    }
+
+    .plzr-line {
+      height: 68px;
+      margin: 0 auto;
+      border-left: 2px solid rgba(255, 255, 255, 0.5);
+      width: 0;
+    }
+
+    .highlight {
+      background: #2b2b2b;
+      border-radius: 6px;
+      padding: 10px 8px;
+    }
+
+    /* red strike lines */
+    .strike {
+      position: relative;
+    }
+    .strike:after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 120%;
+      height: 3px;
+      background: #ff3b3b;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      border-radius: 2px;
+    }
+    .plzr-col.broken .strike:after {
+      height: 4px;
+    }
+
+    /* CTA */
+
+    .cta {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 24px;
+    }
+
+    .cta strong {
+      color: var(--fg);
+    }
+
+    /* Responsive */
+
+    @media (max-width: 980px) {
+      .plzr-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-wrap {
+        padding-top: 24px;
+      }
+
+      .hero-logo {
+        height: 40px;
+        margin-bottom: 24px;
+      }
+
+      .plzr-grid {
+        grid-template-columns: 1fr;
+      }
+      .plzr-logo {
+        height: 80px;
+      }
+      .plzr-stage {
+        max-width: 340px;
+      }
+      .plzr-line {
+        height: 56px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <!-- LOGO -->
+    <header>
+      <img src="/logos/cloudplz1.png" alt="Cloudplzr" class="hero-logo" />
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-meta">&gt; cloudplzr_global.format initialized</div>
+      <h1>Run an entire live show from a single file.</h1>
+      <h2>
+        Cloudplzr creates a universal showfile for live productions that can be
+        downloaded and run in any venue in the world.
+      </h2>
+    </section>
+
+    <!-- MAIN TEXT -->
+    <section class="intro">
+      <p>
+        Cloudplzr is a paradigm shift. The assumption is that a live show can
+        only run if the full technical team and the machinery are physically set
+        up for each bespoke space. Cloudplzr breaks that assumption. This is
+        zero-to-one.
+      </p>
+
+      <p>
+        The .plzr format packages an entire live production — lights, video,
+        sound, cues, timing, sequencing — into a standardised file that can be
+        downloaded and run in any venue. It adapts to the capabilities of each
+        space and takes control of the venue’s AV system. It doesn’t sound
+        believable. But we’ve already done it.
+      </p>
+
+      <p>
+        The experience economy, within the broader media and entertainment
+        industry, is large and expanding. Billion-dollar companies are built
+        simply by taking a small percentage of ticket sales. Cloudplzr is not a
+        ticketing layer — it is the infrastructure the industry runs on.
+      </p>
+
+      <p>
+        We go live in March 2026 through paid contracts with some of the world’s
+        largest venue groups. If your first questions are about early MRR, you
+        are not thinking at the appropriate scale. I can lead people to the
+        water, but only some will drink.
+      </p>
+    </section>
+
+    <!-- PROBLEM / FORMAT CHART -->
+    <section class="plzr-block">
+      <h3 class="plzr-heading">Problem: one industry is missing its format</h3>
+      <div class="plzr-grid">
+        <!-- STREAMERS -->
+        <div class="plzr-col" data-category="streamers">
+          <div class="plzr-logo">
+            <img alt="streamer logo" />
+          </div>
+          <div class="plzr-stage">
+            <div class="plzr-label">Creative Production</div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label bold">
+              Standardised Format
+              <div class="plzr-sub">H.264 / H.265 / AV1</div>
+            </div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label">Distribution at Scale</div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label">Revenue at Scale</div>
+          </div>
         </div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label">Distribution at Scale</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label">Revenue at Scale</div>
-      </div>
-    </div>
 
-    <!-- Column: MOVIES -->
-    <div class="plzr-col" data-category="movies">
-      <div class="plzr-logo"><img alt="movie exhibitor logo" /></div>
-      <div class="plzr-stage">
-        <div class="plzr-label">Creative Production</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label bold">Standardised Format
-          <div class="plzr-sub">DCP (MXF + XML)</div>
+        <!-- MOVIES -->
+        <div class="plzr-col" data-category="movies">
+          <div class="plzr-logo">
+            <img alt="movie exhibitor logo" />
+          </div>
+          <div class="plzr-stage">
+            <div class="plzr-label">Creative Production</div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label bold">
+              Standardised Format
+              <div class="plzr-sub">DCP (MXF + XML)</div>
+            </div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label">Distribution at Scale</div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label highlight">Revenue at Scale</div>
+          </div>
         </div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label">Distribution at Scale</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label highlight">Revenue at Scale</div>
-      </div>
-    </div>
 
-    <!-- Column: MUSIC -->
-    <div class="plzr-col" data-category="music">
-      <div class="plzr-logo"><img alt="music platform logo" /></div>
-      <div class="plzr-stage">
-        <div class="plzr-label">Creative Production</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label bold">Standardised Format
-          <div class="plzr-sub">Ogg Vorbis, AAC, MP3, FLAC</div>
+        <!-- MUSIC -->
+        <div class="plzr-col" data-category="music">
+          <div class="plzr-logo">
+            <img alt="music platform logo" />
+          </div>
+          <div class="plzr-stage">
+            <div class="plzr-label">Creative Production</div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label bold">
+              Standardised Format
+              <div class="plzr-sub">Ogg Vorbis, AAC, MP3, FLAC</div>
+            </div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label">Distribution at Scale</div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label">Revenue at Scale</div>
+          </div>
         </div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label">Distribution at Scale</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label">Revenue at Scale</div>
-      </div>
-    </div>
 
-    <!-- Column: EXPERIENCE (broken today) -->
-    <div class="plzr-col broken" data-category="experience">
-      <div class="plzr-logo"><img alt="experience/ticketing logo" /></div>
-      <div class="plzr-stage">
-        <div class="plzr-label">Creative Production</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label bold strike">Standardised Format
-          <div class="plzr-sub">NONE</div>
+        <!-- EXPERIENCE (BROKEN TODAY) -->
+        <div class="plzr-col broken" data-category="experience">
+          <div class="plzr-logo">
+            <img alt="experience / ticketing logo" />
+          </div>
+          <div class="plzr-stage">
+            <div class="plzr-label">Creative Production</div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label bold strike">
+              Standardised Format
+              <div class="plzr-sub">NONE</div>
+            </div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label strike">Distribution at Scale</div>
+            <div class="plzr-line"></div>
+            <div class="plzr-label strike">Revenue at Scale</div>
+          </div>
         </div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label strike">Distribution at Scale</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label strike">Revenue at Scale</div>
       </div>
-    </div>
+    </section>
 
+    <!-- CTA -->
+    <section class="cta">
+      <p>
+        <strong>Operators, producers, and investors:</strong>
+        <a href="mailto:hello@cloudplzr.com">hello@cloudplzr.com</a>
+      </p>
+    </section>
   </div>
-</section>
 
-<style>
-  .plzr-block {
-    background:#0b0b0b;
-    color:#f3f3f3;
-    padding:32px 16px;
-    font-family:Inter,Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  }
+  <script>
+    /*
+      ROTATING LOGOS WITH DIFFERENT TIMINGS (FAIRGROUND FEEL)
+    */
+    const PLZR_CONFIG = {
+      // default interval if no per-category value (ms)
+      intervalMs: 900,
 
-  .plzr-grid {
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:28px;
-    max-width:1200px;
-    margin:0 auto;
-  }
+      // per-category base intervals (ms)
+      intervals: {
+        streamers: 420,
+        movies: 700,
+        music: 520,
+        experience: 610
+      },
 
-  .plzr-col {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-  }
+      // random jitter (ms) to avoid mechanical timing
+      jitterRange: 220,
 
-  .plzr-logo {
-    height:90px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:12px;
-  }
+      pauseOnHover: true,
 
-  .plzr-logo img {
-    width:140px;     /* YOUR CHOSEN SIZE */
-    height:auto;
-    object-fit:contain;
-  }
+      folders: {
+        streamers: "streamers",
+        movies: "movies",
+        music: "music",
+        experience: "experience"
+      },
 
-  .plzr-stage {
-    width:100%;
-    max-width:260px;
-  }
+      images: {
+        experience: [
+          "aeg.png",
+          "amg.png",
+          "eventbrite.png",
+          "fever.png",
+          "hardrock.png",
+          "insomniac.png",
+          "livenation.png",
+          "mgm.png",
+          "netflix.png",
+          "ticketmaster.png",
+          "westfield.png"
+        ],
 
-  .plzr-label {
-    font-size:16px;
-    line-height:1.25;
-    margin:10px 0;
-    opacity:.95;
-  }
+        movies: [
+          "amc.png",
+          "cineworld.png",
+          "loews.png",
+          "odeon.png",
+          "regal.png",
+          "vue.png"
+        ],
 
-  .plzr-label.bold { font-weight:700; }
+        music: [
+          "amazon.png",
+          "apple.png",
+          "deezer.png",
+          "iheart.png",
+          "spotify.png",
+          "tidal.png",
+          "tunein.png"
+        ],
 
-  .plzr-sub {
-    font-size:13px;
-    opacity:.9;
-    margin-top:6px;
-  }
+        streamers: [
+          "bbc.png",
+          "disney.png",
+          "netflix.png",
+          "paramount.png",
+          "prime.png",
+          "tencent.png",
+          "tubi.png",
+          "youtube.png"
+        ]
+      }
+    };
 
-  .plzr-line {
-    height:68px;
-    margin:0 auto;
-    border-left:2px solid rgba(255,255,255,.5);
-    width:0;
-  }
+    function getInterval(cat) {
+      const base = PLZR_CONFIG.intervals[cat] ?? PLZR_CONFIG.intervalMs;
+      const jitter = (Math.random() - 0.5) * PLZR_CONFIG.jitterRange;
+      return Math.max(150, base + jitter);
+    }
 
-  .highlight {
-    background:#2b2b2b;
-    border-radius:6px;
-    padding:10px 8px;
-  }
+    // preload
+    (function preload() {
+      for (const [cat, list] of Object.entries(PLZR_CONFIG.images)) {
+        list.forEach((file) => {
+          const img = new Image();
+          img.src = `/${PLZR_CONFIG.folders[cat]}/${file}`;
+        });
+      }
+    })();
 
-  /* red strike lines */
-  .strike {
-    position:relative;
-  }
-  .strike:after {
-    content:"";
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:120%;
-    height:3px;
-    background:#ff3b3b;
-    transform:translate(-50%,-50%) rotate(-12deg);
-    border-radius:2px;
-  }
-  .plzr-col.broken .strike:after { height:4px; }
+    // rotation
+    document.querySelectorAll(".plzr-col").forEach((col) => {
+      const cat = col.getAttribute("data-category");
+      const imgEl = col.querySelector(".plzr-logo img");
+      const files = PLZR_CONFIG.images[cat] || [];
+      let idx = 0;
+      let timer = null;
 
-  /* Responsive */
-  @media (max-width: 980px){
-    .plzr-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  }
-  @media (max-width: 560px){
-    .plzr-grid { grid-template-columns:1fr; }
-    .plzr-logo { height:80px; }
-    .plzr-stage { max-width:340px; }
-    .plzr-line { height:56px; }
-  }
-</style>
+      if (!files.length) {
+        imgEl.alt = "No images configured";
+        return;
+      }
 
-<script>
-/*
-  ROTATING LOGOS WITH FLICKER
-*/
-const PLZR_CONFIG = {
-  // default interval if no per-category value (ms)
-  intervalMs: 900,
+      function setSrc(i) {
+        imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${files[i % files.length]}`;
+      }
 
-  // per-category base intervals (ms) – tweak to taste
-  intervals: {
-    streamers: 420,    // faster, more “blinky”
-    movies:   700,
-    music:    520,
-    experience: 610
-  },
+      function scheduleNext() {
+        const delay = getInterval(cat);
+        timer = setTimeout(() => {
+          idx = (idx + 1) % files.length;
+          imgEl.style.opacity = "0";
+          setTimeout(() => {
+            setSrc(idx);
+            imgEl.style.opacity = "1";
+          }, 110);
+          scheduleNext();
+        }, delay);
+      }
 
-  // random jitter added/subtracted to each change (ms)
-  jitterRange: 220,
-
-  pauseOnHover: true,
-
-  // FOLDERS at site root
-  folders: {
-    streamers: 'streamers',
-    movies: 'movies',
-    music: 'music',
-    experience: 'experience'
-  },
-
-  // YOUR IMAGES – keep this as you have it
-  images: {
-    experience: [
-      'insomniac.png',
-      'aeg.png',
-      'amg.png',
-      'eventbrite.png',
-      'fever.png',
-      'hardrock.png',
-      'livenation.png',
-      'mgm.png',
-      'netflix.png',
-      'ticketmaster.png',
-      'westfield.png'
-    ],
-
-    movies: [
-      'amc.png',
-      'cineworld.png',
-      'loews.png',
-      'odeon.png',
-      'regal.png',
-      'vue.png'
-    ],
-
-    music: [
-      'amazon.png',
-      'apple.png',
-      'deezer.png',
-      'iheart.png',
-      'spotify.png',
-      'tidal.png',
-      'tunein.png'
-    ],
-
-    streamers: [
-      'bbc.png',
-      'disney.png',
-      'netflix.png',
-      'paramount.png',
-      'prime.png',
-      'tencent.png',
-      'tubi.png',
-      'youtube.png'
-    ]
-  }
-};
-
-// helper: get interval for a category
-function getInterval(cat) {
-  const base = PLZR_CONFIG.intervals[cat] ?? PLZR_CONFIG.intervalMs;
-  const jitter = (Math.random() - 0.5) * PLZR_CONFIG.jitterRange;
-  // never go below 150ms, otherwise it’s too aggressive
-  return Math.max(150, base + jitter);
-}
-
-// PRELOAD
-(function preload() {
-  for (const [cat, list] of Object.entries(PLZR_CONFIG.images)) {
-    list.forEach(file => {
-      const img = new Image();
-      img.src = `/${PLZR_CONFIG.folders[cat]}/${file}`;
-    });
-  }
-})();
-
-// ROTATION
-document.querySelectorAll('.plzr-col').forEach(col => {
-  const cat = col.getAttribute('data-category');
-  const imgEl = col.querySelector('.plzr-logo img');
-  const files = PLZR_CONFIG.images[cat] || [];
-  let idx = 0;
-  let timer = null;
-
-  if (!files.length) {
-    imgEl.alt = 'No images configured';
-    return;
-  }
-
-  function setSrc(i) {
-    imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${files[i % files.length]}`;
-  }
-
-  function scheduleNext() {
-    const delay = getInterval(cat);
-    timer = setTimeout(() => {
-      idx = (idx + 1) % files.length;
-      // quick flicker / fade
-      imgEl.style.opacity = '0';
-      setTimeout(() => {
-        setSrc(idx);
-        imgEl.style.opacity = '1';
-      }, 110);  // fade-out duration should be <= CSS transition
+      // initial
+      setSrc(idx);
+      imgEl.style.opacity = "1";
       scheduleNext();
-    }, delay);
-  }
 
-  // initial image
-  setSrc(idx);
-  imgEl.style.opacity = '1';
-  scheduleNext();
-
-  if (PLZR_CONFIG.pauseOnHover) {
-    col.addEventListener('mouseenter', () => {
-      if (timer) {
-        clearTimeout(timer);
-        timer = null;
+      if (PLZR_CONFIG.pauseOnHover) {
+        col.addEventListener("mouseenter", () => {
+          if (timer) {
+            clearTimeout(timer);
+            timer = null;
+          }
+        });
+        col.addEventListener("mouseleave", () => {
+          if (!timer) {
+            scheduleNext();
+          }
+        });
       }
     });
-    col.addEventListener('mouseleave', () => {
-      if (!timer) {
-        scheduleNext();
-      }
-    });
-  }
-});
-</script>
+  </script>
+</body>
+</html>
