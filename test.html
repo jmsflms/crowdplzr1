@@ -228,6 +228,37 @@
       }
     }
   </style>
+/* Individual cards */
+.plzr-card {
+  background: #111;
+  border-radius: 18px;
+  border: 1px solid #1e1e1e;
+  padding: 24px 18px 28px;
+}
+
+/* Category header above each vertical */
+.plzr-category {
+  text-align: center;
+  color: #888;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+/* Adjust grid spacing for multiple cards */
+.plzr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px;
+}
+
+@media (max-width: 720px) {
+  .plzr-grid {
+    grid-template-columns: 1fr;
+  }
+}
+  
 </head>
 <body>
   <div class="page-wrap">
@@ -279,85 +310,85 @@
     </section>
 
     <!-- PROBLEM / FORMAT CHART -->
-    <section class="plzr-block">
-      <h3 class="plzr-heading">Problem: one industry is missing its format</h3>
-      <div class="plzr-grid">
-        <!-- STREAMERS -->
-        <div class="plzr-col" data-category="streamers">
-          <div class="plzr-logo">
-            <img alt="streamer logo" />
-          </div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">
-              Standardised Format
-              <div class="plzr-sub">H.264 / H.265 / AV1</div>
-            </div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Revenue at Scale</div>
-          </div>
-        </div>
+    <div class="plzr-grid">
 
-        <!-- MOVIES -->
-        <div class="plzr-col" data-category="movies">
-          <div class="plzr-logo">
-            <img alt="movie exhibitor logo" />
-          </div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">
-              Standardised Format
-              <div class="plzr-sub">DCP (MXF + XML)</div>
-            </div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label highlight">Revenue at Scale</div>
-          </div>
+  <!-- STREAMERS -->
+  <div class="plzr-card">
+    <div class="plzr-category">VIDEO STREAMING</div>
+    <div class="plzr-col" data-category="streamers">
+      <div class="plzr-logo"><img alt="streamer logo" /></div>
+      <div class="plzr-stage">
+        <div class="plzr-label">Creative Production</div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label bold">Standardised Format
+          <div class="plzr-sub">H.264 / H.265 / AV1</div>
         </div>
-
-        <!-- MUSIC -->
-        <div class="plzr-col" data-category="music">
-          <div class="plzr-logo">
-            <img alt="music platform logo" />
-          </div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">
-              Standardised Format
-              <div class="plzr-sub">Ogg Vorbis, AAC, MP3, FLAC</div>
-            </div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Revenue at Scale</div>
-          </div>
-        </div>
-
-        <!-- EXPERIENCE (BROKEN TODAY) -->
-        <div class="plzr-col broken" data-category="experience">
-          <div class="plzr-logo">
-            <img alt="experience / ticketing logo" />
-          </div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold strike">
-              Standardised Format
-              <div class="plzr-sub">NONE</div>
-            </div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label strike">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label strike">Revenue at Scale</div>
-          </div>
-        </div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label">Distribution at Scale</div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label">Revenue at Scale</div>
       </div>
+    </div>
+  </div>
+
+  <!-- MOVIES -->
+  <div class="plzr-card">
+    <div class="plzr-category">MOVIE DISTRIBUTION</div>
+    <div class="plzr-col" data-category="movies">
+      <div class="plzr-logo"><img alt="movie exhibitor logo" /></div>
+      <div class="plzr-stage">
+        <div class="plzr-label">Creative Production</div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label bold">Standardised Format
+          <div class="plzr-sub">DCP (MXF + XML)</div>
+        </div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label">Distribution at Scale</div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label highlight">Revenue at Scale</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MUSIC -->
+  <div class="plzr-card">
+    <div class="plzr-category">AUDIO DISTRIBUTION</div>
+    <div class="plzr-col" data-category="music">
+      <div class="plzr-logo"><img alt="music platform logo" /></div>
+      <div class="plzr-stage">
+        <div class="plzr-label">Creative Production</div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label bold">Standardised Format
+          <div class="plzr-sub">Ogg Vorbis, AAC, MP3, FLAC</div>
+        </div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label">Distribution at Scale</div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label">Revenue at Scale</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE / LIVE SHOWS -->
+  <div class="plzr-card">
+    <div class="plzr-category">LIVE ENTERTAINMENT</div>
+    <div class="plzr-col broken" data-category="experience">
+      <div class="plzr-logo"><img alt="experience/ticketing logo" /></div>
+      <div class="plzr-stage">
+        <div class="plzr-label">Creative Production</div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label bold strike">Standardised Format
+          <div class="plzr-sub">NONE</div>
+        </div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label strike">Distribution at Scale</div>
+        <div class="plzr-line"></div>
+        <div class="plzr-label strike">Revenue at Scale</div>
+      </div>
+    </div>
+  </div>
+
+</div>
     </section>
 
     <!-- CTA -->
@@ -512,4 +543,5 @@
   </script>
 </body>
 </html>
+
 
