@@ -42,44 +42,41 @@
   }
 
   .hero-logo {
-    font-size: 42px;
+    font-size: 48px;
     font-weight: 800;
     margin-bottom: 10px;
   }
 
   .hero-title {
-    font-size: 30px;
+    font-size: 34px;
     font-weight: 700;
-    margin: 8px 0 6px;
+    margin: 8px 0 10px;
   }
 
   .hero-subline {
-    font-size: 15px;
+    font-size: 16px;
     color: var(--muted);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    max-width: 760px;
   }
 
   .hero-console {
     font-family: "JetBrains Mono", monospace;
     font-size: 13px;
     color: var(--muted);
+    margin-top: 12px;
     margin-bottom: 24px;
   }
 
-  /* EXPLANATION TEXT */
+  /* GRID & CARDS (desktop / tablet default) */
 
-  .intro {
-    max-width: 760px;
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 32px;
+  .plzr-section {
+    margin-top: 32px;
   }
 
-  .intro p {
-    margin: 0 0 12px;
+  .plzr-carousel {
+    position: relative;
   }
-
-  /* GRID & CARDS */
 
   .plzr-grid {
     display: grid;
@@ -94,17 +91,11 @@
     }
   }
 
-  @media (max-width: 640px) {
-    .plzr-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
   .plzr-card {
     background: var(--card);
     border-radius: 18px;
     border: 1px solid var(--border);
-    padding: 22px 16px 28px;
+    padding: 24px 18px 30px;
   }
 
   .plzr-category {
@@ -113,7 +104,7 @@
     font-family: "JetBrains Mono", monospace;
     color: var(--accent-blue);
     letter-spacing: 1px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .plzr-col {
@@ -124,26 +115,26 @@
   }
 
   .plzr-logo {
-    height: 70px;
+    height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .plzr-logo img {
-    max-height: 62px;
-    max-width: 120px;
+    max-height: 90px;
+    max-width: 180px;
     object-fit: contain;
   }
 
   .plzr-stage {
     width: 100%;
-    max-width: 230px;
+    max-width: 240px;
   }
 
   .plzr-label {
-    font-size: 15px;
+    font-size: 16px;
     margin: 10px 0;
   }
 
@@ -153,7 +144,7 @@
 
   .plzr-sub {
     margin-top: 6px;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted);
   }
 
@@ -165,7 +156,7 @@
     width: 0;
   }
 
-  /* STRIKES FOR BROKEN COLUMN */
+  /* STRIKES FOR BROKEN COLUMN - cleaner, shorter, thicker */
 
   .strike {
     position: relative;
@@ -175,12 +166,36 @@
     content: "";
     position: absolute;
     left: 50%;
-    top: 50%;
-    width: 130%;
-    height: 3px;
+    top: 52%;
+    width: 80%;
+    height: 5px;
     background: var(--strike-red);
-    transform: translate(-50%, -50%) rotate(-10deg);
+    transform: translate(-50%, -50%) rotate(-8deg);
+    border-radius: 6px;
   }
+
+  /* CAROUSEL ARROWS (mobile only default hidden here) */
+
+  .plzr-arrow {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .plzr-arrow-left { left: 4px; }
+  .plzr-arrow-right { right: 4px; }
 
   /* FOOTER */
 
@@ -192,6 +207,28 @@
     border-top: 1px solid #101010;
     margin-top: 24px;
   }
+
+  /* MOBILE CAROUSEL BEHAVIOUR */
+
+  @media (max-width: 640px) {
+    .plzr-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 16px;
+      padding-bottom: 8px;
+    }
+
+    .plzr-card {
+      flex: 0 0 80%;
+      scroll-snap-align: start;
+    }
+
+    .plzr-arrow {
+      display: block;
+    }
+  }
 </style>
 </head>
 <body>
@@ -202,101 +239,130 @@
     <div class="hero-logo">Cloudplzr</div>
     <div class="hero-title">Run an entire live show from a single file.</div>
     <div class="hero-subline">
-    <p>
-      Status Quo: Live entertainment productions rely on teams of technicians and administrators to organise, design, configure and then operate stage shows.
-    </p>
-    <p>
+      Status Quo: Live entertainment productions rely on teams of technicians and administrators
+      to organise, design, configure and then operate stage shows.
+    </div>
+    <div class="hero-subline">
       The .plzr format packages an entire live production — lights, video, sound,
       cues, timing, sequencing — into a standardised file that can be downloaded
       and run in any venue. It adapts to the capabilities of each space and takes
       control of the venue’s AV system.
-    </p>
+    </div>
+    <div class="hero-console">&gt; cloudplzr_global.format initialized</div>
   </section>
 
-  <!-- FOUR INDUSTRY BOXES -->
-  <section>
-    <div class="plzr-grid">
+  <!-- FOUR INDUSTRY BOXES (carousel on mobile) -->
+  <section class="plzr-section">
+    <div class="plzr-carousel">
+      <button class="plzr-arrow plzr-arrow-left" aria-label="Previous">‹</button>
 
-      <!-- VIDEO STREAMING -->
-      <div class="plzr-card">
-        <div class="plzr-category">VIDEO STREAMING</div>
-        <div class="plzr-col" data-category="streamers">
-          <div class="plzr-logo"><img alt="streamer logo"></div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">
-              Standardised Format
-              <div class="plzr-sub">H.264 / H.265 / AV1</div>
+      <div class="plzr-grid">
+
+        <!-- VIDEO STREAMING -->
+        <div class="plzr-card">
+          <div class="plzr-category">VIDEO STREAMING</div>
+          <div class="plzr-col" data-category="streamers">
+            <div class="plzr-logo"><img alt="streamer logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">H.264 / H.265 / AV1</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
             </div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Revenue at Scale</div>
           </div>
         </div>
-      </div>
 
-      <!-- MOVIE DISTRIBUTION -->
-      <div class="plzr-card">
-        <div class="plzr-category">MOVIE DISTRIBUTION</div>
-        <div class="plzr-col" data-category="movies">
-          <div class="plzr-logo"><img alt="movie logo"></div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">
-              Standardised Format
-              <div class="plzr-sub">DCP (MXF + XML)</div>
+        <!-- MOVIE DISTRIBUTION -->
+        <div class="plzr-card">
+          <div class="plzr-category">MOVIE DISTRIBUTION</div>
+          <div class="plzr-col" data-category="movies">
+            <div class="plzr-logo"><img alt="movie logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">DCP (MXF + XML)</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
             </div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Revenue at Scale</div>
           </div>
         </div>
-      </div>
 
-      <!-- AUDIO DISTRIBUTION -->
-      <div class="plzr-card">
-        <div class="plzr-category">AUDIO DISTRIBUTION</div>
-        <div class="plzr-col" data-category="music">
-          <div class="plzr-logo"><img alt="music logo"></div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">
-              Standardised Format
-              <div class="plzr-sub">AAC / MP3 / FLAC</div>
+        <!-- AUDIO DISTRIBUTION -->
+        <div class="plzr-card">
+          <div class="plzr-category">AUDIO DISTRIBUTION</div>
+          <div class="plzr-col" data-category="music">
+            <div class="plzr-logo"><img alt="music logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">AAC / MP3 / FLAC</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
             </div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Revenue at Scale</div>
           </div>
         </div>
-      </div>
 
-      <!-- LIVE ENTERTAINMENT -->
-      <div class="plzr-card">
-        <div class="plzr-category">LIVE ENTERTAINMENT</div>
-        <div class="plzr-col broken" data-category="experience">
-          <div class="plzr-logo"><img alt="experience logo"></div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold strike">
-              Standardised Format
-              <div class="plzr-sub">NONE</div>
+        <!-- LIVE ENTERTAINMENT (TODAY) -->
+        <div class="plzr-card">
+          <div class="plzr-category">LIVE ENTERTAINMENT (TODAY)</div>
+          <div class="plzr-col broken" data-category="experience">
+            <div class="plzr-logo"><img alt="experience logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold strike">
+                Standardised Format
+                <div class="plzr-sub">NONE</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label strike">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label strike">Revenue at Scale</div>
             </div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label strike">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label strike">Revenue at Scale</div>
           </div>
         </div>
+
       </div>
 
+      <button class="plzr-arrow plzr-arrow-right" aria-label="Next">›</button>
+    </div>
+  </section>
+
+  <!-- LIVE ENTERTAINMENT WITH CLOUDPLZR -->
+  <section class="plzr-section">
+    <div class="plzr-card">
+      <div class="plzr-category">LIVE ENTERTAINMENT WITH CLOUDPLZR</div>
+      <div class="plzr-col" data-category="experience">
+        <div class="plzr-logo"><img alt="experience logo"></div>
+        <div class="plzr-stage">
+          <div class="plzr-label">Creative Production</div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label bold">
+            Standardised Format
+            <div class="plzr-sub">.plzr</div>
+          </div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label">Distribution at Scale</div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label">Revenue at Scale</div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -325,6 +391,7 @@ const PLZR_CONFIG = {
   }
 };
 
+// preload
 (function preload(){
   for (const [cat, list] of Object.entries(PLZR_CONFIG.images)) {
     list.forEach(file=>{
@@ -334,16 +401,14 @@ const PLZR_CONFIG = {
   }
 })();
 
+// rotating logos
 document.querySelectorAll('.plzr-col').forEach(col=>{
   const cat = col.getAttribute('data-category');
   const imgEl = col.querySelector('.plzr-logo img');
   const files = PLZR_CONFIG.images[cat] || [];
   let idx = 0;
 
-  if (!files.length) {
-    imgEl.alt = 'No images';
-    return;
-  }
+  if (!files.length || !imgEl) return;
 
   function setSrc(i){
     imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${files[i % files.length]}`;
@@ -355,9 +420,24 @@ document.querySelectorAll('.plzr-col').forEach(col=>{
     setSrc(idx);
   }, PLZR_CONFIG.intervalMs);
 });
+
+// mobile carousel arrows
+const grid = document.querySelector('.plzr-grid');
+const leftArrow = document.querySelector('.plzr-arrow-left');
+const rightArrow = document.querySelector('.plzr-arrow-right');
+
+function scrollByCard(dir) {
+  if (!grid) return;
+  const card = grid.querySelector('.plzr-card');
+  if (!card) return;
+  const amount = card.offsetWidth + 16; // card width + gap
+  grid.scrollBy({ left: dir * amount, behavior: 'smooth' });
+}
+
+if (leftArrow && rightArrow && grid) {
+  leftArrow.addEventListener('click', () => scrollByCard(-1));
+  rightArrow.addEventListener('click', () => scrollByCard(1));
+}
 </script>
 </body>
 </html>
-
-
-
