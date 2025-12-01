@@ -69,15 +69,7 @@
     font-weight: 600;
   }
 
-  .hero-console {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 14px;
-    margin-bottom: 26px;
-  }
-
-  /* GRID & CARDS (desktop / tablet default) */
+  /* GRID & CARDS */
 
   .plzr-section {
     margin-top: 34px;
@@ -133,10 +125,10 @@
   }
 
   .plzr-logo img {
-    max-height: 105px;      /* bigger logos */
+    max-height: 105px;
     max-width: 210px;
     object-fit: contain;
-    border-radius: 22px;     /* rounded lozenge look */
+    border-radius: 22px;
   }
 
   .plzr-stage {
@@ -167,7 +159,7 @@
     width: 0;
   }
 
-  /* STRIKES FOR BROKEN COLUMN */
+  /* STRIKES */
 
   .strike {
     position: relative;
@@ -185,7 +177,7 @@
     border-radius: 6px;
   }
 
-  /* CAROUSEL ARROWS (main grid) */
+  /* MAIN GRID ARROWS (mobile only) */
 
   .plzr-arrow {
     display: none;
@@ -216,4 +208,170 @@
   }
 
   .productions-title {
-    text-a
+    text-align: center;
+    font-family: "JetBrains Mono", monospace;
+    color: var(--accent-blue);
+    font-size: 15px;
+    letter-spacing: 1.2px;
+    margin-bottom: 18px;
+  }
+
+  .productions-carousel {
+    position: relative;
+  }
+
+  .productions-grid {
+    display: flex;
+    gap: 22px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+
+  .production-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 25%;   /* four visible on desktop */
+    scroll-snap-align: start;
+  }
+
+  .production-img {
+    width: 100%;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    box-shadow: 0 16px 32px rgba(0,0,0,0.8);
+  }
+
+  .production-link {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .production-link:hover {
+    color: var(--text);
+  }
+
+  .prod-arrow {
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+    z-index: 20;
+  }
+
+  .prod-arrow-left { left: 4px; }
+  .prod-arrow-right { right: 4px; }
+
+  /* FOOTER */
+
+  .footer {
+    text-align: center;
+    padding: 32px 0 8px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid #101010;
+    margin-top: 24px;
+  }
+
+  /* MOBILE */
+
+  @media (max-width: 640px) {
+    .plzr-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 16px;
+      padding-bottom: 8px;
+    }
+
+    .plzr-card {
+      flex: 0 0 80%;
+      scroll-snap-align: start;
+    }
+
+    .plzr-arrow {
+      display: block;
+    }
+
+    .production-card {
+      flex: 0 0 80%;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOP TITLE -->
+  <section class="hero">
+    <div class="hero-logo">Cloudplzr / The Game Lab</div>
+  </section>
+
+  <!-- PRODUCTIONS (TOP) -->
+  <section class="productions-section">
+    <h2 class="productions-title">PRODUCTIONS</h2>
+
+    <div class="productions-carousel">
+      <button class="prod-arrow prod-arrow-left" aria-label="Previous">‹</button>
+
+      <div class="productions-grid">
+
+        <!-- Bad Decisions -->
+        <div class="production-card">
+          <img src="/productions/baddecisions.png" alt="Bad Decisions" class="production-img">
+          <a class="production-link" href="https://www.baddecisions.club" target="_blank">
+            baddecisions.club
+          </a>
+        </div>
+
+        <!-- Belt It Out -->
+        <div class="production-card">
+          <img src="/productions/beltit.png" alt="Belt It Out" class="production-img">
+          <a class="production-link" href="https://www.belitout.com" target="_blank">
+            belitout.com
+          </a>
+        </div>
+
+        <!-- Revenge of the 90s -->
+        <div class="production-card">
+          <img src="/productions/revenge90s.png" alt="Revenge of the 90s" class="production-img">
+          <a class="production-link" href="https://www.revengeofthe90s.com" target="_blank">
+            revengeofthe90s.com
+          </a>
+        </div>
+
+        <!-- Rebel Bingo -->
+        <div class="production-card">
+          <img src="/productions/rebelbingo.png" alt="Rebel Bingo" class="production-img">
+          <a class="production-link" href="https://www.rebelbingo.com" target="_blank">
+            rebelbingo.com
+          </a>
+        </div>
+
+        <!-- Snoozefest (no link) -->
+        <div class="production-card">
+          <img src="/productions/snoozefest.png" alt="Snoozefest" class="production-img">
+          <div class="production-link">Snoozefest</div>
+        </div>
+
+        <!-- Hoedown (no link) -->
+        <div class="production-card">
+          <img
