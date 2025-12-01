@@ -227,14 +227,19 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 6px;
+    padding: 10px 0 20px;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .productions-grid::-webkit-scrollbar {
+    display: none; /* Chrome / Safari */
   }
 
   .production-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 0 0 25%;   /* four visible on desktop */
+    flex: 0 0 25%;   /* desktop: up to 4 visible */
     scroll-snap-align: start;
   }
 
@@ -312,7 +317,7 @@
     }
 
     .production-card {
-      flex: 0 0 80%;
+      flex: 0 0 75%;  /* show edge of next card on mobile */
     }
   }
 </style>
@@ -374,4 +379,274 @@
 
         <!-- Hoedown (no link) -->
         <div class="production-card">
-          <img
+          <img src="/productions/hoedown.png" alt="Hoedown" class="production-img">
+          <div class="production-link">Hoedown</div>
+        </div>
+
+      </div>
+
+      <button class="prod-arrow prod-arrow-right" aria-label="Next">›</button>
+    </div>
+  </section>
+
+  <!-- HERO COPY (REST OF SITE) -->
+  <section class="hero">
+    <div class="hero-title">Run an entire live show from a single file.</div>
+    <div class="hero-subline">
+      Status Quo: Live entertainment productions rely on multi-skilled teams to book, organise,
+      design, configure & operate them. <b>It is complex, time consuming, and risky.</b>
+    </div>
+    <div class="hero-subline">
+      The .plzr format packages entire live productions — lights, video, sound,
+      cues, timing, sequencing — into a single computer file that can be downloaded
+      and run in any venue.
+    </div>
+  </section>
+
+  <!-- FOUR INDUSTRY BOXES -->
+  <section class="plzr-section">
+    <div class="plzr-carousel">
+      <button class="plzr-arrow plzr-arrow-left" aria-label="Previous">‹</button>
+
+      <div class="plzr-grid">
+
+        <!-- VIDEO STREAMING -->
+        <div class="plzr-card">
+          <div class="plzr-category">VIDEO STREAMING</div>
+          <div class="plzr-col" data-category="streamers">
+            <div class="plzr-logo"><img alt="streamer logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">H.264 / H.265 / AV1</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MOVIE DISTRIBUTION -->
+        <div class="plzr-card">
+          <div class="plzr-category">MOVIE DISTRIBUTION</div>
+          <div class="plzr-col" data-category="movies">
+            <div class="plzr-logo"><img alt="movie logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">DCP (MXF + XML)</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AUDIO DISTRIBUTION -->
+        <div class="plzr-card">
+          <div class="plzr-category">AUDIO DISTRIBUTION</div>
+          <div class="plzr-col" data-category="music">
+            <div class="plzr-logo"><img alt="music logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">AAC / MP3 / FLAC</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE ENTERTAINMENT (TODAY) -->
+        <div class="plzr-card">
+          <div class="plzr-category">LIVE ENTERTAINMENT (TODAY)</div>
+          <div class="plzr-col broken" data-category="experience">
+            <div class="plzr-logo"><img alt="experience logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold strike">
+                Standardised Format
+                <div class="plzr-sub">NONE</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label strike">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label strike">Revenue at Scale</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="plzr-arrow plzr-arrow-right" aria-label="Next">›</button>
+    </div>
+  </section>
+
+  <!-- LIVE ENTERTAINMENT WITH CLOUDPLZR -->
+  <section class="plzr-section">
+    <div class="plzr-card">
+      <div class="plzr-category">LIVE ENTERTAINMENT WITH CLOUDPLZR</div>
+      <div class="plzr-col" data-category="experience">
+        <div class="plzr-logo"><img alt="experience logo"></div>
+        <div class="plzr-stage">
+          <div class="plzr-label">Creative Production</div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label bold">
+            Standardised Format
+            <div class="plzr-sub">.plzr</div>
+          </div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label">Distribution at Scale</div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label">Revenue at Scale</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT US -->
+  <section>
+    <h2 class="productions-title">About Us</h2>
+    <div class="hero-subline">
+      We are live event producers and have toured events globally. <br><br>
+      Live Nation asked us to bring one of our formats to 100s of their venues.<br>
+      We simply could not deliver the quality of production we needed at that scale<br>
+      ...so we built cloudplzr.<br>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2025 Cloudplzr. All rights reserved.
+  </footer>
+
+</div>
+
+<!-- ROTATING LOGO + CAROUSEL SCRIPT -->
+<script>
+const PLZR_CONFIG = {
+  intervalBase: 1500,
+  intervalJitter: 500,
+  folders: {
+    streamers: 'streamers',
+    movies: 'movies',
+    music: 'music',
+    experience: 'experience'
+  },
+  images: {
+    streamers: ['bbc.png','disney.png','netflix.png','paramount.png','prime.png','tencent.png','tubi.png','youtube.png'],
+    movies: ['amc.png','cineworld.png','loews.png','odeon.png','regal.png','vue.png'],
+    music: ['amazon.png','apple.png','deezer.png','iheart.png','spotify.png','tidal.png','tunein.png'],
+    experience: ['aeg.png','amg.png','eventbrite.png','fever.png','hardrock.png','insomniac.png','livenation.png','mgm.png','netflix.png','ticketmaster.png','westfield.png']
+  }
+};
+
+// preload logo images
+(function preload(){
+  for (const [cat, list] of Object.entries(PLZR_CONFIG.images)) {
+    list.forEach(file=>{
+      const img = new Image();
+      img.src = `/${PLZR_CONFIG.folders[cat]}/${file}`;
+    });
+  }
+})();
+
+// rotating logos with jitter
+document.querySelectorAll('.plzr-col').forEach(col=>{
+  const cat = col.getAttribute('data-category');
+  const imgEl = col.querySelector('.plzr-logo img');
+  const files = PLZR_CONFIG.images[cat] || [];
+  let idx = 0;
+
+  if (!files.length || !imgEl) return;
+
+  function setSrc(i){
+    imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${files[i % files.length]}`;
+  }
+
+  function scheduleNext() {
+    const base = PLZR_CONFIG.intervalBase;
+    const j = PLZR_CONFIG.intervalJitter;
+    const delay = base + (Math.random()*2*j - j);
+    setTimeout(() => {
+      idx = (idx + 1) % files.length;
+      setSrc(idx);
+      scheduleNext();
+    }, Math.max(400, delay));
+  }
+
+  setSrc(idx);
+  scheduleNext();
+});
+
+// main grid (video/audio/etc) carousel arrows - mobile only
+const grid = document.querySelector('.plzr-grid');
+const leftArrow = document.querySelector('.plzr-arrow-left');
+const rightArrow = document.querySelector('.plzr-arrow-right');
+
+function scrollByCard(dir) {
+  if (!grid) return;
+  const card = grid.querySelector('.plzr-card');
+  if (!card) return;
+  const amount = card.offsetWidth + 16;
+  grid.scrollBy({ left: dir * amount, behavior: 'smooth' });
+}
+
+if (leftArrow && rightArrow && grid) {
+  leftArrow.addEventListener('click', () => scrollByCard(-1));
+  rightArrow.addEventListener('click', () => scrollByCard(1));
+}
+
+// productions carousel arrows with wrap-around
+const prodGrid = document.querySelector('.productions-grid');
+const prodLeft = document.querySelector('.prod-arrow-left');
+const prodRight = document.querySelector('.prod-arrow-right');
+
+function prodScrollByCard(dir) {
+  if (!prodGrid) return;
+  const card = prodGrid.querySelector('.production-card');
+  if (!card) return;
+  const amount = card.offsetWidth + 22;
+  prodGrid.scrollBy({ left: dir * amount, behavior: 'smooth' });
+}
+
+function maxScroll() {
+  return prodGrid.scrollWidth - prodGrid.clientWidth;
+}
+
+if (prodLeft && prodRight && prodGrid) {
+  prodRight.addEventListener('click', () => {
+    if (prodGrid.scrollLeft + 5 >= maxScroll()) {
+      // wrap to start
+      prodGrid.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      prodScrollByCard(1);
+    }
+  });
+
+  prodLeft.addEventListener('click', () => {
+    if (prodGrid.scrollLeft <= 5) {
+      // wrap to end
+      prodGrid.scrollTo({ left: maxScroll(), behavior: 'smooth' });
+    } else {
+      prodScrollByCard(-1);
+    }
+  });
+}
+</script>
+</body>
+</html>
