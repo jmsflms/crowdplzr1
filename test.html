@@ -24,6 +24,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: Inter, system-ui, sans-serif;
+    text-align: center;  /* centre default text */
   }
 
   a { color: var(--text); }
@@ -37,7 +38,7 @@
   /* HERO */
 
   .hero {
-    text-align: left;
+    text-align: center;
     padding-top: 42px;
     padding-bottom: 12px;
   }
@@ -54,6 +55,8 @@
     font-weight: 700;
     margin: 8px 0 14px;
     max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-subline {
@@ -62,6 +65,8 @@
     margin-bottom: 6px;
     max-width: 820px;
     line-height: 1.6;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-subline b {
@@ -101,7 +106,6 @@
   }
 
   .plzr-category {
-    text-align: center;
     font-size: 13px;
     font-family: "JetBrains Mono", monospace;
     color: var(--accent-blue);
@@ -208,7 +212,6 @@
   }
 
   .productions-title {
-    text-align: center;
     font-family: "JetBrains Mono", monospace;
     color: var(--accent-blue);
     font-size: 15px;
@@ -239,7 +242,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 0 0 25%;   /* desktop: up to 4 visible */
+    flex: 0 0 25%;     /* target 4 cards in view */
+    flex-shrink: 0;    /* DO NOT shrink -> overflow */
     scroll-snap-align: start;
   }
 
@@ -287,7 +291,6 @@
   /* FOOTER */
 
   .footer {
-    text-align: center;
     padding: 32px 0 8px;
     font-size: 12px;
     color: var(--muted);
@@ -298,6 +301,14 @@
   /* MOBILE */
 
   @media (max-width: 640px) {
+    .hero-logo {
+      font-size: 32px;   /* neater on mobile */
+    }
+
+    .hero-title {
+      font-size: 26px;
+    }
+
     .plzr-grid {
       display: flex;
       overflow-x: auto;
@@ -317,7 +328,8 @@
     }
 
     .production-card {
-      flex: 0 0 75%;  /* show edge of next card on mobile */
+      flex: 0 0 75%;   /* show edge of next card */
+      flex-shrink: 0;
     }
   }
 </style>
@@ -371,13 +383,13 @@
           </a>
         </div>
 
-        <!-- Snoozefest (no link) -->
+        <!-- Snoozefest -->
         <div class="production-card">
           <img src="/productions/snoozefest.png" alt="Snoozefest" class="production-img">
           <div class="production-link">Snoozefest</div>
         </div>
 
-        <!-- Hoedown (no link) -->
+        <!-- Hoedown -->
         <div class="production-card">
           <img src="/productions/hoedown.png" alt="Hoedown" class="production-img">
           <div class="production-link">Hoedown</div>
@@ -593,7 +605,7 @@ document.querySelectorAll('.plzr-col').forEach(col=>{
   scheduleNext();
 });
 
-// main grid (video/audio/etc) carousel arrows - mobile only
+// main grid carousel (video/audio/etc) - mobile only
 const grid = document.querySelector('.plzr-grid');
 const leftArrow = document.querySelector('.plzr-arrow-left');
 const rightArrow = document.querySelector('.plzr-arrow-right');
@@ -631,7 +643,6 @@ function maxScroll() {
 if (prodLeft && prodRight && prodGrid) {
   prodRight.addEventListener('click', () => {
     if (prodGrid.scrollLeft + 5 >= maxScroll()) {
-      // wrap to start
       prodGrid.scrollTo({ left: 0, behavior: 'smooth' });
     } else {
       prodScrollByCard(1);
@@ -640,7 +651,6 @@ if (prodLeft && prodRight && prodGrid) {
 
   prodLeft.addEventListener('click', () => {
     if (prodGrid.scrollLeft <= 5) {
-      // wrap to end
       prodGrid.scrollTo({ left: maxScroll(), behavior: 'smooth' });
     } else {
       prodScrollByCard(-1);
