@@ -326,14 +326,37 @@
     border-radius: 0; /* square edges */
   }
 
-.space-img {
-  flex: 1 1 25%;
-  width: 100%;
-  height: auto;       /* was 260px */
-  display: block;
-  border-radius: 0;   /* square edges */
-  object-fit: contain; /* or remove this line entirely */
+/* DESKTOP: make the images shallow, aligned with the lozenges */
+@media (min-width: 769px) {
+  .space-img {
+    width: 100%;
+    height: 260px;      /* This fixes your desktop height */
+    object-fit: cover;  /* Crops cleanly */
+    display: block;
+    border-radius: 0;
+  }
 }
+
+/* MOBILE: big images you can scroll sideways */
+@media (max-width: 768px) {
+  .spaces-strip-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .spaces-strip {
+    width: max-content;
+  }
+
+  .space-img {
+    width: 90vw;        /* Big on mobile */
+    height: auto;
+    flex: 0 0 auto;
+    display: block;
+    border-radius: 0;
+  }
+}
+
 
   /* FOOTER */
 
@@ -847,4 +870,5 @@ if (prodGrid) {
 </script>
 </body>
 </html>
+
 
