@@ -6,6 +6,8 @@
 <title>Cloudplzr</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<!-- Tailwind for the email form (same as index) -->
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 
 <style>
   :root {
@@ -54,7 +56,7 @@
     font-size: 36px;
     font-weight: 700;
     margin: 8px 0 14px;
-    max-width: 720px;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -246,7 +248,7 @@
     -webkit-overflow-scrolling: touch;
     padding: 10px 0 20px;
     scrollbar-width: none; /* Firefox */
-    opacity: 0;            /* hide until JS initialises to avoid glitch */
+    opacity: 0;            /* prevent load glitch */
     transition: opacity 0.25s ease;
   }
 
@@ -295,7 +297,7 @@
     height: 44px;
     border-radius: 999px;
     border: 1px solid var(--border);
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     color: #fff;
     font-size: 26px;
     line-height: 42px;
@@ -305,8 +307,8 @@
     z-index: 20;
   }
 
-  .prod-arrow-left { left: 6px; }
-  .prod-arrow-right { right: 6px; }
+  .prod-arrow-left { left: 8px; }
+  .prod-arrow-right { right: 8px; }
 
   /* FOOTER */
 
@@ -362,7 +364,7 @@
     <div class="hero-logo">Cloudplzr / The Game Lab</div>
   </section>
 
-  <!-- PRODUCTIONS (TOP) -->
+  <!-- PRODUCTIONS (TOP, INFINITE CAROUSEL) -->
   <section class="productions-section">
     <h2 class="productions-title">PRODUCTIONS</h2>
 
@@ -415,14 +417,13 @@
           <div class="production-link">Hoedown</div>
         </div>
 
-         <!-- End of the World -->
+        <!-- End of the World -->
         <div class="production-card">
           <img src="/productions/eotw.png" alt="End of the World Show" class="production-img">
           <div class="production-link">End of the World Show</div>
         </div>
-      </div>
 
-        <!-- Any extra productions you’ve added go here as more .production-card blocks -->
+        <!-- Any further productions you add: just add more .production-card blocks here -->
 
       </div>
 
@@ -432,15 +433,13 @@
 
   <!-- HERO COPY BLOCK 1 -->
   <section class="hero">
-    <div class="hero-title">Run an entire live show from a single file.</div>
+    <div class="hero-title">Venues, Sports Bars, Clubs, Hotels, Cruise Ships, Resorts, Retail</div>
     <div class="hero-subline">
-      Status Quo: Live entertainment productions rely on multi-skilled teams to book, organise,
-      design, configure & operate them. <b>It is complex, time consuming, and risky.</b>
-    </div>
-    <div class="hero-subline">
-      The .plzr format packages entire live productions — lights, video, sound,
-      cues, timing, sequencing — into a single computer file that can be downloaded
-      and run in any venue.
+      <br>Choose experience / download it / press play<br>
+      <br>Drive Footfall and Bar Spends with hilarious, eye catching and innovative formats<br>
+      <br>High Impact, High Quality, Low Cost<br>
+      <br>As our portfolio of experiences grows, so does yours!<br>
+      <br>Book a Demo: james@theendofthe.world<br>
     </div>
   </section>
 
@@ -449,19 +448,20 @@
     <img src="/productions/gameslab.png" alt="Cloudplzr Game Lab">
   </div>
 
-  <!-- HERO COPY BLOCK 2 (repeated) -->
+  <!-- HERO COPY BLOCK 2 -->
   <section class="hero">
-    <div class="hero-title">Run an entire live show from a single file.</div>
+    <div class="hero-title">Developed in Our Real World Immersive Laboratories</div>
     <div class="hero-subline">
-      Status Quo: Live entertainment productions rely on multi-skilled teams to book, organise,
-      design, configure & operate them. <b>It is complex, time consuming, and risky.</b>
-    </div>
-    <div class="hero-subline">
-      The .plzr format packages entire live productions — lights, video, sound,
-      cues, timing, sequencing — into a single computer file that can be downloaded
-      and run in any venue.
+      <br>We nurture and perfect formats in real world scenarios to ensure the highest quality experience for your guests.<br>
+      <br>These experimental playgrounds are revenue generating themselves – consider hosting one on your property.<br>
+      <br>We can afford to develop and curate them, because thanks to Cloudplzr, live entertainment can now be distributed like other cultural media (music, video).<br>
     </div>
   </section>
+
+  <!-- SPACES IMAGE ABOVE FORMAT TABLETS -->
+  <div class="hero-image">
+    <img src="/productions/spaces.png" alt="Target spaces">
+  </div>
 
   <!-- FOUR INDUSTRY BOXES -->
   <section class="plzr-section">
@@ -578,6 +578,27 @@
     </div>
   </section>
 
+  <!-- EMAIL CAPTURE (same backend/visual as index) -->
+  <section class="hero">
+    <div class="hero-subline" style="margin-bottom:16px;">
+      Enter Email to access website
+    </div>
+    <form id="emailForm"
+          action="https://script.google.com/macros/s/AKfycbzUfRw-L2U8wxV3fv8GDRic8JNwtxKEBsJhbrQtwNNiqe9CoJOTlq-DROinO-jVAARM3w/exec"
+          method="POST"
+          class="flex flex-col sm:flex-row gap-3 w-full max-w-xl mx-auto">
+
+      <input type="email" name="email" required
+             placeholder="Enter Email to access website"
+             class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500">
+
+      <button type="submit"
+              class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold flex items-center justify-center min-w-[9rem]">
+        Enter Website ▶
+      </button>
+    </form>
+  </section>
+
   <!-- ABOUT US -->
   <section>
     <h2 class="productions-title">About Us</h2>
@@ -596,8 +617,52 @@
 
 </div>
 
-<!-- ROTATING LOGO + CAROUSEL SCRIPT -->
+<!-- SCRIPTS -->
 <script>
+/* EMAIL FORM (same behaviour as index: submit to Apps Script then redirect) */
+const emailForm = document.getElementById('emailForm');
+if (emailForm) {
+  emailForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const form  = e.target;
+    const email = form.email.value.trim();
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button.innerHTML;
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Please enter a valid email address.');
+      form.email.focus();
+      return;
+    }
+
+    button.disabled = true;
+    button.innerHTML =
+      `<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24">
+         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+       </svg>Loading...`;
+
+    try{
+      const res = await fetch(form.action, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email })
+      });
+      if (res.type === 'opaque' || res.ok) {
+        window.location.href = 'experiences.html';
+      } else {
+        throw new Error('submit failed');
+      }
+    } catch {
+      alert('Sorry, something went wrong. Please try again.');
+      button.disabled = false;
+      button.innerHTML = originalText;
+    }
+  });
+}
+
+/* LOGO ROTATION FOR FORMAT TABLETS */
 const PLZR_CONFIG = {
   intervalBase: 1500,
   intervalJitter: 500,
@@ -671,7 +736,7 @@ if (leftArrow && rightArrow && grid) {
   rightArrow.addEventListener('click', () => scrollByCard(1));
 }
 
-// PRODUCTIONS INFINITE CAROUSEL
+/* PRODUCTIONS INFINITE CAROUSEL */
 const prodGrid = document.querySelector('.productions-grid');
 const prodLeft = document.querySelector('.prod-arrow-left');
 const prodRight = document.querySelector('.prod-arrow-right');
@@ -701,15 +766,12 @@ if (prodGrid) {
       const third = getThirdWidth();
       const left = prodGrid.scrollLeft;
       if (left < third * 0.5) {
-        // too far left – jump forwards one block
         prodGrid.scrollLeft = left + third;
       } else if (left > third * 1.5) {
-        // too far right – jump back one block
         prodGrid.scrollLeft = left - third;
       }
     }
 
-    // debounce normalisation for manual scroll / swipe
     let scrollTimeout;
     prodGrid.addEventListener('scroll', () => {
       clearTimeout(scrollTimeout);
@@ -719,7 +781,7 @@ if (prodGrid) {
     function prodScrollByCard(dir) {
       const card = prodGrid.querySelector('.production-card');
       if (!card) return;
-      const amount = card.offsetWidth + 22; // card + gap
+      const amount = card.offsetWidth + 22;
       prodGrid.scrollBy({ left: dir * amount, behavior: 'smooth' });
       setTimeout(normaliseScroll, 500);
     }
@@ -729,7 +791,7 @@ if (prodGrid) {
       prodLeft.addEventListener('click', () => prodScrollByCard(-1));
     }
 
-    // reveal after layout is stable
+    // reveal after setup to avoid glitch
     prodGrid.classList.add('ready');
   }
 }
