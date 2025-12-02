@@ -324,16 +324,17 @@
     gap: 0;
   }
 
-  @media (min-width: 769px) {
-    .space-img {
-      flex: 1 1 0;
-      width: 100%;
-      height: 260px;      /* match lozenge height visually */
-      object-fit: cover;  /* nice crop */
-      display: block;
-      border-radius: 0;
-    }
+@media (min-width: 769px) {
+  .space-img {
+    flex: 1 1 0;
+    width: 100%;
+    height: auto;       /* let the image keep its natural height */
+    object-fit: contain;/* or just remove this line entirely */
+    display: block;
+    border-radius: 0;
   }
+}
+
 
   @media (max-width: 768px) {
     .spaces-strip-wrapper {
@@ -877,3 +878,4 @@ if (spacesWrapper && spacesStrip) {
 </script>
 </body>
 </html>
+
