@@ -268,15 +268,17 @@
     scroll-snap-align: start;
   }
 
-  .production-img {
-    width: 100%;
-    aspect-ratio: 4 / 5;   /* poster-ish; stabilises layout */
-    height: auto;
-    border-radius: 22px;
-    border: 1px solid var(--border);
-    object-fit: cover;
-    box-shadow: 0 16px 32px rgba(0,0,0,0.8);
-  }
+.production-img {
+  width: 100%;
+  height: auto;              /* keep natural height */
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  object-fit: contain;       /* show whole image, no cropping */
+  background: #000;          /* fills any “letterbox” space */
+  box-shadow: 0 16px 32px rgba(0,0,0,0.8);
+  display: block;
+}
+
 
   .production-link {
     margin-top: 10px;
@@ -876,3 +878,4 @@ if (spacesWrapper && spacesStrip) {
 </script>
 </body>
 </html>
+
