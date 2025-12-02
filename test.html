@@ -24,7 +24,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: Inter, system-ui, sans-serif;
-    text-align: center;  /* centre default text */
+    text-align: center;
   }
 
   a { color: var(--text); }
@@ -72,6 +72,20 @@
   .hero-subline b {
     color: #ffffff;
     font-weight: 600;
+  }
+
+  .hero-image {
+    margin: 28px auto 24px;
+    max-width: 960px;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.8);
+    object-fit: cover;
   }
 
   /* GRID & CARDS */
@@ -242,8 +256,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 0 0 25%;     /* target 4 cards in view */
-    flex-shrink: 0;    /* DO NOT shrink -> overflow */
+    flex: 0 0 25%;
+    flex-shrink: 0;
     scroll-snap-align: start;
   }
 
@@ -302,7 +316,7 @@
 
   @media (max-width: 640px) {
     .hero-logo {
-      font-size: 32px;   /* neater on mobile */
+      font-size: 32px;
     }
 
     .hero-title {
@@ -328,7 +342,7 @@
     }
 
     .production-card {
-      flex: 0 0 75%;   /* show edge of next card */
+      flex: 0 0 75%;
       flex-shrink: 0;
     }
   }
@@ -401,7 +415,26 @@
     </div>
   </section>
 
-  <!-- HERO COPY (REST OF SITE) -->
+  <!-- HERO COPY BLOCK 1 -->
+  <section class="hero">
+    <div class="hero-title">Run an entire live show from a single file.</div>
+    <div class="hero-subline">
+      Status Quo: Live entertainment productions rely on multi-skilled teams to book, organise,
+      design, configure & operate them. <b>It is complex, time consuming, and risky.</b>
+    </div>
+    <div class="hero-subline">
+      The .plzr format packages entire live productions — lights, video, sound,
+      cues, timing, sequencing — into a single computer file that can be downloaded
+      and run in any venue.
+    </div>
+  </section>
+
+  <!-- GAMES LAB IMAGE -->
+  <div class="hero-image">
+    <img src="/productions/gameslab.png" alt="Cloudplzr Game Lab">
+  </div>
+
+  <!-- HERO COPY BLOCK 2 (repeated) -->
   <section class="hero">
     <div class="hero-title">Run an entire live show from a single file.</div>
     <div class="hero-subline">
