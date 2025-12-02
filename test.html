@@ -246,6 +246,12 @@
     -webkit-overflow-scrolling: touch;
     padding: 10px 0 20px;
     scrollbar-width: none; /* Firefox */
+    opacity: 0;            /* hide until JS initialises to avoid glitch */
+    transition: opacity 0.25s ease;
+  }
+
+  .productions-grid.ready {
+    opacity: 1;
   }
 
   .productions-grid::-webkit-scrollbar {
@@ -285,22 +291,22 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
+    width: 44px;
+    height: 44px;
     border-radius: 999px;
     border: 1px solid var(--border);
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.8);
     color: #fff;
-    font-size: 18px;
-    line-height: 28px;
+    font-size: 26px;
+    line-height: 42px;
     text-align: center;
     cursor: pointer;
     padding: 0;
     z-index: 20;
   }
 
-  .prod-arrow-left { left: 4px; }
-  .prod-arrow-right { right: 4px; }
+  .prod-arrow-left { left: 6px; }
+  .prod-arrow-right { right: 6px; }
 
   /* FOOTER */
 
@@ -409,11 +415,15 @@
           <div class="production-link">Hoedown</div>
         </div>
 
-        <!-- End of the World -->
+         <!-- End of the World -->
         <div class="production-card">
           <img src="/productions/eotw.png" alt="End of the World Show" class="production-img">
           <div class="production-link">End of the World Show</div>
         </div>
+      </div>
+
+        <!-- Any extra productions you’ve added go here as more .production-card blocks -->
+
       </div>
 
       <button class="prod-arrow prod-arrow-right" aria-label="Next">›</button>
@@ -422,16 +432,15 @@
 
   <!-- HERO COPY BLOCK 1 -->
   <section class="hero">
-    <div class="hero-title">Venues, Sports Bars, Clubs, Hotels, Cruise Ships, Resorts, Retail</div>
+    <div class="hero-title">Run an entire live show from a single file.</div>
     <div class="hero-subline">
-      <br>Choose experience / download it / press play<br>
-      <br>Drive Footfall and Bar Spends with hilarious, eye catching and innovative formats<br>
-      <br>High Impact, High Quality, Low Cost<br>
-      <br>As our portfolio of experiences grows, so does yours!<br>
-      <br>Book a Demo: james@theendofthe.world<br>
+      Status Quo: Live entertainment productions rely on multi-skilled teams to book, organise,
+      design, configure & operate them. <b>It is complex, time consuming, and risky.</b>
     </div>
     <div class="hero-subline">
-      
+      The .plzr format packages entire live productions — lights, video, sound,
+      cues, timing, sequencing — into a single computer file that can be downloaded
+      and run in any venue.
     </div>
   </section>
 
@@ -442,13 +451,15 @@
 
   <!-- HERO COPY BLOCK 2 (repeated) -->
   <section class="hero">
-    <div class="hero-title">Developed in Our Real World Immersive Laboratories</div>
+    <div class="hero-title">Run an entire live show from a single file.</div>
     <div class="hero-subline">
-      <br>We nurture and perfect formats in real world scenarios to ensure the highest quality exprience for your guests. <br>
-    <br>These experimental playgrounds are revenue generating themselves, consider hosting one on your property<br>
-    <br>We can afford to develop and curate them, because thanks to Cloudplzr, Live Entertainment can now be distributed like other cutlural media (music, video)<br></b>
+      Status Quo: Live entertainment productions rely on multi-skilled teams to book, organise,
+      design, configure & operate them. <b>It is complex, time consuming, and risky.</b>
     </div>
     <div class="hero-subline">
+      The .plzr format packages entire live productions — lights, video, sound,
+      cues, timing, sequencing — into a single computer file that can be downloaded
+      and run in any venue.
     </div>
   </section>
 
@@ -660,45 +671,68 @@ if (leftArrow && rightArrow && grid) {
   rightArrow.addEventListener('click', () => scrollByCard(1));
 }
 
-// productions carousel arrows with wrap-around
+// PRODUCTIONS INFINITE CAROUSEL
 const prodGrid = document.querySelector('.productions-grid');
 const prodLeft = document.querySelector('.prod-arrow-left');
 const prodRight = document.querySelector('.prod-arrow-right');
 
-function prodScrollByCard(dir) {
-  if (!prodGrid) return;
-  const card = prodGrid.querySelector('.production-card');
-  if (!card) return;
-  const amount = card.offsetWidth + 22;
-  prodGrid.scrollBy({ left: dir * amount, behavior: 'smooth' });
-}
+if (prodGrid) {
+  const originalCards = Array.from(prodGrid.children);
+  if (originalCards.length) {
+    // clone original set to the end
+    originalCards.forEach(card => {
+      const clone = card.cloneNode(true);
+      prodGrid.appendChild(clone);
+    });
+    // clone original set to the beginning
+    originalCards.slice().reverse().forEach(card => {
+      const clone = card.cloneNode(true);
+      prodGrid.insertBefore(clone, prodGrid.firstChild);
+    });
 
-function maxScroll() {
-  return prodGrid.scrollWidth - prodGrid.clientWidth;
-}
-
-if (prodLeft && prodRight && prodGrid) {
-  prodRight.addEventListener('click', () => {
-    if (prodGrid.scrollLeft + 5 >= maxScroll()) {
-      prodGrid.scrollTo({ left: 0, behavior: 'smooth' });
-    } else {
-      prodScrollByCard(1);
+    function getThirdWidth() {
+      return prodGrid.scrollWidth / 3;
     }
-  });
 
-  prodLeft.addEventListener('click', () => {
-    if (prodGrid.scrollLeft <= 5) {
-      prodGrid.scrollTo({ left: maxScroll(), behavior: 'smooth' });
-    } else {
-      prodScrollByCard(-1);
+    // start in the middle block (originals)
+    prodGrid.scrollLeft = getThirdWidth();
+
+    function normaliseScroll() {
+      const third = getThirdWidth();
+      const left = prodGrid.scrollLeft;
+      if (left < third * 0.5) {
+        // too far left – jump forwards one block
+        prodGrid.scrollLeft = left + third;
+      } else if (left > third * 1.5) {
+        // too far right – jump back one block
+        prodGrid.scrollLeft = left - third;
+      }
     }
-  });
+
+    // debounce normalisation for manual scroll / swipe
+    let scrollTimeout;
+    prodGrid.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(normaliseScroll, 250);
+    });
+
+    function prodScrollByCard(dir) {
+      const card = prodGrid.querySelector('.production-card');
+      if (!card) return;
+      const amount = card.offsetWidth + 22; // card + gap
+      prodGrid.scrollBy({ left: dir * amount, behavior: 'smooth' });
+      setTimeout(normaliseScroll, 500);
+    }
+
+    if (prodLeft && prodRight) {
+      prodRight.addEventListener('click', () => prodScrollByCard(1));
+      prodLeft.addEventListener('click', () => prodScrollByCard(-1));
+    }
+
+    // reveal after layout is stable
+    prodGrid.classList.add('ready');
+  }
 }
 </script>
 </body>
 </html>
-
-
-
-
-
