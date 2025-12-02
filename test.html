@@ -313,27 +313,30 @@
 
   /* SPACES STRIP (INFINITE SCROLL ON DESKTOP, SWIPE ON MOBILE) */
 
+/* DESKTOP: four equal squares matching the 4-column lozenge grid */
+@media (min-width: 769px) {
+
   .spaces-strip-wrapper {
-    width: 100%;
-    margin: 28px auto 16px;
-    overflow: hidden; /* desktop: hidden + JS scroll */
+    max-width: 1240px;       /* match your .page width */
+    margin: 20px auto;
   }
 
   .spaces-strip {
-    display: flex;
-    gap: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);  /* four equal items */
+    gap: 22px;                               /* match lozenges gap */
+    width: 100%;
   }
 
-@media (min-width: 769px) {
   .space-img {
-    flex: 1 1 0;
     width: 100%;
-    height: auto;       /* let the image keep its natural height */
-    object-fit: contain;/* or just remove this line entirely */
-    display: block;
-    border-radius: 0;
+    aspect-ratio: 1 / 1;     /* forces perfect square */
+    object-fit: cover;       /* fills the square cleanly */
+    border-radius: 16px;     /* optional – you can remove */
+    border: 1px solid var(--border);
   }
 }
+
 
 
   @media (max-width: 768px) {
@@ -878,4 +881,5 @@ if (spacesWrapper && spacesStrip) {
 </script>
 </body>
 </html>
+
 
