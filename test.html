@@ -6,6 +6,7 @@
 <title>Cloudplzr</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<!-- Tailwind for the email form -->
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 
 <style>
@@ -37,6 +38,7 @@
   }
 
   /* HERO */
+
   .hero {
     text-align: center;
     padding-top: 42px;
@@ -69,6 +71,11 @@
     margin-right: auto;
   }
 
+  .hero-subline b {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
   .hero-image {
     margin: 28px auto 24px;
     max-width: 960px;
@@ -83,7 +90,8 @@
     object-fit: cover;
   }
 
-  /* CARDS */
+  /* GRID & CARDS */
+
   .plzr-section {
     margin-top: 34px;
   }
@@ -117,14 +125,23 @@
     font-size: 13px;
     font-family: "JetBrains Mono", monospace;
     color: var(--accent-blue);
-    margin-bottom: 12px;
     letter-spacing: 1.4px;
+    margin-bottom: 12px;
   }
 
   .plzr-col {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
+  }
+
+  .plzr-logo {
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
   }
 
   .plzr-logo img {
@@ -139,12 +156,18 @@
     max-width: 260px;
   }
 
-  .plzr-label { font-size: 17px; margin: 10px 0; }
-  .plzr-label.bold { font-weight: 700; }
+  .plzr-label {
+    font-size: 17px;
+    margin: 10px 0;
+  }
+
+  .plzr-label.bold {
+    font-weight: 700;
+  }
 
   .plzr-sub {
-    font-size: 14px;
     margin-top: 6px;
+    font-size: 14px;
     color: var(--muted);
   }
 
@@ -152,44 +175,227 @@
     height: 60px;
     border-left: 2px solid rgba(255,255,255,0.5);
     margin: 0 auto;
+    display: block;
+    width: 0;
   }
 
-  /* SPACES STRIP — NEW CLEAN VERSION */
+  /* STRIKES */
+
+  .strike {
+    position: relative;
+  }
+
+  .strike::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    width: 80%;
+    height: 5px;
+    background: var(--strike-red);
+    transform: translate(-50%, -50%) rotate(-8deg);
+    border-radius: 6px;
+  }
+
+  /* MAIN GRID ARROWS (mobile only) */
+
+  .plzr-arrow {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 20px;
+    line-height: 32px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+    z-index: 20;
+  }
+
+  .plzr-arrow-left { left: 4px; }
+  .plzr-arrow-right { right: 4px; }
+
+  /* PRODUCTIONS SECTION */
+
+  .productions-section {
+    margin: 30px 0 26px;
+  }
+
+  .productions-title {
+    font-family: "JetBrains Mono", monospace;
+    color: var(--accent-blue);
+    font-size: 16px;
+    letter-spacing: 1.2px;
+    margin-bottom: 18px;
+  }
+
+  .productions-carousel {
+    position: relative;
+  }
+
+  .productions-grid {
+    display: flex;
+    gap: 22px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 0 20px;
+    scrollbar-width: none; /* Firefox */
+    opacity: 0;            /* prevent load glitch */
+    transition: opacity 0.25s ease;
+  }
+
+  .productions-grid.ready {
+    opacity: 1;
+  }
+
+  .productions-grid::-webkit-scrollbar {
+    display: none; /* Chrome / Safari */
+  }
+
+  .production-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 25%;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  .production-img {
+    width: 100%;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    box-shadow: 0 16px 32px rgba(0,0,0,0.8);
+  }
+
+  .production-link {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 15px;
+    text-decoration: none;
+  }
+
+  .production-link:hover {
+    color: var(--text);
+  }
+
+  .prod-arrow {
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: rgba(0,0,0,0.9);
+    color: #fff;
+    font-size: 32px;
+    line-height: 54px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+    z-index: 20;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+  }
+
+  .prod-arrow-left { left: 8px; }
+  .prod-arrow-right { right: 8px; }
+
+  /* SPACES STRIP (INFINITE SCROLL ON DESKTOP, SWIPE ON MOBILE) */
+
   .spaces-strip-wrapper {
     width: 100%;
-    overflow: hidden;
-    margin: 40px 0;
+    margin: 28px auto 16px;
+    overflow: hidden; /* desktop: hidden + JS scroll */
   }
 
   .spaces-strip {
     display: flex;
-    width: max-content;
-    animation: scrollSpaces 32s linear infinite;
     gap: 0;
   }
 
-  @keyframes scrollSpaces {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* Desktop image sizing */
   @media (min-width: 769px) {
     .space-img {
-      width: 310px;
-      height: 240px;
-      object-fit: cover;
-      flex: 0 0 auto;
+      flex: 1 1 0;
+      width: 100%;
+      height: 260px;      /* match lozenge height visually */
+      object-fit: cover;  /* nice crop */
       display: block;
+      border-radius: 0;
     }
   }
 
-  /* Mobile */
   @media (max-width: 768px) {
+    .spaces-strip-wrapper {
+      overflow-x: auto;              /* mobile: manual swipe */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .spaces-strip {
+      width: max-content;
+    }
+
     .space-img {
-      width: 85vw;
+      width: 90vw;
       height: auto;
       flex: 0 0 auto;
+      display: block;
+      border-radius: 0;
+    }
+  }
+
+  /* FOOTER */
+
+  .footer {
+    padding: 32px 0 8px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid #101010;
+    margin-top: 24px;
+  }
+
+  /* MOBILE GLOBAL */
+
+  @media (max-width: 768px) {
+    .hero-logo {
+      font-size: 32px;
+    }
+
+    .hero-title {
+      font-size: 26px;
+    }
+
+    .plzr-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 16px;
+      padding-bottom: 8px;
+    }
+
+    .plzr-card {
+      flex: 0 0 80%;
+      scroll-snap-align: start;
+    }
+
+    .plzr-arrow {
+      display: block;
+    }
+
+    .production-card {
+      flex: 0 0 75%;
+      flex-shrink: 0;
     }
   }
 </style>
@@ -197,202 +403,477 @@
 <body>
 <div class="page">
 
-<section class="hero">
-  <div class="hero-logo">Cloudplzr / Games Lab</div>
-</section>
+  <!-- TOP TITLE -->
+  <section class="hero">
+    <div class="hero-logo">Cloudplzr / Games Lab</div>
+  </section>
 
-<!-- PRODUCTIONS -->
-<section class="productions-section">
-  <h2 class="productions-title">PRODUCTIONS</h2>
+  <!-- PRODUCTIONS (TOP, INFINITE CAROUSEL) -->
+  <section class="productions-section">
+    <h2 class="productions-title">PRODUCTIONS</h2>
 
-  <div class="productions-carousel">
-    <button class="prod-arrow prod-arrow-left">‹</button>
+    <div class="productions-carousel">
+      <button class="prod-arrow prod-arrow-left" aria-label="Previous">‹</button>
 
-    <div class="productions-grid">
-      <div class="production-card"><img src="/productions/baddecisions.png"><a class="production-link" href="https://www.baddecisions.club" target="_blank">baddecisions.club</a></div>
-      <div class="production-card"><img src="/productions/beltit.png"><a class="production-link" href="https://www.belitout.com" target="_blank">belitout.com</a></div>
-      <div class="production-card"><img src="/productions/revenge90s.png"><a class="production-link" href="https://www.revengeofthe90s.com" target="_blank">revengeofthe90s.com</a></div>
-      <div class="production-card"><img src="/productions/rebelbingo.png"><a class="production-link" href="https://www.rebelbingo.com" target="_blank">rebelbingo.com</a></div>
-      <div class="production-card"><img src="/productions/snoozefest.png"><div class="production-link">Snoozefest</div></div>
-      <div class="production-card"><img src="/productions/hoedown.png"><div class="production-link">Hoedown</div></div>
-      <div class="production-card"><img src="/productions/eotw.png"><div class="production-link">End of the World Show</div></div>
+      <div class="productions-grid">
+
+        <!-- Bad Decisions -->
+        <div class="production-card">
+          <img src="/productions/baddecisions.png" alt="Bad Decisions" class="production-img">
+          <a class="production-link" href="https://www.baddecisions.club" target="_blank">
+            baddecisions.club
+          </a>
+        </div>
+
+        <!-- Belt It Out -->
+        <div class="production-card">
+          <img src="/productions/beltit.png" alt="Belt It Out" class="production-img">
+          <a class="production-link" href="https://www.belitout.com" target="_blank">
+            belitout.com
+          </a>
+        </div>
+
+        <!-- Revenge of the 90s -->
+        <div class="production-card">
+          <img src="/productions/revenge90s.png" alt="Revenge of the 90s" class="production-img">
+          <a class="production-link" href="https://www.revengeofthe90s.com" target="_blank">
+            revengeofthe90s.com
+          </a>
+        </div>
+
+        <!-- Rebel Bingo -->
+        <div class="production-card">
+          <img src="/productions/rebelbingo.png" alt="Rebel Bingo" class="production-img">
+          <a class="production-link" href="https://www.rebelbingo.com" target="_blank">
+            rebelbingo.com
+          </a>
+        </div>
+
+        <!-- Snoozefest -->
+        <div class="production-card">
+          <img src="/productions/snoozefest.png" alt="Snoozefest" class="production-img">
+          <div class="production-link">Snoozefest</div>
+        </div>
+
+        <!-- Hoedown -->
+        <div class="production-card">
+          <img src="/productions/hoedown.png" alt="Hoedown" class="production-img">
+          <div class="production-link">Hoedown</div>
+        </div>
+
+        <!-- End of the World -->
+        <div class="production-card">
+          <img src="/productions/eotw.png" alt="End of the World Show" class="production-img">
+          <div class="production-link">End of the World Show</div>
+        </div>
+
+      </div>
+
+      <button class="prod-arrow prod-arrow-right" aria-label="Next">›</button>
     </div>
+  </section>
 
-    <button class="prod-arrow prod-arrow-right">›</button>
-  </div>
-</section>
-
-<section class="hero">
-  <div class="hero-title">
-    Sports Bars • Bars • Retail • Clubs • Hotels • Cruise Ships • Resorts • Theatres • Empty Real Estate That COULD Be Generating Revenue
-  </div>
-  <div class="hero-subline">
-    Amazing new hardware is flooding into commercial spaces faster than ever<br><br>
-    Delivering content for bespoke installations is expensive • Novel formats are high risk • Switching costs stifle innovation<br><br>
-    Enter Cloudplzr – a file format that lets operators get full ROI on their tech<br>
-    Choose experience → Download it → Press play<br><br>
-    Book a Demo: james@theendofthe.world
-  </div>
-</section>
-
-<div class="hero-image">
-  <img src="/productions/gameslab.png">
-</div>
-
-<section class="hero">
-  <div class="hero-title">Developed in Our Real World Immersive Laboratories</div>
-  <div class="hero-subline">
-    We test and perfect formats in real venues<br><br>
-    These experimental playgrounds earn revenue themselves<br>
-    Scaling unlocks creative investment<br><br>
-    Hardware companies and ticketing startups are booming—they need MORE content<br><br>
-    Cloudplzr is universal infrastructure for live entertainment—like Netflix/Spotify for IRL content
-  </div>
-</section>
-
-<!-- 🚀 NEW: Infinite Spaces Strip -->
-<div class="spaces-strip-wrapper">
-  <div class="spaces-strip" id="spacesStrip">
-    <img src="/productions/cruise.png" class="space-img">
-    <img src="/productions/sports.png" class="space-img">
-    <img src="/productions/hotels.png" class="space-img">
-    <img src="/productions/venues.png" class="space-img">
-  </div>
-</div>
-<!-- FOUR INDUSTRY BOXES -->
-<section class="plzr-section">
-  <div class="plzr-carousel">
-    <button class="plzr-arrow plzr-arrow-left">‹</button>
-
-    <div class="plzr-grid">
-
-      <div class="plzr-card">
-        <div class="plzr-category">VIDEO STREAMING</div>
-        <div class="plzr-col" data-category="streamers">
-          <div class="plzr-logo"><img></div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">Standardised Format<div class="plzr-sub">H.264 / H.265 / AV1</div></div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Revenue at Scale</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="plzr-card">
-        <div class="plzr-category">MOVIE DISTRIBUTION</div>
-        <div class="plzr-col" data-category="movies">
-          <div class="plzr-logo"><img></div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">Standardised Format<div class="plzr-sub">DCP</div></div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Revenue at Scale</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="plzr-card">
-        <div class="plzr-category">AUDIO DISTRIBUTION</div>
-        <div class="plzr-col" data-category="music">
-          <div class="plzr-logo"><img></div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold">Standardised Format<div class="plzr-sub">AAC / MP3 / FLAC</div></div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label">Revenue at Scale</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="plzr-card">
-        <div class="plzr-category">LIVE ENTERTAINMENT (TODAY)</div>
-        <div class="plzr-col broken" data-category="experience">
-          <div class="plzr-logo"><img></div>
-          <div class="plzr-stage">
-            <div class="plzr-label">Creative Production</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label bold strike">Standardised Format<div class="plzr-sub">NONE</div></div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label strike">Distribution at Scale</div>
-            <div class="plzr-line"></div>
-            <div class="plzr-label strike">Revenue at Scale</div>
-          </div>
-        </div>
-      </div>
-
+  <!-- HERO COPY BLOCK 1 -->
+  <section class="hero">
+    <div class="hero-title">
+      Sports Bars • Bars • Retail • Clubs • Hotels • Cruise Ships • Resorts • Theatres<br>
+      • Empty Real Estate That COULD Be Generating Revenue
     </div>
+    <div class="hero-subline">
+      <br>Amazing new hardware is flooding into commercial spaces faster than ever<br>
+      <br>Delivering content for bespoke installations is expensive • novel formats are high risk • switching costs stifle innovation<br>
+      <br>Enter Cloudplzr – a file format that allows operators to get full ROI on their tech<br>
+      <br>Choose experience / download it / press play<br>
+      <br>Book a Demo: james@theendofthe.world<br>
+    </div>
+  </section>
 
-    <button class="plzr-arrow plzr-arrow-right">›</button>
+  <!-- GAMES LAB IMAGE -->
+  <div class="hero-image">
+    <img src="/productions/gameslab.png" alt="Cloudplzr Game Lab">
   </div>
-</section>
 
-<section class="plzr-section">
-  <div class="plzr-card">
-    <div class="plzr-category">LIVE ENTERTAINMENT WITH CLOUDPLZR</div>
-    <div class="plzr-col" data-category="experience">
-      <div class="plzr-logo"><img></div>
-      <div class="plzr-stage">
-        <div class="plzr-label">Creative Production</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label bold">Standardised Format<div class="plzr-sub">.plzr</div></div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label">Distribution at Scale</div>
-        <div class="plzr-line"></div>
-        <div class="plzr-label">Revenue at Scale</div>
-      </div>
+  <!-- HERO COPY BLOCK 2 -->
+  <section class="hero">
+    <div class="hero-title">Developed in Our Real World Immersive Laboratories</div>
+    <div class="hero-subline">
+      <br>We nurture, test and perfect formats in real world scenarios<br>
+      <br>These experimental playgrounds are revenue generating themselves<br>
+      <br>The opportunity to scale allows investment in creative development<br>
+      <br>Hardware companies and ticketing startups are seeing exponential growth; they need MORE content!<br>
+      <br>Cloudplzr is universal infrastructure for live entertainment – distributing interactive content like Spotify/Netflix do for other media<br>
+    </div>
+  </section>
+
+  <!-- SPACES STRIP (VENUES IMAGES) -->
+  <div class="spaces-strip-wrapper">
+    <div class="spaces-strip">
+      <img src="/productions/cruise.png"  alt="Cruise Ships" class="space-img">
+      <img src="/productions/sports.png"  alt="Sports"       class="space-img">
+      <img src="/productions/hotels.png"  alt="Hotels"       class="space-img">
+      <img src="/productions/venues.png"  alt="Venues"       class="space-img">
     </div>
   </div>
-</section>
 
-<section class="hero">
-  <div class="hero-subline" style="margin-bottom:16px;">Enter Email to Keep Abreast of Developments</div>
-  <form id="emailForm"
-        action="https://script.google.com/macros/s/AKfycbzUfRw-L2U8wxV3fv8GDRic8JNwtxKEBsJhbrQtwNNiqe9CoJOTlq-DROinO-jVAARM3w/exec"
-        method="POST"
-        class="flex flex-col sm:flex-row gap-3 w-full max-w-xl mx-auto">
-    <input type="email" name="email" required placeholder="Enter Email Receive Updates"
-           class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500">
-    <button type="submit"
-            class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold min-w-[9rem]">
-      Submit ▶
-    </button>
-  </form>
-</section>
+  <!-- FOUR INDUSTRY BOXES -->
+  <section class="plzr-section">
+    <div class="plzr-carousel">
+      <button class="plzr-arrow plzr-arrow-left" aria-label="Previous">‹</button>
 
-<section>
-  <h2 class="productions-title">About Us</h2>
-  <div class="hero-subline">
-    We are live event producers and have toured events worldwide.<br><br>
-    Live Nation asked us to take one of our shows to 100+ venues.<br>
-    We couldn't deliver that scale with traditional processes.<br>
-    So we built Cloudplzr.<br>
-  </div>
-</section>
+      <div class="plzr-grid">
 
-<footer class="footer">
-  © 2025 Cloudplzr. All rights reserved.
-</footer>
+        <!-- VIDEO STREAMING -->
+        <div class="plzr-card">
+          <div class="plzr-category">VIDEO STREAMING</div>
+          <div class="plzr-col" data-category="streamers">
+            <div class="plzr-logo"><img alt="streamer logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">H.264 / H.265 / AV1</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MOVIE DISTRIBUTION -->
+        <div class="plzr-card">
+          <div class="plzr-category">MOVIE DISTRIBUTION</div>
+          <div class="plzr-col" data-category="movies">
+            <div class="plzr-logo"><img alt="movie logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">DCP (MXF + XML)</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AUDIO DISTRIBUTION -->
+        <div class="plzr-card">
+          <div class="plzr-category">AUDIO DISTRIBUTION</div>
+          <div class="plzr-col" data-category="music">
+            <div class="plzr-logo"><img alt="music logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold">
+                Standardised Format
+                <div class="plzr-sub">AAC / MP3 / FLAC</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label">Revenue at Scale</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE ENTERTAINMENT (TODAY) -->
+        <div class="plzr-card">
+          <div class="plzr-category">LIVE ENTERTAINMENT (TODAY)</div>
+          <div class="plzr-col broken" data-category="experience">
+            <div class="plzr-logo"><img alt="experience logo"></div>
+            <div class="plzr-stage">
+              <div class="plzr-label">Creative Production</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label bold strike">
+                Standardised Format
+                <div class="plzr-sub">NONE</div>
+              </div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label strike">Distribution at Scale</div>
+              <div class="plzr-line"></div>
+              <div class="plzr-label strike">Revenue at Scale</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="plzr-arrow plzr-arrow-right" aria-label="Next">›</button>
+    </div>
+  </section>
+
+  <!-- LIVE ENTERTAINMENT WITH CLOUDPLZR -->
+  <section class="plzr-section">
+    <div class="plzr-card">
+      <div class="plzr-category">LIVE ENTERTAINMENT WITH CLOUDPLZR</div>
+      <div class="plzr-col" data-category="experience">
+        <div class="plzr-logo"><img alt="experience logo"></div>
+        <div class="plzr-stage">
+          <div class="plzr-label">Creative Production</div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label bold">
+            Standardised Format
+            <div class="plzr-sub">.plzr</div>
+          </div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label">Distribution at Scale</div>
+          <div class="plzr-line"></div>
+          <div class="plzr-label">Revenue at Scale</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMAIL CAPTURE -->
+  <section class="hero">
+    <div class="hero-subline" style="margin-bottom:16px;">
+      Enter Email to Keep Abreast of Developments
+    </div>
+    <form id="emailForm"
+          action="https://script.google.com/macros/s/AKfycbzUfRw-L2U8wxV3fv8GDRic8JNwtxKEBsJhbrQtwNNiqe9CoJOTlq-DROinO-jVAARM3w/exec"
+          method="POST"
+          class="flex flex-col sm:flex-row gap-3 w-full max-w-xl mx-auto">
+
+      <input type="email" name="email" required
+             placeholder="Enter Email Receive Updates"
+             class="flex-1 rounded px-4 py-3 text-black placeholder-gray-500">
+
+      <button type="submit"
+              class="bg-red-600 hover:bg-red-700 rounded px-6 py-3 font-semibold flex items-center justify-center min-w-[9rem]">
+        Submit ▶
+      </button>
+    </form>
+  </section>
+
+  <!-- ABOUT US -->
+  <section>
+    <h2 class="productions-title">About Us</h2>
+    <div class="hero-subline">
+      We are live event producers and have toured events globally. <br><br>
+      Live Nation asked us to bring one of our formats to 100s of their venues.<br>
+      We simply could not deliver the quality of production we needed at that scale<br>
+      ...so we built Cloudplzr.<br>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2025 Cloudplzr. All rights reserved.
+  </footer>
 
 </div>
 
+<!-- SCRIPTS -->
 <script>
-/* Clone spaces strip for infinite loop */
-const strip = document.getElementById("spacesStrip");
-if (strip) {
-  const clone = strip.cloneNode(true);
-  strip.parentNode.appendChild(clone);
+/* EMAIL FORM */
+const emailForm = document.getElementById('emailForm');
+if (emailForm) {
+  emailForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const form  = e.target;
+    const email = form.email.value.trim();
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button.innerHTML;
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Please enter a valid email address.');
+      form.email.focus();
+      return;
+    }
+
+    button.disabled = true;
+    button.innerHTML =
+      `<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24">
+         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+       </svg>Loading...`;
+
+    try{
+      const res = await fetch(form.action, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email })
+      });
+      if (res.type === 'opaque' || res.ok) {
+        window.location.href = 'experiences.html';
+      } else {
+        throw new Error('submit failed');
+      }
+    } catch {
+      alert('Sorry, something went wrong. Please try again.');
+      button.disabled = false;
+      button.innerHTML = originalText;
+    }
+  });
+}
+
+/* LOGO ROTATION FOR FORMAT TABLETS */
+const PLZR_CONFIG = {
+  intervalBase: 1500,
+  intervalJitter: 500,
+  folders: {
+    streamers: 'streamers',
+    movies: 'movies',
+    music: 'music',
+    experience: 'experience'
+  },
+  images: {
+    streamers: ['bbc.png','disney.png','netflix.png','paramount.png','prime.png','tencent.png','tubi.png','youtube.png'],
+    movies: ['amc.png','cineworld.png','loews.png','odeon.png','regal.png','vue.png'],
+    music: ['amazon.png','apple.png','deezer.png','iheart.png','spotify.png','tidal.png','tunein.png'],
+    experience: ['aeg.png','amg.png','eventbrite.png','fever.png','hardrock.png','insomniac.png','livenation.png','mgm.png','netflix.png','ticketmaster.png','westfield.png']
+  }
+};
+
+// preload logo images
+(function preload(){
+  for (const [cat, list] of Object.entries(PLZR_CONFIG.images)) {
+    list.forEach(file=>{
+      const img = new Image();
+      img.src = `/${PLZR_CONFIG.folders[cat]}/${file}`;
+    });
+  }
+})();
+
+// rotating logos with jitter
+document.querySelectorAll('.plzr-col').forEach(col=>{
+  const cat = col.getAttribute('data-category');
+  const imgEl = col.querySelector('.plzr-logo img');
+  const files = PLZR_CONFIG.images[cat] || [];
+  let idx = 0;
+
+  if (!files.length || !imgEl) return;
+
+  function setSrc(i){
+    imgEl.src = `/${PLZR_CONFIG.folders[cat]}/${files[i % files.length]}`;
+  }
+
+  function scheduleNext() {
+    const base = PLZR_CONFIG.intervalBase;
+    const j = PLZR_CONFIG.intervalJitter;
+    const delay = base + (Math.random()*2*j - j);
+    setTimeout(() => {
+      idx = (idx + 1) % files.length;
+      setSrc(idx);
+      scheduleNext();
+    }, Math.max(400, delay));
+  }
+
+  setSrc(idx);
+  scheduleNext();
+});
+
+// main grid carousel (video/audio/etc) - mobile only
+const grid = document.querySelector('.plzr-grid');
+const leftArrow = document.querySelector('.plzr-arrow-left');
+const rightArrow = document.querySelector('.plzr-arrow-right');
+
+function scrollByCard(dir) {
+  if (!grid) return;
+  const card = grid.querySelector('.plzr-card');
+  if (!card) return;
+  const amount = card.offsetWidth + 16;
+  grid.scrollBy({ left: dir * amount, behavior: 'smooth' });
+}
+
+if (leftArrow && rightArrow && grid) {
+  leftArrow.addEventListener('click', () => scrollByCard(-1));
+  rightArrow.addEventListener('click', () => scrollByCard(1));
+}
+
+/* PRODUCTIONS INFINITE CAROUSEL */
+const prodGrid = document.querySelector('.productions-grid');
+const prodLeft = document.querySelector('.prod-arrow-left');
+const prodRight = document.querySelector('.prod-arrow-right');
+
+if (prodGrid) {
+  const originalCards = Array.from(prodGrid.children);
+  if (originalCards.length) {
+    // clone original set to the end
+    originalCards.forEach(card => {
+      const clone = card.cloneNode(true);
+      prodGrid.appendChild(clone);
+    });
+    // clone original set to the beginning
+    originalCards.slice().reverse().forEach(card => {
+      const clone = card.cloneNode(true);
+      prodGrid.insertBefore(clone, prodGrid.firstChild);
+    });
+
+    function getThirdWidth() {
+      return prodGrid.scrollWidth / 3;
+    }
+
+    // start in the middle block (originals)
+    prodGrid.scrollLeft = getThirdWidth();
+
+    function normaliseScroll() {
+      const third = getThirdWidth();
+      const left = prodGrid.scrollLeft;
+      if (left < third * 0.5) {
+        prodGrid.scrollLeft = left + third;
+      } else if (left > third * 1.5) {
+        prodGrid.scrollLeft = left - third;
+      }
+    }
+
+    let scrollTimeout;
+    prodGrid.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(normaliseScroll, 250);
+    });
+
+    function prodScrollByCard(dir) {
+      const card = prodGrid.querySelector('.production-card');
+      if (!card) return;
+      const amount = card.offsetWidth + 22;
+      prodGrid.scrollBy({ left: dir * amount, behavior: 'smooth' });
+      setTimeout(normaliseScroll, 500);
+    }
+
+    if (prodLeft && prodRight) {
+      prodRight.addEventListener('click', () => prodScrollByCard(1));
+      prodLeft.addEventListener('click', () => prodScrollByCard(-1));
+    }
+
+    // reveal after setup to avoid glitch
+    prodGrid.classList.add('ready');
+  }
+}
+
+/* SPACES AUTO SCROLL (DESKTOP ONLY) */
+const spacesWrapper = document.querySelector('.spaces-strip-wrapper');
+const spacesStrip = document.querySelector('.spaces-strip');
+
+if (spacesWrapper && spacesStrip) {
+  let lastTs = null;
+  const speed = 0.25; // pixels per ms
+
+  function step(ts) {
+    if (lastTs === null) lastTs = ts;
+    const dt = ts - lastTs;
+    lastTs = ts;
+
+    if (window.innerWidth >= 769) {
+      spacesWrapper.scrollLeft += speed * dt;
+      const maxScroll = spacesStrip.scrollWidth - spacesWrapper.clientWidth;
+      if (spacesWrapper.scrollLeft >= maxScroll) {
+        spacesWrapper.scrollLeft = 0;
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  requestAnimationFrame(step);
 }
 </script>
-
 </body>
 </html>
