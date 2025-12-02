@@ -6,7 +6,6 @@
 <title>Cloudplzr</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
-<!-- Tailwind for the email form -->
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 
 <style>
@@ -247,8 +246,8 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     padding: 10px 0 20px;
-    scrollbar-width: none; /* Firefox */
-    opacity: 0;            /* prevent load glitch */
+    scrollbar-width: none;
+    opacity: 0;            /* hidden until JS ready */
     transition: opacity 0.25s ease;
   }
 
@@ -257,7 +256,7 @@
   }
 
   .productions-grid::-webkit-scrollbar {
-    display: none; /* Chrome / Safari */
+    display: none;
   }
 
   .production-card {
@@ -271,6 +270,8 @@
 
   .production-img {
     width: 100%;
+    aspect-ratio: 4 / 5;   /* poster-ish; stabilises layout */
+    height: auto;
     border-radius: 22px;
     border: 1px solid var(--border);
     object-fit: cover;
@@ -311,50 +312,46 @@
   .prod-arrow-left { left: 8px; }
   .prod-arrow-right { right: 8px; }
 
-  /* SPACES STRIP (INFINITE SCROLL ON DESKTOP, SWIPE ON MOBILE) */
-
-/* DESKTOP: four equal squares matching the 4-column lozenge grid */
-@media (min-width: 769px) {
+  /* SPACES STRIP (VENUES IMAGES) */
 
   .spaces-strip-wrapper {
-    max-width: 1240px;       /* match your .page width */
+    max-width: 1240px;
     margin: 20px auto;
+    overflow: hidden;
   }
 
   .spaces-strip {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);  /* four equal items */
-    gap: 22px;                               /* match lozenges gap */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
     width: 100%;
   }
 
   .space-img {
     width: 100%;
-    aspect-ratio: 1 / 1;     /* forces perfect square */
-    object-fit: cover;       /* fills the square cleanly */
-    border-radius: 16px;     /* optional – you can remove */
+    aspect-ratio: 1 / 1;    /* perfect squares */
+    object-fit: cover;
+    border-radius: 16px;
     border: 1px solid var(--border);
+    display: block;
   }
-}
-
-
 
   @media (max-width: 768px) {
     .spaces-strip-wrapper {
-      overflow-x: auto;              /* mobile: manual swipe */
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
 
     .spaces-strip {
+      display: flex;
+      gap: 16px;
       width: max-content;
     }
 
     .space-img {
-      width: 90vw;
-      height: auto;
+      width: 80vw;          /* large square */
       flex: 0 0 auto;
-      display: block;
-      border-radius: 0;
+      border-radius: 16px;
     }
   }
 
@@ -412,7 +409,7 @@
     <div class="hero-logo">Cloudplzr / Games Lab</div>
   </section>
 
-  <!-- PRODUCTIONS (TOP, INFINITE CAROUSEL) -->
+  <!-- PRODUCTIONS (INFINITE CAROUSEL) -->
   <section class="productions-section">
     <h2 class="productions-title">PRODUCTIONS</h2>
 
@@ -792,65 +789,63 @@ if (leftArrow && rightArrow && grid) {
   rightArrow.addEventListener('click', () => scrollByCard(1));
 }
 
-/* PRODUCTIONS INFINITE CAROUSEL */
-const prodGrid = document.querySelector('.productions-grid');
-const prodLeft = document.querySelector('.prod-arrow-left');
-const prodRight = document.querySelector('.prod-arrow-right');
+/* PRODUCTIONS INFINITE CAROUSEL – initialise after load */
+window.addEventListener('load', () => {
+  const prodGrid = document.querySelector('.productions-grid');
+  const prodLeft = document.querySelector('.prod-arrow-left');
+  const prodRight = document.querySelector('.prod-arrow-right');
 
-if (prodGrid) {
+  if (!prodGrid) return;
+
   const originalCards = Array.from(prodGrid.children);
-  if (originalCards.length) {
-    // clone original set to the end
-    originalCards.forEach(card => {
-      const clone = card.cloneNode(true);
-      prodGrid.appendChild(clone);
-    });
-    // clone original set to the beginning
-    originalCards.slice().reverse().forEach(card => {
-      const clone = card.cloneNode(true);
-      prodGrid.insertBefore(clone, prodGrid.firstChild);
-    });
+  if (!originalCards.length) return;
 
-    function getThirdWidth() {
-      return prodGrid.scrollWidth / 3;
+  // clone original set to the end
+  originalCards.forEach(card => {
+    const clone = card.cloneNode(true);
+    prodGrid.appendChild(clone);
+  });
+
+  // clone original set to the beginning
+  originalCards.slice().reverse().forEach(card => {
+    const clone = card.cloneNode(true);
+    prodGrid.insertBefore(clone, prodGrid.firstChild);
+  });
+
+  const third = prodGrid.scrollWidth / 3;
+
+  prodGrid.scrollLeft = third;
+
+  function normaliseScroll() {
+    const left = prodGrid.scrollLeft;
+    if (left < third * 0.5) {
+      prodGrid.scrollLeft = left + third;
+    } else if (left > third * 1.5) {
+      prodGrid.scrollLeft = left - third;
     }
-
-    // start in the middle block (originals)
-    prodGrid.scrollLeft = getThirdWidth();
-
-    function normaliseScroll() {
-      const third = getThirdWidth();
-      const left = prodGrid.scrollLeft;
-      if (left < third * 0.5) {
-        prodGrid.scrollLeft = left + third;
-      } else if (left > third * 1.5) {
-        prodGrid.scrollLeft = left - third;
-      }
-    }
-
-    let scrollTimeout;
-    prodGrid.addEventListener('scroll', () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(normaliseScroll, 250);
-    });
-
-    function prodScrollByCard(dir) {
-      const card = prodGrid.querySelector('.production-card');
-      if (!card) return;
-      const amount = card.offsetWidth + 22;
-      prodGrid.scrollBy({ left: dir * amount, behavior: 'smooth' });
-      setTimeout(normaliseScroll, 500);
-    }
-
-    if (prodLeft && prodRight) {
-      prodRight.addEventListener('click', () => prodScrollByCard(1));
-      prodLeft.addEventListener('click', () => prodScrollByCard(-1));
-    }
-
-    // reveal after setup to avoid glitch
-    prodGrid.classList.add('ready');
   }
-}
+
+  let scrollTimeout;
+  prodGrid.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(normaliseScroll, 250);
+  });
+
+  function prodScrollByCard(dir) {
+    const card = prodGrid.querySelector('.production-card');
+    if (!card) return;
+    const amount = card.offsetWidth + 22;
+    prodGrid.scrollBy({ left: dir * amount, behavior: 'smooth' });
+    setTimeout(normaliseScroll, 500);
+  }
+
+  if (prodLeft && prodRight) {
+    prodRight.addEventListener('click', () => prodScrollByCard(1));
+    prodLeft.addEventListener('click', () => prodScrollByCard(-1));
+  }
+
+  prodGrid.classList.add('ready');
+});
 
 /* SPACES AUTO SCROLL (DESKTOP ONLY) */
 const spacesWrapper = document.querySelector('.spaces-strip-wrapper');
@@ -881,5 +876,3 @@ if (spacesWrapper && spacesStrip) {
 </script>
 </body>
 </html>
-
-
