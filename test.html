@@ -311,6 +311,30 @@
   .prod-arrow-left { left: 8px; }
   .prod-arrow-right { right: 8px; }
 
+  /* SPACES STRIP (NEW) */
+
+  .spaces-strip-wrapper {
+    width: 100%;
+    margin: 28px auto 16px;
+  }
+
+  .spaces-strip {
+    display: flex;
+    width: 100%;
+    gap: 0;
+    overflow: hidden;
+    border-radius: 0; /* square edges */
+  }
+
+  .space-img {
+    flex: 1 1 25%;
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    display: block;
+    border-radius: 0; /* force square */
+  }
+
   /* FOOTER */
 
   .footer {
@@ -323,7 +347,7 @@
 
   /* MOBILE */
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     .hero-logo {
       font-size: 32px;
     }
@@ -353,6 +377,22 @@
     .production-card {
       flex: 0 0 75%;
       flex-shrink: 0;
+    }
+
+    /* spaces strip on mobile: big + scrollable */
+    .spaces-strip-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .spaces-strip {
+      width: max-content;
+    }
+
+    .space-img {
+      width: 90vw;
+      height: auto;
+      flex: 0 0 auto;
     }
   }
 </style>
@@ -424,8 +464,6 @@
           <div class="production-link">End of the World Show</div>
         </div>
 
-        <!-- Any further productions you add: just add more .production-card blocks here -->
-
       </div>
 
       <button class="prod-arrow prod-arrow-right" aria-label="Next">›</button>
@@ -464,9 +502,14 @@
     </div>
   </section>
 
-  <!-- SPACES IMAGE ABOVE FORMAT TABLETS -->
-  <div class="hero-image">
-    <img src="/productions/spaces.png" alt="Target spaces">
+  <!-- SPACES STRIP (NEW) -->
+  <div class="spaces-strip-wrapper">
+    <div class="spaces-strip">
+      <img src="/productions/cruise.png" alt="Cruise Ships" class="space-img">
+      <img src="/productions/sports.png" alt="Sports Bars" class="space-img">
+      <img src="/productions/hotels.png" alt="Hotels" class="space-img">
+      <img src="/productions/venues.png" alt="Venues" class="space-img">
+    </div>
   </div>
 
   <!-- FOUR INDUSTRY BOXES -->
@@ -804,5 +847,3 @@ if (prodGrid) {
 </script>
 </body>
 </html>
-
-
