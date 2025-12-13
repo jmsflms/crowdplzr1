@@ -9,7 +9,36 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :root { color-scheme: dark; }
+    :root {
+      color-scheme: dark;
+      /* --- Depth controls (subtle) --- */
+      --bg: #0b0d10;         /* lifted “black” base */
+      --panel: #07090c;      /* slightly deeper surface */
+      --stroke: rgba(255,255,255,0.08);
+      --panel2: rgba(255,255,255,0.035);
+      --panel3: rgba(255,255,255,0.025);
+    }
+
+    /* Background depth (keeps it “black”, but not flat) */
+    html, body { height: 100%; }
+    body{
+      background:
+        linear-gradient(180deg, rgba(70,120,255,0.04), rgba(0,0,0,0)),
+        var(--bg);
+    }
+
+    /* Vignette to give depth */
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at top, rgba(255,255,255,0.04), rgba(0,0,0,0.92) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Make Tailwind content sit above vignette */
+    main { position: relative; z-index: 1; }
 
     @keyframes marquee {
       0%   { transform: translateX(0); }
@@ -26,6 +55,7 @@
       animation-play-state: paused;
     }
 
+    /* KEEP LOGO FUNCTIONALITY EXACTLY: only visual tweaks are OK */
     .logo {
       height: 38px;
       width: auto;
@@ -43,34 +73,80 @@
     @media (prefers-reduced-motion: reduce) {
       .marquee-track { animation: none; }
     }
+
+    /* Panels: add subtle “surface” separation without changing layout */
+    .panel {
+      background: rgba(7,9,12,0.92); /* reads as black, but distinct from bg */
+      border: 1px solid var(--stroke);
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.60),
+        inset 0 1px 0 rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+
+    /* Slightly different panel for marquee to help it pop */
+    .panel-marquee{
+      background: rgba(7,9,12,0.78);
+      border: 1px solid var(--stroke);
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.55),
+        inset 0 1px 0 rgba(255,255,255,0.025);
+      backdrop-filter: blur(6px);
+    }
   </style>
 </head>
 
-<body class="min-h-screen bg-zinc-950 text-zinc-100">
+<body class="min-h-screen text-zinc-100">
 
   <main class="mx-auto max-w-5xl px-6 py-12 space-y-12">
 
     <!-- HEADER -->
     <header class="space-y-4">
-      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">James Gordon</h1>
+      <!-- Better mobile heading scale + line-height -->
+      <h1 class="text-[clamp(30px,8vw,56px)] leading-[1.05] font-semibold tracking-tight">
+        James Gordon
+      </h1>
 
-      <p class="text-zinc-300">
-        <a href="mailto:jmsflms@gmail.com" class="underline">jmsflms@gmail.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="tel:+17259105068" class="underline">+1 725 910 5068</a>
+      <!-- Contact (kept simple) -->
+      <p class="text-zinc-300 text-sm sm:text-base">
+        <a href="mailto:jmsflms@gmail.com" class="underline decoration-zinc-500 underline-offset-4 hover:decoration-zinc-200">jmsflms@gmail.com</a>
+        <span class="mx-2 text-zinc-600 hidden sm:inline">|</span>
+        <a href="tel:+17259105068" class="underline decoration-zinc-500 underline-offset-4 hover:decoration-zinc-200">+1 725 910 5068</a>
       </p>
 
-      <p class="text-zinc-300">
-        <a href="https://cloudplzr.com" class="underline" target="_blank">cloudplzr.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="https://hijingo.com" class="underline" target="_blank">hijingo.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="https://rebelbingo.com" class="underline" target="_blank">rebelbingo.com</a>
+      <!-- Links: pills on mobile, inline on desktop -->
+      <div class="flex flex-wrap gap-2 sm:gap-0 text-zinc-300 text-sm sm:text-base">
+        <a href="https://cloudplzr.com" target="_blank"
+           class="sm:underline sm:decoration-zinc-500 sm:underline-offset-4 sm:hover:decoration-zinc-200
+                  px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 sm:bg-transparent sm:border-0 sm:px-0 sm:py-0">
+          cloudplzr.com
+        </a>
+
+        <span class="mx-2 text-zinc-600 hidden sm:inline">|</span>
+
+        <a href="https://hijingo.com" target="_blank"
+           class="sm:underline sm:decoration-zinc-500 sm:underline-offset-4 sm:hover:decoration-zinc-200
+                  px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 sm:bg-transparent sm:border-0 sm:px-0 sm:py-0">
+          hijingo.com
+        </a>
+
+        <span class="mx-2 text-zinc-600 hidden sm:inline">|</span>
+
+        <a href="https://rebelbingo.com" target="_blank"
+           class="sm:underline sm:decoration-zinc-500 sm:underline-offset-4 sm:hover:decoration-zinc-200
+                  px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 sm:bg-transparent sm:border-0 sm:px-0 sm:py-0">
+          rebelbingo.com
+        </a>
+      </div>
+
+      <!-- Optional positioning line (quiet, helps mobile) -->
+      <p class="text-zinc-400 text-sm">
+        Creative Producer • Formats • Live Entertainment • Show-Control
       </p>
     </header>
 
     <!-- INTRO -->
-    <section class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 space-y-4">
+    <section class="panel rounded-2xl p-6 space-y-4">
       <p class="text-lg">
         <strong>Introduction:</strong> I develop, sell and execute creative concepts
       </p>
@@ -98,10 +174,11 @@
     <section>
       <div class="flex justify-between mb-2 text-sm text-zinc-400">
         <span>Selected brands</span>
-        <span>hover to pause</span>
+        <span class="hidden sm:inline">hover to pause</span>
       </div>
 
-      <div class="marquee overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30">
+      <!-- ONLY style changed: panel-marquee adds separation. Function unchanged. -->
+      <div class="marquee overflow-hidden rounded-2xl panel-marquee">
         <div id="marqueeTrack" class="flex gap-10 px-6 py-5 marquee-track"></div>
       </div>
     </section>
@@ -112,7 +189,7 @@
 
       <div class="grid sm:grid-cols-3 gap-6">
 
-        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-3">
+        <div class="rounded-2xl panel p-3">
           <iframe class="w-full aspect-video rounded-xl"
             src="https://www.youtube-nocookie.com/embed/hStAybmXWVo"
             loading="lazy" allowfullscreen></iframe>
@@ -121,7 +198,7 @@
           </p>
         </div>
 
-        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-3">
+        <div class="rounded-2xl panel p-3">
           <iframe class="w-full aspect-video rounded-xl"
             src="https://www.youtube-nocookie.com/embed/S7DJdKuui3M"
             loading="lazy" allowfullscreen></iframe>
@@ -130,7 +207,7 @@
           </p>
         </div>
 
-        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-3">
+        <div class="rounded-2xl panel p-3">
           <iframe class="w-full aspect-video rounded-xl"
             src="https://www.youtube-nocookie.com/embed/745COB0I6vg"
             loading="lazy" allowfullscreen></iframe>
@@ -144,7 +221,7 @@
 
     <!-- DETAIL -->
     <section class="grid sm:grid-cols-2 gap-6">
-      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6">
+      <div class="rounded-2xl panel p-6">
         <h3 class="font-semibold mb-2">HIJINGO</h3>
         <p class="text-sm text-zinc-300">
           Developed and raised private equity for a 7-day-a-week immersive venue operating at capacity
@@ -152,7 +229,7 @@
         </p>
       </div>
 
-      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6">
+      <div class="rounded-2xl panel p-6">
         <h3 class="font-semibold mb-2">CLOUDPLZR</h3>
         <p class="text-sm text-zinc-300">
           An open proprietary software layer allowing creative IP to scale across physical locations.
@@ -167,7 +244,7 @@
 
   </main>
 
-  <!-- LOGO SCRIPT (SAFE URLs + FALLBACKS) -->
+  <!-- LOGO SCRIPT (UNCHANGED) -->
   <script>
     const logos = [
       ["BBC", "https://commons.wikimedia.org/wiki/Special:FilePath/BBC%20Logo%202021.svg"],
