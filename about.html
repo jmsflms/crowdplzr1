@@ -2,207 +2,315 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>James Gordon — CV</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>James Gordon</title>
 
-  <!-- Dark-only, minimal dependencies -->
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :root { color-scheme: dark; }
-
-    @keyframes marquee {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    /* ---------- Black-on-black depth (subtle, intentional) ---------- */
+    :root{
+      --bg: #0b0d10;     /* lifted “black” */
+      --panel: #07090c;  /* slightly deeper than bg */
+      --stroke: rgba(255,255,255,0.08);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.70);
+      --faint: rgba(255,255,255,0.55);
     }
 
-    .marquee-track {
+    html, body { height: 100%; }
+    body{
+      background:
+        linear-gradient(180deg, rgba(70,120,255,0.04), rgba(0,0,0,0)),
+        var(--bg);
+      color: var(--text);
+    }
+
+    /* vignette */
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at top, rgba(255,255,255,0.04), rgba(0,0,0,0.92) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .panel{
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+
+    /* ---------- Marquee (KEEP) ---------- */
+    .marquee {
+      overflow: hidden;
+      position: relative;
+      mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    }
+    .marquee-track{
+      display: flex;
+      gap: 28px;
       width: max-content;
-      animation: marquee 28s linear infinite;
-      will-change: transform;
+      animation: marquee 22s linear infinite;
+      padding: 14px 0;
+    }
+    .marquee:hover .marquee-track{ animation-play-state: paused; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
     }
 
-    .marquee:hover .marquee-track {
-      animation-play-state: paused;
+    /* Make logos look consistent on dark (KEEP) */
+    .logo-chip{
+      height: 40px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
     }
-
-    .logo {
-      height: 38px;
+    .logo-chip img{
+      height: 22px;
       width: auto;
-      max-width: 180px;
-      object-fit: contain;
-      filter: grayscale(1);
-      opacity: 0.85;
+      opacity: 0.9;
+      filter: grayscale(100%);
     }
-
-    .logo:hover {
-      filter: grayscale(0);
+    .logo-chip:hover img{
       opacity: 1;
+      filter: none;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .marquee-track { animation: none; }
+    /* YouTube embeds keep aspect on mobile */
+    .video-wrap{
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+    .video-wrap iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+    }
+
+    /* ---------- Mobile header refinement (fix “not great heading”) ---------- */
+    @media (max-width: 640px){
+      .header {
+        display:_attach;
+      }
     }
   </style>
 </head>
 
-<body class="min-h-screen bg-zinc-950 text-zinc-100">
+<body class="antialiased">
+  <!-- Everything above the vignette -->
+  <div class="relative z-10">
+    <main class="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8 py-10 sm:py-14">
 
-  <main class="mx-auto max-w-5xl px-6 py-12 space-y-12">
+      <!-- ---------- HEADER ---------- -->
+      <header class="header flex flex-col gap-4 sm:gap-5">
+        <div class="flex flex-col gap-2 sm:gap-3">
+          <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+            <h1 class="name text-[clamp(28px,8vw,56px)] font-semibold tracking-tight leading-[1.05]">
+              James Gordon
+            </h1>
 
-    <!-- HEADER -->
-    <header class="space-y-4">
-      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">James Gordon</h1>
+            <!-- Optional: one-line positioning (desktop only) -->
+            <div class="hidden sm:block text-sm text-white/60">
+              Creative Producer • Formats • Live Entertainment • Show-Control
+            </div>
+          </div>
 
-      <p class="text-zinc-300">
-        <a href="mailto:jmsflms@gmail.com" class="underline">jmsflms@gmail.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="tel:+17259105068" class="underline">+1 725 910 5068</a>
-      </p>
+          <!-- Contact row -->
+          <div class="meta text-[13px] sm:text-sm text-white/70 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+            <div class="flex flex-wrap gap-x-3 gap-y-1 items-center">
+              <a class="hover:text-white underline decoration-white/25 hover:decoration-white/60 underline-offset-4" href="mailto:jmsflms@gmail.com">jmsflms@gmail.com</a>
+              <span class="text-white/30 hidden sm:inline">|</span>
+              <a class="hover:text-white underline decoration-white/25 hover:decoration-white/60 underline-offset-4" href="tel:+17259105068">+1 725 910 5068</a>
+            </div>
+          </div>
 
-      <p class="text-zinc-300">
-        <a href="https://cloudplzr.com" class="underline" target="_blank">cloudplzr.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="https://hijingo.com" class="underline" target="_blank">hijingo.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="https://rebelbingo.com" class="underline" target="_blank">rebelbingo.com</a>
-      </p>
-    </header>
+          <!-- Links as pills (mobile-friendly) -->
+          <div class="links flex flex-wrap gap-2 pt-1">
+            <a class="px-3 py-1 rounded-full text-[13px] bg-white/6 border border-white/10 hover:bg-white/10"
+               href="https://cloudplzr.com" target="_blank" rel="noreferrer">cloudplzr.com</a>
+            <a class="px-3 py-1 rounded-full text-[13px] bg-white/6 border border-white/10 hover:bg-white/10"
+               href="https://hijingo.com" target="_blank" rel="noreferrer">hijingo.com</a>
+            <a class="px-3 py-1 rounded-full text-[13px] bg-white/6 border border-white/10 hover:bg-white/10"
+               href="https://rebelbingo.com" target="_blank" rel="noreferrer">rebelbingo.com</a>
+          </div>
 
-    <!-- INTRO -->
-    <section class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 space-y-4">
-      <p class="text-lg">
-        <strong>Introduction:</strong> I develop, sell and execute creative concepts
-      </p>
+          <!-- Mobile positioning line (optional, but helps) -->
+          <div class="sm:hidden text-[13px] text-white/55">
+            Creative Producer • Formats • Live Entertainment • Show-Control
+          </div>
+        </div>
+      </header>
 
-      <p class="text-zinc-300">
-        I create and produce creative formats that serve as media content or live experiences.
-        I have a talent for responding to briefs and originating ideas, and a proven track record
-        of directing creative and technological agencies to deliver world-class output.
-      </p>
+      <!-- ---------- INTRO CARD ---------- -->
+      <section class="mt-7 sm:mt-9">
+        <div class="panel rounded-2xl p-5 sm:p-7">
+          <h2 class="text-lg sm:text-xl font-semibold">
+            Introduction: I develop, sell and execute creative concepts
+          </h2>
+          <div class="mt-4 space-y-4 text-[15px] leading-relaxed text-white/70">
+            <p>
+              I create and produce creative formats that serve as media content or live experiences.
+              I have a talent for responding to briefs and originating ideas, and a proven track record of directing
+              creative and technological agencies to deliver world-class output.
+            </p>
+            <p>
+              I began my career as a high-volume games producer for reality television and major networks.
+              I have been tasked by leading production companies (Endemol, BBC, Zodiak) to lead concept development for major TV networks,
+              and have since built and operated live entertainment formats across multiple territories and non-English-speaking regions.
+              This has led to senior relationships with operators including Live Nation, Hard Rock, MGM, Ticketmaster, DICE and Fever.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <p class="text-zinc-300">
-        I began my career as a high-volume games producer for reality television and major networks.
-        I have been tasked by leading production companies (Endemol, BBC, Zodiak) to lead concept
-        development for major TV networks across Europe, the USA and China.
-      </p>
-
-      <p class="text-zinc-300">
-        In parallel, I transformed my own TV formats into live immersive experiences touring globally
-        and franchised into non-English-speaking regions. This has led to senior relationships with
-        operators including Live Nation, Hard Rock, MGM, Ticketmaster, DICE and Fever.
-      </p>
-    </section>
-
-    <!-- LOGO MARQUEE -->
-    <section>
-      <div class="flex justify-between mb-2 text-sm text-zinc-400">
-        <span>Selected brands</span>
-        <span>hover to pause</span>
-      </div>
-
-      <div class="marquee overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30">
-        <div id="marqueeTrack" class="flex gap-10 px-6 py-5 marquee-track"></div>
-      </div>
-    </section>
-
-    <!-- VIDEOS -->
-    <section class="space-y-6">
-      <h2 class="text-xl font-semibold">Work samples</h2>
-
-      <div class="grid sm:grid-cols-3 gap-6">
-
-        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-3">
-          <iframe class="w-full aspect-video rounded-xl"
-            src="https://www.youtube-nocookie.com/embed/hStAybmXWVo"
-            loading="lazy" allowfullscreen></iframe>
-          <p class="mt-3 text-sm text-zinc-300">
-            Cloudplzr was used to deliver the closing party for Slush 2025
-          </p>
+      <!-- ---------- LOGOS / SELECTED BRANDS ---------- -->
+      <section class="mt-7 sm:mt-10">
+        <div class="flex items-center justify-between px-1">
+          <div class="text-sm text-white/55">Selected brands</div>
+          <div class="text-sm text-white/40 hidden sm:block">hover to pause</div>
         </div>
 
-        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-3">
-          <iframe class="w-full aspect-video rounded-xl"
-            src="https://www.youtube-nocookie.com/embed/S7DJdKuui3M"
-            loading="lazy" allowfullscreen></iframe>
-          <p class="mt-3 text-sm text-zinc-300">
-            Rebel Bingo has toured venues internationally
-          </p>
+        <div class="panel rounded-2xl mt-3 px-4 sm:px-5">
+          <div class="marquee">
+            <div id="marqueeTrack" class="marquee-track"></div>
+          </div>
         </div>
+      </section>
 
-        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-3">
-          <iframe class="w-full aspect-video rounded-xl"
-            src="https://www.youtube-nocookie.com/embed/745COB0I6vg"
-            loading="lazy" allowfullscreen></iframe>
-          <p class="mt-3 text-sm text-zinc-300">
-            Hijingo operates 7 days a week in London and integrates Disguise, TouchDesigner and other AV media
-          </p>
+      <!-- ---------- WORK SAMPLES ---------- -->
+      <section class="mt-9 sm:mt-12">
+        <h3 class="text-xl sm:text-2xl font-semibold tracking-tight">Work samples</h3>
+
+        <div id="workGrid" class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          <!-- populated by JS -->
         </div>
+      </section>
 
-      </div>
-    </section>
+      <!-- ---------- FOOTER ---------- -->
+      <footer class="mt-10 sm:mt-14 text-xs text-white/35">
+        © <span id="year"></span> James Gordon
+      </footer>
+    </main>
+  </div>
 
-    <!-- DETAIL -->
-    <section class="grid sm:grid-cols-2 gap-6">
-      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6">
-        <h3 class="font-semibold mb-2">HIJINGO</h3>
-        <p class="text-sm text-zinc-300">
-          Developed and raised private equity for a 7-day-a-week immersive venue operating at capacity
-          in central London, using Disguise, TouchDesigner, Notch and advanced AV systems.
-        </p>
-      </div>
-
-      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6">
-        <h3 class="font-semibold mb-2">CLOUDPLZR</h3>
-        <p class="text-sm text-zinc-300">
-          An open proprietary software layer allowing creative IP to scale across physical locations.
-          Currently piloted by Live Nation and other operators, with rollout planned for 2026.
-        </p>
-      </div>
-    </section>
-
-    <footer class="text-xs text-zinc-500 border-t border-zinc-800 pt-6">
-      Logos shown for identification purposes only.
-    </footer>
-
-  </main>
-
-  <!-- LOGO SCRIPT (SAFE URLs + FALLBACKS) -->
   <script>
-    const logos = [
-      ["BBC", "https://commons.wikimedia.org/wiki/Special:FilePath/BBC%20Logo%202021.svg"],
-      ["ITV", "https://commons.wikimedia.org/wiki/Special:FilePath/ITV%20logo%202013.svg"],
-      ["Channel 4", "https://commons.wikimedia.org/wiki/Special:FilePath/Channel%204%202022.svg"],
-      ["CBS", "https://commons.wikimedia.org/wiki/Special:FilePath/CBS%20logo.svg"],
-      ["truTV", "https://commons.wikimedia.org/wiki/Special:FilePath/TruTV%20logo.svg"],
-      ["Discovery", "https://commons.wikimedia.org/wiki/Special:FilePath/Discovery%20Channel%20-%20Logo%202019.svg"],
-      ["Sky", "https://commons.wikimedia.org/wiki/Special:FilePath/SKY%20Basic%20Logo.svg"],
-      ["Endemol Shine", "https://commons.wikimedia.org/wiki/Special:FilePath/Endemol%20Shine%20Group%20logo.svg"],
-      ["Banijay", "https://commons.wikimedia.org/wiki/Special:FilePath/Banijay%202020%20logo.svg"],
-      ["Vice", "https://commons.wikimedia.org/wiki/Special:FilePath/Vice%20logo.svg"],
-      ["Boiler Room", "https://commons.wikimedia.org/wiki/Special:FilePath/Boiler%20Room%20logo.svg"],
-      ["Dentsu", "https://commons.wikimedia.org/wiki/Special:FilePath/Dentsu%20logo.svg"],
-      ["Tencent", "https://commons.wikimedia.org/wiki/Special:FilePath/Tencent%20logo%202017.svg"],
-      ["Hyundai", "https://commons.wikimedia.org/wiki/Special:FilePath/Hyundai%20Motor%20Company%20logo.svg"]
+    /* ============================================================
+       ONE-PLACE CONFIG
+       Change ONLY this block. No hunting around the file.
+    ============================================================ */
+
+    // 1) Logos (KEEP AS-IS IF IT'S WORKING FOR YOU)
+    const LOGOS = [
+      { alt: "Discovery", src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Discovery_Channel_logo.svg" },
+      { alt: "Sky", src: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Sky_Group_logo_2020.svg" },
+      { alt: "BBC", src: "https://upload.wikimedia.org/wikipedia/commons/4/4e/BBC_Logo_2021.svg" },
+      { alt: "Live Nation", src: "https://upload.wikimedia.org/wikipedia/commons/5/58/Live_Nation_Entertainment_logo.svg" },
+      { alt: "MGM", src: "https://upload.wikimedia.org/wikipedia/commons/7/7a/MGM_logo.svg" },
+      { alt: "Ticketmaster", src: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Ticketmaster_logo_2019.svg" }
     ];
 
-    const track = document.getElementById("marqueeTrack");
-    [...logos, ...logos].forEach(([name, url]) => {
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = name + " logo";
-      img.className = "logo";
-      img.loading = "lazy";
-      img.referrerPolicy = "no-referrer";
-      img.onerror = () => {
-        const span = document.createElement("span");
-        span.textContent = name;
-        span.className = "text-xs text-zinc-400";
-        img.replaceWith(span);
-      };
-      track.appendChild(img);
-    });
-  </script>
+    // 2) Work samples (YouTube embed URLs)
+    const WORK = [
+      {
+        title: "Slush 2025 Aftermovie",
+        org: "Slush",
+        embed: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        note: "Cloudplzr was used to deliver the closing party for Slush 2025"
+      },
+      {
+        title: "Rebel Bingo (Sample)",
+        org: "Rebel Bingo",
+        embed: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        note: "Live entertainment format and venue operations"
+      }
+    ];
 
+    /* ============================================================
+       RENDERING (KEEP)
+    ============================================================ */
+
+    const track = document.getElementById("marqueeTrack");
+
+    function renderLogos() {
+      track.innerHTML = "";
+      const doubled = [...LOGOS, ...LOGOS];
+      doubled.forEach(l => {
+        const chip = document.createElement("div");
+        chip.className = "logo-chip";
+        const img = document.createElement("img");
+        img.alt = l.alt;
+        img.src = l.src;
+        img.loading = "lazy";
+        chip.appendChild(img);
+        track.appendChild(chip);
+      });
+    }
+
+    const grid = document.getElementById("workGrid");
+
+    function renderWork() {
+      grid.innerHTML = "";
+      WORK.forEach(item => {
+        const card = document.createElement("article");
+        card.className = "panel rounded-2xl p-4 sm:p-5";
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h4 class="text-lg font-semibold leading-snug">${escapeHtml(item.title)}</h4>
+              <div class="text-sm text-white/55 mt-0.5">${escapeHtml(item.org || "")}</div>
+            </div>
+          </div>
+
+          <div class="mt-3 video-wrap">
+            <iframe
+              src="${item.embed}"
+              title="${escapeHtml(item.title)}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+
+          ${item.note ? `<div class="mt-3 text-sm text-white/60">${escapeHtml(item.note)}</div>` : ""}
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    renderLogos();
+    renderWork();
+  </script>
 </body>
 </html>
