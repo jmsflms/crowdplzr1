@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>James Gordon — CV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { color-scheme: dark; }
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      width: max-content;
+      animation: marquee 26s linear infinite;
+      will-change: transform;
+    }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation: none; }
+      .marquee:hover .marquee-track { animation-play-state: running; }
+    }
+    .logo {
+      height: 38px;
+      width: auto;
+      max-width: 180px;
+      object-fit: contain;
+      filter: grayscale(1);
+      opacity: .85;
+    }
+    .logo:hover { filter: grayscale(0); opacity: 1; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-zinc-950 text-zinc-100">
+  <div class="mx-auto max-w-5xl px-6 py-12">
+
+    <!-- Header -->
+    <header class="space-y-5">
+      <div class="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/50 px-3 py-1 text-xs text-zinc-300">
+        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+        CV / About (hidden page)
+      </div>
+
+      <div>
+        <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">James Gordon</h1>
+        <p class="mt-2 text-zinc-300">
+          <a class="underline decoration-zinc-700 hover:decoration-zinc-200" href="mailto:jmsflms@gmail.com">jmsflms@gmail.com</a>
+          <span class="mx-2 text-zinc-600">|</span>
+          <a class="underline decoration-zinc-700 hover:decoration-zinc-200" href="tel:+17259105068">+1 725 910 5068</a>
+        </p>
+        <p class="mt-2 text-zinc-300">
+          <a class="underline decoration-zinc-700 hover:decoration-zinc-200" href="https://cloudplzr.com" target="_blank" rel="noreferrer">cloudplzr.com</a>
+          <span class="mx-2 text-zinc-600">|</span>
+          <a class="underline decoration-zinc-700 hover:decoration-zinc-200" href="https://hijingo.com" target="_blank" rel="noreferrer">hijingo.com</a>
+          <span class="mx-2 text-zinc-600">|</span>
+          <a class="underline decoration-zinc-700 hover:decoration-zinc-200" href="https://rebelbingo.com" target="_blank" rel="noreferrer">rebelbingo.com</a>
+        </p>
+      </div>
+
+      <!-- Intro block -->
+      <div class="rounded-2xl border border-zinc-800 bg-gradient-to-b from-zinc-900/50 to-zinc-950/40 p-6">
+        <p class="text-lg text-zinc-100">
+          <span class="font-semibold">Introduction:</span> I develop, sell and execute creative concepts
+        </p>
+
+        <div class="mt-4 space-y-3 text-sm leading-relaxed text-zinc-300">
+          <p>
+            I create and produce creative formats that serve as media content or live experiences. I have a talent for responding to briefs and coming up with ideas and solutions myself, but importantly have a track record of engaging and directing creative and technological agencies to deliver world class output.
+          </p>
+          <p>
+            I began this career as a high volume games producer for high volume reality TV shows; high profile projects for major networks. I have been tasked by some of the world’s biggest production companies (Endemol, BBC, Zodiak) to lead new concept development for some of the world's biggest TV networks, in Europe, USA and China.
+          </p>
+          <p>
+            In parallel to this media career, I transformed my own TV formats into live immersive experiences; these tour globally and have been successfully franchised to Non-English speaking regions. This experience has given me senior relationships with major operators like Live Nation, Hard Rock, MGM and Ticketmaster, Dice & Fever.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Logos marquee -->
+    <section class="mt-10">
+      <div class="mb-3 flex items-end justify-between">
+        <h2 class="text-sm font-semibold tracking-wide text-zinc-200">Selected brands</h2>
+        <p class="text-xs text-zinc-500">hover to pause</p>
+      </div>
+
+      <div class="marquee overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/25">
+        <div class="flex gap-10 whitespace-nowrap px-6 py-5 marquee-track" id="marqueeTrack"></div>
+      </div>
+    </section>
+
+    <!-- Videos -->
+    <section class="mt-12 space-y-6">
+      <h2 class="text-xl font-semibold">Work samples</h2>
+
+      <div class="grid gap-6 sm:grid-cols-3">
+        <!-- Cloudplzr -->
+        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/25 p-3">
+          <div class="aspect-video overflow-hidden rounded-xl">
+            <iframe
+              class="h-full w-full"
+              src="https://www.youtube-nocookie.com/embed/hStAybmXWVo"
+              title="Cloudplzr — Slush 2025"
+              frameborder="0"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+          </div>
+          <p class="mt-3 text-sm text-zinc-300">Cloudplzr was used to deliver the closing party for Slush 2025</p>
+        </div>
+
+        <!-- Rebel Bingo -->
+        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/25 p-3">
+          <div class="aspect-video overflow-hidden rounded-xl">
+            <iframe
+              class="h-full w-full"
+              src="https://www.youtube-nocookie.com/embed/S7DJdKuui3M"
+              title="Rebel Bingo"
+              frameborder="0"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+          </div>
+          <p class="mt-3 text-sm text-zinc-300">Rebel Bingo has toured venues internationally</p>
+        </div>
+
+        <!-- Hijingo -->
+        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/25 p-3">
+          <div class="aspect-video overflow-hidden rounded-xl">
+            <iframe
+              class="h-full w-full"
+              src="https://www.youtube-nocookie.com/embed/745COB0I6vg"
+              title="Hijingo"
+              frameborder="0"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+          </div>
+          <p class="mt-3 text-sm text-zinc-300">
+            Hijingo operates 7 days a week in London and has been integrated with Disguise, TouchDesigner and other AV media
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detail blocks -->
+    <section class="mt-12 grid gap-6 sm:grid-cols-2">
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/25 p-6">
+        <h3 class="text-sm font-semibold tracking-wide text-zinc-200">HIJINGO</h3>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-300">
+          During the pandemic, I developed, then raised Private Equity capital for a 7 day a week immersive experience that operates at capacity in central London. It uses sophisticated audio visual technology powered by software and incorporates Disguise, TouchDesigner, Notch and other notable AV tech.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/25 p-6">
+        <h3 class="text-sm font-semibold tracking-wide text-zinc-200">CLOUDPLZR</h3>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-300">
+          I have since developed my open proprietary software solution to allow creative intellectual property to scale across physical locations. This is currently being piloted by Live Nation and other operators and will roll out in 2026.
+        </p>
+      </div>
+    </section>
+
+    <!-- Credits + references -->
+    <section class="mt-12 rounded-2xl border border-zinc-800 bg-zinc-900/25 p-6">
+      <p class="text-sm leading-relaxed text-zinc-300">
+        I have produced and developed original content, managed edits and organised and delivered Live Shows for:
+        Vice, Boiler Room, BBC, Endemol, Meta (Facebook), CBS, Discovery, Sky, Dentsu, ITV, C4 and more.
+      </p>
+      <p class="mt-4 text-sm text-zinc-400">
+        References would be senior operators of live experiences, major media companies and world class tech agencies e.g.: COO F1 Arcade / COO Banijay / CEO Modeon
+      </p>
+    </section>
+
+    <footer class="mt-10 border-t border-zinc-800 pt-6 text-xs text-zinc-500">
+      Logos shown for identification purposes only.
+    </footer>
+  </div>
+
+  <script>
+    // One row, you asked me to choose order.
+    // Ordering logic: broadcasters/networks -> production groups -> brands/holding co -> live operator.
+    const logos = [
+      { name: "BBC", url: "https://upload.wikimedia.org/wikipedia/commons/8/8a/BBC_Logo_2021.svg" },
+      { name: "ITV", url: "https://upload.wikimedia.org/wikipedia/commons/6/6a/ITV_logo_2013.svg" },
+      { name: "Channel 4", url: "https://upload.wikimedia.org/wikipedia/commons/1/1f/Channel_4_2022.svg" },
+      { name: "CBS", url: "https://upload.wikimedia.org/wikipedia/commons/4/4b/CBS_logo.svg" },
+      { name: "truTV", url: "https://upload.wikimedia.org/wikipedia/commons/4/4f/TruTV_logo.svg" },
+      { name: "Discovery", url: "https://upload.wikimedia.org/wikipedia/commons/2/22/Discovery_Channel_-_Logo_2019.svg" },
+      { name: "Sky", url: "https://upload.wikimedia.org/wikipedia/commons/8/86/SKY_Basic_Logo.svg" },
+
+      { name: "Endemol Shine", url: "https://upload.wikimedia.org/wikipedia/commons/3/33/Endemol_Shine_Group_logo.svg" },
+      { name: "Banijay", url: "https://upload.wikimedia.org/wikipedia/commons/8/8d/Banijay_2020_logo.svg" },
+
+      { name: "Vice", url: "https://upload.wikimedia.org/wikipedia/commons/8/84/Vice_logo.svg" },
+      { name: "Boiler Room", url: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Boiler_Room_logo.svg" },
+
+      { name: "Dentsu", url: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Dentsu_logo.svg" },
+      { name: "Tencent", url: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Tencent_Logo.svg" },
+      { name: "Hyundai", url: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Hyundai_Motor_Company_logo.svg" },
+
+      // Live Nation: official newsroom image (webp)
+      { name: "Live Nation", url: "https://newsroom.livenation.com/wp-content/uploads/2025/09/LN_Logo_Primary_Red-Black-web.webp" }
+    ];
+
+    const track = document.getElementById("marqueeTrack");
+    const doubled = [...logos, ...logos];
+
+    doubled.forEach(l => {
+      const img = document.createElement("img");
+      img.src = l.url;
+      img.alt = l.name + " logo";
+      img.className = "logo";
+      img.loading = "lazy";
+      track.appendChild(img);
+    });
+  </script>
+</body>
+</html>
