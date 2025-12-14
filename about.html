@@ -73,29 +73,66 @@
     /* ensure logos sit above the glow */
     #marqueeTrack { position: relative; z-index: 1; }
 
-    /* ---------- HERO MEDIA ---------- */
-    .hero-media {
+    /* ---------- HERO VIDEO AS BACKGROUND (LETTERBOX) ---------- */
+    .hero-banner {
       position: relative;
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.03);
+      isolation: isolate;
     }
-    .hero-media::after{
+
+    /* Letterbox: wide banner on desktop, still present on mobile */
+    .hero-banner-inner {
+      position: relative;
+      z-index: 1;
+      padding: 22px;
+    }
+    @media (min-width: 640px) {
+      .hero-banner-inner { padding: 28px; }
+    }
+
+    /* The autoplaying background video */
+    .hero-banner video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      transform: scale(1.03);
+      filter: saturate(1.05) contrast(1.05);
+    }
+
+    /* Darken + add colour wash so text stays readable */
+    .hero-banner::after{
       content:"";
       position:absolute;
       inset:0;
+      z-index: 0;
       background:
-        radial-gradient(ellipse at 30% 20%, rgba(59,130,246,0.22), transparent 55%),
-        radial-gradient(ellipse at 70% 80%, rgba(255,0,0,0.18), transparent 55%),
-        linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.65));
+        radial-gradient(ellipse at 30% 20%, rgba(59,130,246,0.18), transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(255,0,0,0.14), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.78));
       pointer-events:none;
     }
-    .hero-media video{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
+
+    /* Make sure overlay sits above video + tint */
+    .hero-banner .content {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Banner height: "letterbox" */
+    .hero-banner {
+      min-height: 240px; /* mobile */
+    }
+    @media (min-width: 768px) {
+      .hero-banner { min-height: 220px; } /* desktop letterbox */
+    }
+    @media (min-width: 1024px) {
+      .hero-banner { min-height: 240px; }
     }
   </style>
 </head>
@@ -104,33 +141,41 @@
 
   <main class="mx-auto max-w-5xl px-6 py-12 space-y-12">
 
-    <!-- HEADER (now in a panel so it aligns with the intro box) -->
-    <header class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
-      <div class="grid gap-6 md:grid-cols-[1fr,300px] md:items-start">
-        <!-- Left -->
+    <!-- HEADER WITH VIDEO BEHIND (desktop + mobile) -->
+    <header class="hero-banner">
+      <video autoplay muted loop playsinline preload="metadata">
+        <source src="assets/lablights.mp4" type="video/mp4" />
+      </video>
+
+      <div class="hero-banner-inner content">
         <div class="space-y-4">
           <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-tight">James Gordon</h1>
 
-          <p class="text-zinc-300">
-            <a href="mailto:jmsflms@gmail.com" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200">jmsflms@gmail.com</a>
-            <span class="mx-2 text-zinc-600">|</span>
-            <a href="tel:+17259105068" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200">+1 725 910 5068</a>
+          <p class="text-zinc-100/85">
+            <a href="mailto:jmsflms@gmail.com"
+               class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200">
+              jmsflms@gmail.com
+            </a>
+            <span class="mx-2 text-zinc-100/35">|</span>
+            <a href="tel:+17259105068"
+               class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200">
+              +1 725 910 5068
+            </a>
           </p>
 
-          <p class="text-zinc-300">
-            <a href="https://cloudplzr.com" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200" target="_blank">cloudplzr.com</a>
-            <span class="mx-2 text-zinc-600">|</span>
-            <a href="https://hijingo.com" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200" target="_blank">hijingo.com</a>
-            <span class="mx-2 text-zinc-600">|</span>
-            <a href="https://rebelbingo.com" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200" target="_blank">rebelbingo.com</a>
+          <p class="text-zinc-100/85">
+            <a href="https://cloudplzr.com"
+               class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200"
+               target="_blank">cloudplzr.com</a>
+            <span class="mx-2 text-zinc-100/35">|</span>
+            <a href="https://hijingo.com"
+               class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200"
+               target="_blank">hijingo.com</a>
+            <span class="mx-2 text-zinc-100/35">|</span>
+            <a href="https://rebelbingo.com"
+               class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200"
+               target="_blank">rebelbingo.com</a>
           </p>
-        </div>
-
-        <!-- Right (desktop) / below (mobile): motion + colour -->
-        <div class="hero-media hero-video aspect-video md:aspect-[4/5]">
-          <video autoplay muted loop playsinline preload="metadata">
-            <source src="assets/lablights.mp4" type="video/mp4" />
-          </video>
         </div>
       </div>
     </header>
@@ -174,7 +219,7 @@
       </p>
     </section>
 
-    <!-- AVAILABILITY / CTA (kept simple + obvious) -->
+    <!-- AVAILABILITY / CTA -->
     <section class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 space-y-3">
       <p class="text-lg font-semibold">Availability</p>
       <p class="text-zinc-300">
