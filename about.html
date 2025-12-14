@@ -42,13 +42,14 @@
 
     @media (prefers-reduced-motion: reduce) {
       .marquee-track { animation: none; }
+      .hero-video { display: none; }
     }
 
     /* ---------- RED DEPTH ACCENT (ONLY ADDITION) ---------- */
     .panel-marquee{
       position: relative;
-      isolation: isolate;         /* creates a clean stacking context */
-      overflow: hidden;           /* clips the glow neatly */
+      isolation: isolate;
+      overflow: hidden;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.90);
     }
@@ -56,11 +57,11 @@
     .panel-marquee::before{
       content:"";
       position:absolute;
-      inset:-120px -40px;         /* much larger glow area */
-      z-index: 0;                 /* sit behind logos */
+      inset:-120px -40px;
+      z-index: 0;
       background: radial-gradient(
         ellipse at 50% 80%,
-        rgba(255,0,0,0.85) 0%,    /* DRAMATIC red */
+        rgba(255,0,0,0.85) 0%,
         rgba(255,0,0,0.35) 35%,
         transparent 70%
       );
@@ -71,6 +72,31 @@
 
     /* ensure logos sit above the glow */
     #marqueeTrack { position: relative; z-index: 1; }
+
+    /* ---------- HERO MEDIA ---------- */
+    .hero-media {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+    }
+    .hero-media::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(59,130,246,0.22), transparent 55%),
+        radial-gradient(ellipse at 70% 80%, rgba(255,0,0,0.18), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.65));
+      pointer-events:none;
+    }
+    .hero-media video{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
   </style>
 </head>
 
@@ -78,49 +104,89 @@
 
   <main class="mx-auto max-w-5xl px-6 py-12 space-y-12">
 
-    <!-- HEADER -->
-    <header class="space-y-4">
-      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">James Gordon</h1>
+    <!-- HEADER (now in a panel so it aligns with the intro box) -->
+    <header class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+      <div class="grid gap-6 md:grid-cols-[1fr,300px] md:items-start">
+        <!-- Left -->
+        <div class="space-y-4">
+          <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-tight">James Gordon</h1>
 
-      <p class="text-zinc-300">
-        <a href="mailto:jmsflms@gmail.com" class="underline">jmsflms@gmail.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="tel:+17259105068" class="underline">+1 725 910 5068</a>
-      </p>
+          <p class="text-zinc-300">
+            <a href="mailto:jmsflms@gmail.com" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200">jmsflms@gmail.com</a>
+            <span class="mx-2 text-zinc-600">|</span>
+            <a href="tel:+17259105068" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200">+1 725 910 5068</a>
+          </p>
 
-      <p class="text-zinc-300">
-        <a href="https://cloudplzr.com" class="underline" target="_blank">cloudplzr.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="https://hijingo.com" class="underline" target="_blank">hijingo.com</a>
-        <span class="mx-2 text-zinc-600">|</span>
-        <a href="https://rebelbingo.com" class="underline" target="_blank">rebelbingo.com</a>
-      </p>
+          <p class="text-zinc-300">
+            <a href="https://cloudplzr.com" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200" target="_blank">cloudplzr.com</a>
+            <span class="mx-2 text-zinc-600">|</span>
+            <a href="https://hijingo.com" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200" target="_blank">hijingo.com</a>
+            <span class="mx-2 text-zinc-600">|</span>
+            <a href="https://rebelbingo.com" class="underline decoration-white/30 underline-offset-4 text-sky-300 hover:text-sky-200" target="_blank">rebelbingo.com</a>
+          </p>
+        </div>
+
+        <!-- Right (desktop) / below (mobile): motion + colour -->
+        <div class="hero-media hero-video aspect-video md:aspect-[4/5]">
+          <video autoplay muted loop playsinline preload="metadata">
+            <source src="assets/lablights.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
     </header>
 
-    <!-- INTRO -->
+    <!-- INTRO (paragraph breaks added) -->
     <section class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 space-y-4">
       <p class="text-lg">
         <strong>Introduction:</strong> I develop, sell and execute creative concepts
       </p>
 
       <p class="text-zinc-300">
-        I create and produce output for media (TV / Digital) and live events (touring / pop ups / site specific). I have produced large complex productions and small but high impact shows (Bear Grylls).
-        I have a talent for responding to briefs and coming up with ideas and solutions. I have a track record of directing creative and technological agencies to deliver world class output.
-        I began as a high volume games producer for high volume reality TV shows; high profile projects that require hundreds of ideas. I have been tasked by big production companies (Endemol, BBC, Zodiak) to lead new concept development for major TV networks, and even assigned to train concept development teams in Asia.
-        In parallel to a media career, I transformed my own TV formats into live immersive experiences; these tour globally and have been successfully franchised. This experience has given me senior relationships with major operators (e.g. Live Nation) and forced me to keep abreast of marketing trends.
-        These parallel careers are now converging as the entertainment industry experiences massive shifts. I’ve produced live-broadcast, online-only multi camera shows, shot on smartphones. The YouTube videos featuring my live experiences have more viewers (50mill+) than my primetime TV output. I’m in conversations with some of the biggest media brands in the world looking to participate in this new world.
+        I create and produce output for media (TV / Digital) and live events (touring / pop ups / site specific).
+        I have produced large complex productions and small but high impact shows (Bear Grylls).
+      </p>
+
+      <p class="text-zinc-300">
+        I have a talent for responding to briefs and coming up with ideas and solutions.
+        I have a track record of directing creative and technological agencies to deliver world class output.
+      </p>
+
+      <p class="text-zinc-300">
+        I began as a high volume games producer for high volume reality TV shows; high profile projects that require hundreds of ideas.
+        I have been tasked by big production companies (Endemol, BBC, Zodiak) to lead new concept development for major TV networks,
+        and even assigned to train concept development teams in Asia.
+      </p>
+
+      <p class="text-zinc-300">
+        In parallel to a media career, I transformed my own TV formats into live immersive experiences; these tour globally and have been successfully franchised.
+        This experience has given me senior relationships with major operators (e.g. Live Nation) and forced me to keep abreast of marketing trends.
+      </p>
+
+      <p class="text-zinc-300">
+        These parallel careers are now converging as the entertainment industry experiences massive shifts.
+        I’ve produced live-broadcast, online-only multi camera shows, shot on smartphones.
+        The YouTube videos featuring my live experiences have more viewers (50mill+) than my primetime TV output.
+        I’m in conversations with some of the biggest media brands in the world looking to participate in this new world.
+      </p>
+
+      <p class="text-zinc-300">
         While these move forward, I am available for work… that’s why I made this page.
       </p>
     </section>
 
-    <!-- AVAILABILITY / CTA -->
-    <section class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 space-y-2">
+    <!-- AVAILABILITY / CTA (kept simple + obvious) -->
+    <section class="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 space-y-3">
       <p class="text-lg font-semibold">Availability</p>
       <p class="text-zinc-300">
         Available for producer roles, concept development, and creative delivery.
-        Email:
-        <a href="mailto:jmsflms@gmail.com" class="underline">jmsflms@gmail.com</a>
       </p>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="mailto:jmsflms@gmail.com"
+           class="inline-flex items-center rounded-xl border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-sm font-semibold text-sky-300 hover:text-sky-200 hover:border-zinc-600">
+          Email me: jmsflms@gmail.com
+        </a>
+        <span class="text-xs text-zinc-500">Fast response. Briefs welcome.</span>
+      </div>
     </section>
 
     <!-- LOGO MARQUEE -->
@@ -130,7 +196,6 @@
         <span>hover to pause</span>
       </div>
 
-      <!-- ONLY CLASS CHANGE IS HERE -->
       <div class="marquee overflow-hidden rounded-2xl panel-marquee">
         <div id="marqueeTrack" class="flex gap-10 px-6 py-5 marquee-track"></div>
       </div>
