@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Name That Tune (Wordle-ish)</title>
+  <style>
+    :root{
+      --bg:#121213;
+      --fg:#ffffff;
+      --muted:#9a9a9b;
+      --tile:#3a3a3c;
+      --tileOn:#565758;
+      --good:#538d4e;
+      --bad:#b59f3b; /* optional */
+      --border:#3a3a3c;
+      --btn:#3a3a3c;
+      --btnHover:#4a4a4d;
+      --card:#1a1a1b;
+    }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--fg);
+      display:flex;
+      min-height:100vh;
+      align-items:center;
+      justify-content:center;
+    }
+    .wrap{
+      width:min(680px, 92vw);
+      padding:28px 16px;
+    }
+    h1{
+      margin:0 0 8px 0;
+      font-size:20px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      text-align:center;
+    }
+    .sub{
+      margin:0 0 18px 0;
+      color:var(--muted);
+      text-align:center;
+      font-size:14px;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin:10px 0 18px 0;
+      min-height:42px;
+    }
+    .dot{
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      background:var(--tile);
+      border:2px solid var(--tile);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:transparent;
+      user-select:none;
+      transition:transform .08s ease, background .2s ease, border-color .2s ease;
+    }
+    .dot.revealed{
+      background:var(--tileOn);
+      border-color:var(--tileOn);
+      color:var(--fg);
+    }
+    .dot.solved{
+      background:var(--good);
+      border-color:var(--good);
+      color:var(--fg);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    button{
+      background:var(--btn);
+      border:1px solid var(--border);
+      color:var(--fg);
+      border-radius:10px;
+      padding:10px 14px;
+      font-weight:650;
+      cursor:pointer;
+      transition:background .15s ease;
+    }
+    button:hover{ background:var(--btnHover); }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .guess{
+      display:none;
+      gap:10px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    input{
+      background:#0f0f10;
+      color:var(--fg);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 12px;
+      min-width:min(320px, 80vw);
+      font-size:16px;
+      outline:none;
+    }
+    .msg{
+      text-align:center;
+      margin-top:12px;
+      font-size:15px;
+      min-height:22px;
+    }
+    .share{
+      margin-top:10px;
+      display:none;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.4;
+      user-select:text;
+      white-space:pre-line;
+    }
+    .tiny{
+      margin-top:12px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Name That Tune</h1>
+    <p class="sub">Wordle-ish: reveal notes, then guess the tune.</p>
+
+    <div class="panel">
+      <div id="dots" class="row" aria-label="notes revealed"></div>
+
+      <div class="controls">
+        <button id="playBtn">Play that tune</button>
+        <button id="nameBtn">Name that Tune</button>
+        <button id="addBtn">Add note</button>
+      </div>
+
+      <div id="guessBox" class="guess">
+        <input id="guessInput" type="text" placeholder='Type: Happy Birthday' autocomplete="off" />
+        <button id="submitBtn">Submit</button>
+      </div>
+
+      <div id="msg" class="msg"></div>
+      <div id="share" class="share"></div>
+
+      <div class="tiny">Tip: click once anywhere if audio is blocked, then try “Play that tune”.</div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // ---- "Happy Birthday" melody (first phrase; enough for the mechanic) ----
+  // Notes in C major (common version starting on G):
+  // G G A G C B | G G A G D C | ...
+  // We'll store as MIDI numbers (A4=69) and durations in beats.
+  // 67=G4, 69=A4, 72=C5, 71=B4, 74=D5
+  const melody = [
+    {m:67, d:0.5},{m:67, d:0.5},{m:69, d:1.0},{m:67, d:1.0},{m:72, d:1.0},{m:71, d:2.0},
+    {m:67, d:0.5},{m:67, d:0.5},{m:69, d:1.0},{m:67, d:1.0},{m:74, d:1.0},{m:72, d:2.0},
+    {m:67, d:0.5},{m:67, d:0.5},{m:79, d:1.0},{m:76, d:1.0},{m:72, d:1.0},{m:71, d:1.0},{m:69, d:2.0},
+    {m:77, d:0.5},{m:77, d:0.5},{m:76, d:1.0},{m:72, d:1.0},{m:74, d:1.0},{m:72, d:2.0},
+  ];
+
+  const ANSWER = "happy birthday";
+
+  // ---- State ----
+  let revealed = 1;          // starts with 1 note visible (circle)
+  let solved = false;
+  let audioCtx = null;
+  let isPlaying = false;
+
+  // ---- Elements ----
+  const dotsEl = document.getElementById("dots");
+  const playBtn = document.getElementById("playBtn");
+  const nameBtn = document.getElementById("nameBtn");
+  const addBtn = document.getElementById("addBtn");
+
+  const guessBox = document.getElementById("guessBox");
+  const guessInput = document.getElementById("guessInput");
+  const submitBtn = document.getElementById("submitBtn");
+
+  const msgEl = document.getElementById("msg");
+  const shareEl = document.getElementById("share");
+
+  // ---- Helpers ----
+  const midiToFreq = (m) => 440 * Math.pow(2, (m - 69) / 12);
+
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+  }
+
+  function renderDots() {
+    dotsEl.innerHTML = "";
+    for (let i = 0; i < revealed; i++) {
+      const dot = document.createElement("div");
+      dot.className = "dot revealed";
+      dot.textContent = "•";
+      if (solved) dot.classList.add("solved");
+      dotsEl.appendChild(dot);
+    }
+  }
+
+  function setMessage(text) {
+    msgEl.textContent = text || "";
+  }
+
+  function setSolvedUI() {
+    solved = true;
+    playBtn.disabled = true;
+    addBtn.disabled = true;
+    nameBtn.disabled = true;
+    guessBox.style.display = "none";
+
+    renderDots();
+
+    setMessage(`Congratulations — you solved it in ${revealed} note${revealed===1?"":"s"}.`);
+
+    // Wordle-ish share stub: emoji dots line
+    const line = "🟢".repeat(revealed) + "⚫".repeat(Math.max(0, 12 - revealed));
+    shareEl.style.display = "block";
+    shareEl.textContent =
+      `Share with your friends:\nName That Tune — ${revealed} notes\n${line}`;
+  }
+
+  async function playTune(count) {
+    if (solved || isPlaying) return;
+    ensureAudio();
+    isPlaying = true;
+    setMessage("");
+
+    const tempo = 120; // bpm
+    const beat = 60 / tempo;
+
+    // Simple synth
+    const now = audioCtx.currentTime;
+    let t = now + 0.02;
+
+    for (let i = 0; i < count && i < melody.length; i++) {
+      const {m, d} = melody[i];
+      const dur = d * beat;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.value = midiToFreq(m);
+
+      // envelope
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(t);
+      osc.stop(t + dur + 0.01);
+
+      t += dur + 0.03; // small gap between notes
+    }
+
+    // lock UI briefly while playing
+    playBtn.disabled = true;
+    addBtn.disabled = true;
+    nameBtn.disabled = true;
+
+    const totalTime = (t - now) * 1000;
+    window.setTimeout(() => {
+      if (!solved) {
+        playBtn.disabled = false;
+        addBtn.disabled = false;
+        nameBtn.disabled = false;
+      }
+      isPlaying = false;
+    }, Math.max(250, totalTime));
+  }
+
+  // ---- Wire up ----
+  renderDots();
+
+  playBtn.addEventListener("click", () => playTune(revealed));
+
+  addBtn.addEventListener("click", () => {
+    if (solved) return;
+    revealed = Math.min(revealed + 1, melody.length);
+    renderDots();
+    setMessage(`Notes revealed: ${revealed}`);
+  });
+
+  nameBtn.addEventListener("click", () => {
+    if (solved) return;
+    guessBox.style.display = "flex";
+    guessInput.focus();
+    setMessage("");
+  });
+
+  function submitGuess() {
+    if (solved) return;
+    const val = (guessInput.value || "").trim().toLowerCase();
+    if (!val) return;
+
+    if (val === ANSWER) {
+      setSolvedUI();
+    } else {
+      setMessage("Nope. Try again (or add another note).");
+      guessInput.select();
+    }
+  }
+
+  submitBtn.addEventListener("click", submitGuess);
+  guessInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") submitGuess();
+  });
+
+})();
+</script>
+</body>
+</html>
