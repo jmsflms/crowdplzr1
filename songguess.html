@@ -8,7 +8,6 @@
     :root{
       --bg:#ffffff;
       --ink:#111;
-      --muted:#666;
       --border:#111;
       --panel:#fff;
 
@@ -27,13 +26,13 @@
       margin:0;
       background:var(--bg);
       color:var(--ink);
-      font-family: "Clear Sans", "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: geometricPrecision;
+      font-family:"Clear Sans","Helvetica Neue",Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:geometricPrecision;
     }
 
     .topbar{
-      width:min(760px, 94vw);
+      width:min(760px,94vw);
       margin:18px auto 10px;
       display:flex;
       align-items:center;
@@ -100,7 +99,7 @@
     }
 
     .wrap{
-      width:min(760px, 94vw);
+      width:min(760px,94vw);
       margin:0 auto 40px;
     }
 
@@ -110,22 +109,11 @@
       padding:18px 14px 18px;
     }
 
-    .staffWrap{
-      width:100%;
-      border:0;
-      padding:0;
-      margin:0 0 12px;
-    }
-
-    .staffBox{
-      width:100%;
-      border:0;
-      margin:0 auto;
-      padding:6px 0 0;
-    }
+    .staffWrap{ width:100%; margin:0 0 12px; }
+    .staffBox{ width:100%; margin:0 auto; padding:6px 0 0; }
 
     .controls{
-      width:min(520px, 92vw);
+      width:min(520px,92vw);
       margin:0 auto;
       display:flex;
       flex-direction:column;
@@ -146,7 +134,7 @@
       background:#fff;
       color:var(--ink);
     }
-    button.btn:active{transform: translateY(1px);}
+    button.btn:active{transform:translateY(1px);}
     button.btn[disabled]{
       opacity:0.45;
       cursor:not-allowed;
@@ -159,7 +147,7 @@
     .btn.giveup{ background:var(--salmon); color:var(--btnTextDark); }
 
     .guessBox{
-      width:min(520px, 92vw);
+      width:min(520px,92vw);
       margin:14px auto 0;
       border:3px solid var(--border);
       padding:14px;
@@ -189,7 +177,7 @@
     .guess-actions button{ width:100%; }
 
     .status{
-      width:min(520px, 92vw);
+      width:min(520px,92vw);
       margin:14px auto 0;
       text-align:center;
       font-weight:900;
@@ -197,6 +185,19 @@
       line-height:1.35;
       white-space:pre-line;
     }
+
+    /* Error banner (if JS blows up) */
+    .err{
+      width:min(760px,94vw);
+      margin:10px auto 0;
+      border:3px solid var(--border);
+      padding:10px 12px;
+      font-weight:800;
+      background:#fff3f3;
+      display:none;
+      white-space:pre-wrap;
+    }
+    .err.show{ display:block; }
 
     /* Drawer */
     .drawerBackdrop{
@@ -212,7 +213,7 @@
       position:fixed;
       top:0; left:0;
       height:100%;
-      width:min(360px, 88vw);
+      width:min(360px,88vw);
       background:#fff;
       border-right:3px solid var(--border);
       transform:translateX(-102%);
@@ -268,7 +269,7 @@
     .overlay.show{ display:flex; }
 
     .modal{
-      width:min(640px, 96vw);
+      width:min(640px,96vw);
       background:#fff;
       border:3px solid var(--border);
       padding:16px 14px 14px;
@@ -344,6 +345,8 @@
   </style>
 </head>
 <body>
+  <div class="err" id="errBox"></div>
+
   <div class="topbar">
     <div class="left">
       <a class="link" id="rulesLink">Rules</a>
@@ -414,33 +417,26 @@
 
 <script>
 (() => {
+  const errBox = document.getElementById("errBox");
+  function showErr(msg){
+    errBox.textContent = String(msg || "Unknown error");
+    errBox.classList.add("show");
+  }
+  window.addEventListener("error", (e) => {
+    showErr(`JS error: ${e.message}\n${e.filename || ""}:${e.lineno || ""}`);
+  });
+  window.addEventListener("unhandledrejection", (e) => {
+    showErr(`Promise error: ${e.reason && e.reason.message ? e.reason.message : e.reason}`);
+  });
+
   /**************************************************************************
    *  SONG CONFIG (EDIT HERE)
    **************************************************************************/
   const START_DATE_UTC = "2026-02-06"; // YYYY-MM-DD
+  const MAX_NOTES = 16;
 
   // Each song must have EXACTLY 16 notes: {m: MIDI, d: beats}
   const SONGS = [
-    
-    {
-  title: "Never Gonna Give You Up",
-  notes: [
-    {m:69,d:1},{m:71,d:1},{m:75,d:1},{m:71,d:1},
-    {m:78,d:1},{m:78,d:1},{m:77,d:1},{m:69,d:1},
-    {m:71,d:1},{m:75,d:1},{m:71,d:1},{m:77,d:1},
-    {m:77,d:1},{m:75,d:1},{m:73,d:1},{m:71,d:1},
-  ]
-}
-    {
-  title: "Do you Want to Build a Snowman?",
-  notes: [
-    {m:63,d:1},{m:63,d:1},{m:63,d:1},{m:58,d:1},
-    {m:63,d:1},{m:67,d:1},{m:65,d:1},{m:67,d:1},
-    {m:63,d:1},{m:63,d:1},{m:58,d:1},{m:63,d:1},
-    {m:67,d:1},{m:65,d:1},{m:63,d:1},{m:63,d:1},
-  ]
-}
-    
     {
       title: "Ode to Joy",
       notes: [
@@ -461,10 +457,8 @@
     },
   ];
 
-  const MAX_NOTES = 16;
-
   /**************************************************************************
-   *  RULES TEXT (DO NOT MOVE TO MAIN PAGE)
+   *  RULES TEXT
    **************************************************************************/
   const RULES_TEXT =
 `Guess the tune in the fewest notes you can.
@@ -473,7 +467,27 @@ Ensure your phone volume is up, and not on silent.
 Refresh if issues.`;
 
   /**************************************************************************
-   *  HELPERS: DATE / STORAGE
+   *  STORAGE (version bump avoids broken old states)
+   **************************************************************************/
+  const STORAGE_PREFIX = "songguess:v3:"; // <- bumping this fixes "many levels" caused by old bad localStorage
+  function storageKeyForDay(day){ return `${STORAGE_PREFIX}${day}`; }
+  function loadState(day){
+    const raw = localStorage.getItem(storageKeyForDay(day));
+    if(!raw) return null;
+    try{ return JSON.parse(raw); } catch { return null; }
+  }
+  function saveState(day, st){
+    localStorage.setItem(storageKeyForDay(day), JSON.stringify(st));
+  }
+  function clearState(day){
+    localStorage.removeItem(storageKeyForDay(day));
+  }
+  function defaultState(){
+    return { revealed: 1, status: "playing", solvedIn: null, gaveUpAt: null };
+  }
+
+  /**************************************************************************
+   *  DATE HELPERS (UTC)
    **************************************************************************/
   const pad2 = (n) => String(n).padStart(2, "0");
   function parseUTCDate(yyyy_mm_dd){
@@ -499,68 +513,35 @@ Refresh if issues.`;
     return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0,0,0,0));
   }
 
-  function storageKeyForDay(yyyy_mm_dd){
-    return `songguess:v2:${yyyy_mm_dd}`;
-  }
-
-  function loadStateForDay(yyyy_mm_dd){
-    const raw = localStorage.getItem(storageKeyForDay(yyyy_mm_dd));
-    if(!raw) return null;
-    try { return JSON.parse(raw); } catch { return null; }
-  }
-
-  function saveStateForDay(yyyy_mm_dd, state){
-    localStorage.setItem(storageKeyForDay(yyyy_mm_dd), JSON.stringify(state));
-  }
-
-  function clearStateForDay(yyyy_mm_dd){
-    localStorage.removeItem(storageKeyForDay(yyyy_mm_dd));
-  }
-
-  function defaultState(){
-    return {
-      revealed: 1,
-      status: "playing", // playing | solved | gaveup
-      solvedIn: null,
-      gaveUpAt: null
-    };
-  }
-
   /**************************************************************************
-   *  HELPERS: NORMALIZE TITLE
+   *  SONG VALIDATION (hard, predictable)
    **************************************************************************/
-  function normTitle(s){
-    return String(s || "")
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, " ");
-  }
-
-  /**************************************************************************
-   *  VALIDATE SONGS
-   **************************************************************************/
-  function clampSongs(){
+  function normalizeSongs(){
     for(const s of SONGS){
+      if(!s || typeof s !== "object") continue;
       if(!Array.isArray(s.notes)) s.notes = [];
       if(s.notes.length !== MAX_NOTES){
-        console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; expected ${MAX_NOTES}. Will pad/trim for safety.`);
+        console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; expected ${MAX_NOTES}. Padding/trimming.`);
         if(s.notes.length > MAX_NOTES) s.notes = s.notes.slice(0, MAX_NOTES);
         while(s.notes.length < MAX_NOTES){
           const last = s.notes.length ? s.notes[s.notes.length-1] : {m:64,d:1};
-          s.notes.push({m: last.m, d: last.d});
+          s.notes.push({m:last.m, d:last.d});
         }
       }
-      // sanitize
       s.notes = s.notes.map(n => ({
         m: Number.isFinite(n.m) ? n.m : 64,
         d: Number.isFinite(n.d) ? n.d : 1
       }));
     }
   }
-  clampSongs();
+  normalizeSongs();
+
+  function normTitle(s){
+    return String(s||"").trim().toLowerCase().replace(/\s+/g," ");
+  }
 
   /**************************************************************************
-   *  UI ELEMENTS
+   *  DOM
    **************************************************************************/
   const daySelect = document.getElementById("daySelect");
   const staffHost = document.getElementById("staffHost");
@@ -597,13 +578,14 @@ Refresh if issues.`;
   drawerText.textContent = RULES_TEXT;
 
   /**************************************************************************
-   *  DAY SELECTOR (1..Today+13)
+   *  DAY SELECTOR
    **************************************************************************/
   const startUTC = parseUTCDate(START_DATE_UTC);
   const todayUTC = todayUTCDate();
   const todayIndex = Math.max(1, daysBetweenUTC(startUTC, todayUTC) + 1);
   const maxIndex = todayIndex + 13;
 
+  daySelect.innerHTML = "";
   for(let i=1;i<=maxIndex;i++){
     const opt = document.createElement("option");
     opt.value = String(i);
@@ -613,161 +595,127 @@ Refresh if issues.`;
   daySelect.value = String(todayIndex);
 
   function dayIndexToDateStr(dayIndex){
-    const d = addDaysUTC(startUTC, dayIndex - 1);
-    return dateToYYYYMMDDUTC(d);
+    return dateToYYYYMMDDUTC(addDaysUTC(startUTC, dayIndex - 1));
   }
-
   function pickSongForDay(dayIndex){
     if(!SONGS.length){
       return { title:"(No songs configured)", notes: Array.from({length:MAX_NOTES}, () => ({m:64,d:1})) };
     }
-    const idx = (dayIndex - 1) % SONGS.length;
-    return SONGS[idx];
+    return SONGS[(dayIndex - 1) % SONGS.length];
   }
 
   /**************************************************************************
-   *  STAFF RENDERING (SVG + Canvas)
+   *  STAFF RENDER (SVG)
    **************************************************************************/
-  function buildStaffSVG(opts){
-    const {
-      notes,               // array of {m,d}
-      shownCount,          // how many notes to show
-      width = 680,
-      height = 110,
-      slots = MAX_NOTES,
-      showClef = true,
-      paddingX = 34,
-      noteFill = getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim() || '#c9b458',
-      ink = '#111'
-    } = opts;
+  function buildStaffSVG({notes, shownCount, width=700, height=120, slots=MAX_NOTES}){
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("width","100%");
+    svg.setAttribute("viewBox",`0 0 ${width} ${height}`);
+    svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+    svg.setAttribute("role","img");
 
-    // Staff geometry
-    const lineGap = 10;                 // distance between staff lines
-    const topLineY = 28;                // y of top staff line
-    const bottomLineY = topLineY + 4*lineGap; // 5 lines total
-    const staffLeft = paddingX + (showClef ? 16 : 0);
+    const css = getComputedStyle(document.documentElement);
+    const yellow = (css.getPropertyValue("--yellow").trim() || "#c9b458");
+    const ink = "#111";
+
+    const paddingX = 34;
+    const showClef = true;
+
+    const lineGap = 10;
+    const topLineY = 28;
+    const bottomLineY = topLineY + 4*lineGap;
+
+    const staffLeft = paddingX + (showClef ? 18 : 0);
     const staffRight = width - paddingX;
     const staffWidth = staffRight - staffLeft;
 
-    // Pitch mapping: MIDI 64 (E4) is bottom line
-    // semitone step to y step: 4px per semitone (stable, not engraving-correct, but consistent)
-    const semitoneStepPx = 4;
+    const semitoneStepPx = 4; // stable mapping
 
-    function yForMidi(m){
-      return bottomLineY - (m - 64) * semitoneStepPx;
-    }
-
-    // slot positions across staff
     const slotXs = [];
     for(let i=0;i<slots;i++){
-      const t = slots === 1 ? 0.5 : (i/(slots-1));
+      const t = (slots===1) ? 0.5 : (i/(slots-1));
       slotXs.push(staffLeft + t*staffWidth);
     }
 
-    // Ledger lines: draw for out-of-staff notes.
-    // We'll draw lines on the 10px grid beyond staff, up to whatever range notes require.
-    function ledgerYsForNoteY(y){
+    function yForMidi(m){ return bottomLineY - (m - 64) * semitoneStepPx; }
+
+    function ledgerYsFor(y){
       const ys = [];
-      // line positions are multiples of lineGap from topLineY
-      // staff lines at: topLineY + k*lineGap for k=0..4
-      // ledger lines beyond: k<0 or k>4
-      const k = Math.round((y - topLineY) / lineGap); // nearest line index
-      const yNearestLine = topLineY + k*lineGap;
-      // if note is outside staff bounds (with a little tolerance), generate ledgers between note and staff edge
       const above = y < topLineY - lineGap*0.6;
       const below = y > bottomLineY + lineGap*0.6;
+      if(!above && !below) return ys;
+      const k = Math.round((y - topLineY) / lineGap);
       if(above){
-        // from k up to -1
-        const kMax = -1;
-        for(let kk=k; kk<=kMax; kk++){
-          ys.push(topLineY + kk*lineGap);
-        }
-      } else if(below){
-        // from 5 up to k
-        const kMin = 5;
-        for(let kk=kMin; kk<=k; kk++){
-          ys.push(topLineY + kk*lineGap);
-        }
+        for(let kk=k; kk<=-1; kk++) ys.push(topLineY + kk*lineGap);
+      }else{
+        for(let kk=5; kk<=k; kk++) ys.push(topLineY + kk*lineGap);
       }
-      // de-dup
       return Array.from(new Set(ys));
     }
-
-    // Build SVG string
-    const ns = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(ns, 'svg');
-    svg.setAttribute('width', '100%');
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    svg.setAttribute('role', 'img');
 
     // staff lines
     for(let i=0;i<5;i++){
       const y = topLineY + i*lineGap;
-      const line = document.createElementNS(ns, 'line');
-      line.setAttribute('x1', staffLeft);
-      line.setAttribute('x2', staffRight);
-      line.setAttribute('y1', y);
-      line.setAttribute('y2', y);
-      line.setAttribute('stroke', ink);
-      line.setAttribute('stroke-width', '2');
+      const line = document.createElementNS(ns, "line");
+      line.setAttribute("x1", staffLeft);
+      line.setAttribute("x2", staffRight);
+      line.setAttribute("y1", y);
+      line.setAttribute("y2", y);
+      line.setAttribute("stroke", ink);
+      line.setAttribute("stroke-width", "2");
       svg.appendChild(line);
     }
 
-    // clef (simple text)
+    // clef
     if(showClef){
-      const clef = document.createElementNS(ns, 'text');
-      clef.setAttribute('x', paddingX);
-      clef.setAttribute('y', bottomLineY + 6);
-      clef.setAttribute('font-size', '26');
-      clef.setAttribute('font-weight', '700');
-      clef.setAttribute('fill', ink);
-      clef.textContent = '𝄞';
+      const clef = document.createElementNS(ns, "text");
+      clef.setAttribute("x", paddingX);
+      clef.setAttribute("y", bottomLineY + 6);
+      clef.setAttribute("font-size", "26");
+      clef.setAttribute("font-weight", "700");
+      clef.setAttribute("fill", ink);
+      clef.textContent = "𝄞";
       svg.appendChild(clef);
     }
 
-    // notes (up to shownCount)
-    const noteRadiusX = 9;
-    const noteRadiusY = 7;
-    const stemH = 32;
+    // notes
+    const rx = 9, ry = 7, stemH = 32;
+    const count = Math.min(shownCount|0, slots, notes.length);
 
-    for(let i=0;i<Math.min(shownCount, slots);i++){
+    for(let i=0;i<count;i++){
       const n = notes[i];
       const x = slotXs[i];
       const y = yForMidi(n.m);
 
-      // ledger lines if needed
-      const ledgers = ledgerYsForNoteY(y);
-      for(const ly of ledgers){
-        const ll = document.createElementNS(ns, 'line');
-        ll.setAttribute('x1', x - 14);
-        ll.setAttribute('x2', x + 14);
-        ll.setAttribute('y1', ly);
-        ll.setAttribute('y2', ly);
-        ll.setAttribute('stroke', ink);
-        ll.setAttribute('stroke-width', '2');
+      for(const ly of ledgerYsFor(y)){
+        const ll = document.createElementNS(ns, "line");
+        ll.setAttribute("x1", x-14);
+        ll.setAttribute("x2", x+14);
+        ll.setAttribute("y1", ly);
+        ll.setAttribute("y2", ly);
+        ll.setAttribute("stroke", ink);
+        ll.setAttribute("stroke-width", "2");
         svg.appendChild(ll);
       }
 
-      // stem (fixed direction: up from right side)
-      const stem = document.createElementNS(ns, 'line');
-      stem.setAttribute('x1', x + noteRadiusX - 1);
-      stem.setAttribute('x2', x + noteRadiusX - 1);
-      stem.setAttribute('y1', y);
-      stem.setAttribute('y2', y - stemH);
-      stem.setAttribute('stroke', ink);
-      stem.setAttribute('stroke-width', '3');
+      const stem = document.createElementNS(ns, "line");
+      stem.setAttribute("x1", x + rx - 1);
+      stem.setAttribute("x2", x + rx - 1);
+      stem.setAttribute("y1", y);
+      stem.setAttribute("y2", y - stemH);
+      stem.setAttribute("stroke", ink);
+      stem.setAttribute("stroke-width", "3");
       svg.appendChild(stem);
 
-      // notehead (ellipse)
-      const head = document.createElementNS(ns, 'ellipse');
-      head.setAttribute('cx', x);
-      head.setAttribute('cy', y);
-      head.setAttribute('rx', noteRadiusX);
-      head.setAttribute('ry', noteRadiusY);
-      head.setAttribute('fill', noteFill);
-      head.setAttribute('stroke', ink);
-      head.setAttribute('stroke-width', '3');
+      const head = document.createElementNS(ns, "ellipse");
+      head.setAttribute("cx", x);
+      head.setAttribute("cy", y);
+      head.setAttribute("rx", rx);
+      head.setAttribute("ry", ry);
+      head.setAttribute("fill", yellow);
+      head.setAttribute("stroke", ink);
+      head.setAttribute("stroke-width", "3");
       svg.appendChild(head);
     }
 
@@ -776,53 +724,35 @@ Refresh if issues.`;
 
   function renderStaffInto(el, songNotes, shownCount){
     el.innerHTML = "";
-    el.appendChild(buildStaffSVG({
-      notes: songNotes,
-      shownCount,
-      width: 700,
-      height: 120,
-      slots: MAX_NOTES,
-      showClef: true
-    }));
+    el.appendChild(buildStaffSVG({notes:songNotes, shownCount}));
   }
 
-  // Canvas rendering for clipboard image
-  function drawShareCardToCanvas(opts){
-    const {
-      songTitleText,
-      shownCount,
-      notes,
-      width = 900,
-      height = 360
-    } = opts;
-
+  /**************************************************************************
+   *  SHARE CANVAS
+   **************************************************************************/
+  function drawShareCardToCanvas({songTitleText, shownCount, notes, width=900, height=360}){
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext("2d");
 
-    // colors
     const css = getComputedStyle(document.documentElement);
+    const yellow = (css.getPropertyValue("--yellow").trim() || "#c9b458");
     const ink = "#111";
-    const yellow = (css.getPropertyValue('--yellow').trim() || "#c9b458");
     const borderW = 6;
 
-    // background
     ctx.fillStyle = "#fff";
     ctx.fillRect(0,0,width,height);
 
-    // border
     ctx.strokeStyle = ink;
     ctx.lineWidth = borderW;
     ctx.strokeRect(borderW/2, borderW/2, width-borderW, height-borderW);
 
-    // title text
     ctx.fillStyle = ink;
     ctx.font = "900 34px Arial, Helvetica, sans-serif";
     ctx.textBaseline = "top";
     ctx.fillText(songTitleText, 40, 32);
 
-    // staff geometry
     const staffTop = 120;
     const lineGap = 18;
     const topLineY = staffTop;
@@ -834,7 +764,6 @@ Refresh if issues.`;
     const staffRight = width - paddingX;
     const staffWidth = staffRight - staffLeft;
 
-    // staff lines
     ctx.strokeStyle = ink;
     ctx.lineWidth = 4;
     for(let i=0;i<5;i++){
@@ -845,66 +774,53 @@ Refresh if issues.`;
       ctx.stroke();
     }
 
-    // clef (best-effort; some fonts may not draw it perfectly, still ok)
+    ctx.fillStyle = ink;
     ctx.font = "700 46px Arial, Helvetica, sans-serif";
     ctx.fillText("𝄞", clefX, bottomLineY - 42);
 
-    // mapping
-    const semitoneStepPx = 7; // larger for share card
-    const noteRx = 16;
-    const noteRy = 13;
-    const stemH = 62;
-
-    function yForMidi(m){
-      return bottomLineY - (m - 64) * semitoneStepPx;
-    }
+    const semitoneStepPx = 7;
+    const noteRx = 16, noteRy = 13, stemH = 62;
 
     const slotXs = [];
     for(let i=0;i<MAX_NOTES;i++){
-      const t = (MAX_NOTES === 1) ? 0.5 : (i/(MAX_NOTES-1));
+      const t = (MAX_NOTES===1) ? 0.5 : (i/(MAX_NOTES-1));
       slotXs.push(staffLeft + t*staffWidth);
     }
 
-    function ledgerYsForNoteY(y){
+    function yForMidi(m){ return bottomLineY - (m - 64) * semitoneStepPx; }
+    function ledgerYsFor(y){
       const ys = [];
-      const k = Math.round((y - topLineY) / lineGap);
       const above = y < topLineY - lineGap*0.6;
       const below = y > bottomLineY + lineGap*0.6;
+      if(!above && !below) return ys;
+      const k = Math.round((y - topLineY) / lineGap);
       if(above){
-        for(let kk=k; kk<=-1; kk++){
-          ys.push(topLineY + kk*lineGap);
-        }
-      } else if(below){
-        for(let kk=5; kk<=k; kk++){
-          ys.push(topLineY + kk*lineGap);
-        }
+        for(let kk=k; kk<=-1; kk++) ys.push(topLineY + kk*lineGap);
+      }else{
+        for(let kk=5; kk<=k; kk++) ys.push(topLineY + kk*lineGap);
       }
       return Array.from(new Set(ys));
     }
 
-    // notes
-    for(let i=0;i<Math.min(shownCount, MAX_NOTES);i++){
+    const count = Math.min(shownCount|0, MAX_NOTES, notes.length);
+    for(let i=0;i<count;i++){
       const n = notes[i];
       const x = slotXs[i];
       const y = yForMidi(n.m);
 
-      // ledger lines
-      const ledgers = ledgerYsForNoteY(y);
-      for(const ly of ledgers){
+      for(const ly of ledgerYsFor(y)){
         ctx.beginPath();
         ctx.moveTo(x - 26, ly);
         ctx.lineTo(x + 26, ly);
         ctx.stroke();
       }
 
-      // stem
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.moveTo(x + noteRx - 2, y);
       ctx.lineTo(x + noteRx - 2, y - stemH);
       ctx.stroke();
 
-      // notehead
       ctx.fillStyle = yellow;
       ctx.strokeStyle = ink;
       ctx.lineWidth = 6;
@@ -918,36 +834,9 @@ Refresh if issues.`;
   }
 
   /**************************************************************************
-   *  AUDIO (WebAudio + simple reverb)
+   *  AUDIO (more robust chain)
    **************************************************************************/
-  let audioCtx = null;
-  let master = null;
-  let reverb = null;
-  let wetGain = null;
-  let dryGain = null;
-
-  function ensureAudio(){
-    if(audioCtx) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    master = audioCtx.createGain();
-    master.gain.value = 0.9; // overall loudness
-    master.connect(audioCtx.destination);
-
-    // dry/wet split
-    dryGain = audioCtx.createGain();
-    wetGain = audioCtx.createGain();
-    dryGain.gain.value = 0.85;
-    wetGain.gain.value = 0.35;
-
-    dryGain.connect(master);
-    wetGain.connect(master);
-
-    // convolver reverb
-    reverb = audioCtx.createConvolver();
-    reverb.buffer = makeImpulseResponse(audioCtx, 1.1, 2.6); // short, pleasant
-    reverb.connect(wetGain);
-  }
+  let audioCtx=null, master=null, dryGain=null, wetGain=null, reverb=null, comp=null;
 
   function makeImpulseResponse(ctx, durationSec, decay){
     const rate = ctx.sampleRate;
@@ -955,64 +844,88 @@ Refresh if issues.`;
     const impulse = ctx.createBuffer(2, length, rate);
     for(let ch=0; ch<2; ch++){
       const data = impulse.getChannelData(ch);
-      for(let i=0; i<length; i++){
-        const t = i / length;
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, decay);
+      for(let i=0;i<length;i++){
+        const t = i/length;
+        data[i] = (Math.random()*2-1) * Math.pow(1 - t, decay);
       }
     }
     return impulse;
   }
 
-  function midiToFreq(m){
-    return 440 * Math.pow(2, (m - 69) / 12);
+  function ensureAudio(){
+    if(audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    master = audioCtx.createGain();
+    master.gain.value = 0.95;
+
+    comp = audioCtx.createDynamicsCompressor();
+    comp.threshold.value = -20;
+    comp.knee.value = 18;
+    comp.ratio.value = 4;
+    comp.attack.value = 0.005;
+    comp.release.value = 0.12;
+
+    master.connect(comp);
+    comp.connect(audioCtx.destination);
+
+    dryGain = audioCtx.createGain();
+    wetGain = audioCtx.createGain();
+    dryGain.gain.value = 0.9;
+    wetGain.gain.value = 0.35;
+
+    dryGain.connect(master);
+    wetGain.connect(master);
+
+    reverb = audioCtx.createConvolver();
+    reverb.buffer = makeImpulseResponse(audioCtx, 1.0, 2.3);
+    reverb.connect(wetGain);
   }
 
-  function playSequence(notes){
+  function midiToFreq(m){ return 440 * Math.pow(2, (m - 69) / 12); }
+
+  function playSequence(seq){
     ensureAudio();
     if(audioCtx.state === "suspended") audioCtx.resume();
 
     const now = audioCtx.currentTime;
-    const bpm = 105; // stable, pleasant pace
+    const bpm = 105;
     const secPerBeat = 60 / bpm;
-
     let t = now + 0.02;
 
-    for(const n of notes){
-      const dur = Math.max(0.05, (n.d || 1) * secPerBeat);
+    for(const n of seq){
+      const dur = Math.max(0.06, (n.d || 1) * secPerBeat);
       const freq = midiToFreq(n.m);
 
-      // oscillator -> filter -> env -> dry/wet
-      const osc = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
-      osc.type = "triangle";
-      osc2.type = "sine";
-      osc.frequency.setValueAtTime(freq, t);
-      osc2.frequency.setValueAtTime(freq*0.5, t); // subtle warmth
+      const oscA = audioCtx.createOscillator();
+      const oscB = audioCtx.createOscillator();
+      oscA.type = "triangle";
+      oscB.type = "sine";
+      oscA.frequency.setValueAtTime(freq, t);
+      oscB.frequency.setValueAtTime(freq*0.5, t);
 
       const filt = audioCtx.createBiquadFilter();
       filt.type = "lowpass";
-      filt.frequency.setValueAtTime(2000, t);
+      filt.frequency.setValueAtTime(2200, t);
       filt.Q.setValueAtTime(0.7, t);
 
       const env = audioCtx.createGain();
       env.gain.setValueAtTime(0.0001, t);
-      env.gain.exponentialRampToValueAtTime(0.55, t + 0.015);
+      env.gain.exponentialRampToValueAtTime(0.7, t + 0.012);
       env.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
-      osc.connect(filt);
-      osc2.connect(filt);
+      oscA.connect(filt);
+      oscB.connect(filt);
       filt.connect(env);
 
-      // split to dry and reverb
       env.connect(dryGain);
       env.connect(reverb);
 
-      osc.start(t);
-      osc2.start(t);
-      osc.stop(t + dur + 0.02);
-      osc2.stop(t + dur + 0.02);
+      oscA.start(t);
+      oscB.start(t);
+      oscA.stop(t + dur + 0.02);
+      oscB.stop(t + dur + 0.02);
 
-      // tiny gap
       t += dur + 0.015;
     }
   }
@@ -1023,19 +936,11 @@ Refresh if issues.`;
   let currentDayIndex = Number(daySelect.value);
   let currentDateStr = dayIndexToDateStr(currentDayIndex);
   let currentSong = pickSongForDay(currentDayIndex);
-  let state = loadStateForDay(currentDateStr) || defaultState();
+  let state = loadState(currentDateStr) || defaultState();
 
-  function persist(){
-    saveStateForDay(currentDateStr, state);
-  }
-
-  function isOver(){
-    return state.status === "solved" || state.status === "gaveup";
-  }
-
-  function revealedCount(){
-    return Math.max(1, Math.min(MAX_NOTES, Number(state.revealed) || 1));
-  }
+  function persist(){ saveState(currentDateStr, state); }
+  function isOver(){ return state.status === "solved" || state.status === "gaveup"; }
+  function revealedCount(){ return Math.max(1, Math.min(MAX_NOTES, Number(state.revealed) || 1)); }
 
   function setStatusMessage(){
     const dayLabel = `Day ${currentDayIndex}`;
@@ -1051,24 +956,15 @@ Refresh if issues.`;
   function updateButtons(){
     const over = isOver();
     const rev = revealedCount();
-
-    // Always allow Play Notes
-    btnPlay.disabled = false;
-
+    btnPlay.disabled = false;                 // always
     btnAdd.disabled = over || (rev >= MAX_NOTES);
     btnName.disabled = over;
     btnGiveUp.disabled = over;
-
-    // hide guess box if game is over
-    if(over){
-      guessBox.classList.remove("show");
-    }
+    if(over) guessBox.classList.remove("show");
   }
 
   function render(){
-    // Staff shows revealed notes (even after game over)
     renderStaffInto(staffHost, currentSong.notes, revealedCount());
-
     setStatusMessage();
     updateButtons();
   }
@@ -1079,37 +975,28 @@ Refresh if issues.`;
     guessInput.value = "";
     setTimeout(() => guessInput.focus(), 0);
   }
-
-  function closeGuess(){
-    guessBox.classList.remove("show");
-  }
+  function closeGuess(){ guessBox.classList.remove("show"); }
 
   /**************************************************************************
-   *  OVERLAY (WIN / GIVEUP)
+   *  OVERLAY
    **************************************************************************/
   let lastShareCanvas = null;
 
   function showOverlay(kind){
-    // kind: "solved" | "gaveup"
+    toast.textContent = "";
     const rev = revealedCount();
     const dayLabel = `Day ${currentDayIndex}`;
     const title = currentSong.title;
 
-    toast.textContent = "";
+    // Ensure the main page message is updated immediately (even while overlay is open)
+    setStatusMessage();
 
     if(kind === "solved"){
       modalHeadline.textContent = `You got it in ${state.solvedIn} notes.`;
       modalSub.textContent = `${dayLabel}: ${title}`;
       shareTitle.textContent = `SONG GUESS — ${state.solvedIn} notes`;
       shareStaffHost.innerHTML = "";
-      shareStaffHost.appendChild(buildStaffSVG({
-        notes: currentSong.notes,
-        shownCount: state.solvedIn,
-        width: 700,
-        height: 120,
-        slots: MAX_NOTES,
-        showClef: true
-      }));
+      shareStaffHost.appendChild(buildStaffSVG({notes: currentSong.notes, shownCount: state.solvedIn}));
       lastShareCanvas = drawShareCardToCanvas({
         songTitleText: `SONG GUESS — ${state.solvedIn} notes`,
         shownCount: state.solvedIn,
@@ -1120,27 +1007,18 @@ Refresh if issues.`;
       modalSub.textContent = `Answer: ${title}`;
       shareTitle.textContent = `SONG GUESS — ${rev} notes`;
       shareStaffHost.innerHTML = "";
-      shareStaffHost.appendChild(buildStaffSVG({
-        notes: currentSong.notes,
-        shownCount: rev,
-        width: 700,
-        height: 120,
-        slots: MAX_NOTES,
-        showClef: true
-      }));
+      shareStaffHost.appendChild(buildStaffSVG({notes: currentSong.notes, shownCount: rev}));
       lastShareCanvas = drawShareCardToCanvas({
         songTitleText: `SONG GUESS — ${rev} notes`,
         shownCount: rev,
         notes: currentSong.notes
       });
     }
-
     overlay.classList.add("show");
   }
 
   function hideOverlay(){
     overlay.classList.remove("show");
-    // ensure status message shows immediately (no refresh)
     render();
   }
 
@@ -1150,12 +1028,10 @@ Refresh if issues.`;
     const notesCount = (state.status === "solved") ? state.solvedIn : rev;
     const txt = `SONG GUESS — ${notesCount} notes`;
 
-    // Prefer image copy
     try{
       if(!lastShareCanvas) throw new Error("no canvas");
       const blob = await new Promise((res) => lastShareCanvas.toBlob(res, "image/png"));
       if(!blob) throw new Error("blob failed");
-
       if(navigator.clipboard && window.ClipboardItem){
         const item = new ClipboardItem({ "image/png": blob });
         await navigator.clipboard.write([item]);
@@ -1164,7 +1040,6 @@ Refresh if issues.`;
       }
       throw new Error("image clipboard not supported");
     } catch {
-      // fallback to text
       try{
         await navigator.clipboard.writeText(txt);
         toast.textContent = "Copied text to clipboard (image not supported here).";
@@ -1177,7 +1052,6 @@ Refresh if issues.`;
   /**************************************************************************
    *  EVENTS
    **************************************************************************/
-  // Drawer
   function openDrawer(){
     drawerBackdrop.classList.add("show");
     drawer.classList.add("show");
@@ -1190,35 +1064,29 @@ Refresh if issues.`;
   drawerClose.addEventListener("click", closeDrawer);
   drawerBackdrop.addEventListener("click", closeDrawer);
 
-  // Secret reset
   resetLink.addEventListener("click", (e) => {
     e.preventDefault();
-    clearStateForDay(currentDateStr);
+    clearState(currentDateStr);
     state = defaultState();
     persist();
-    // re-render immediately (no need to reload, but allowed)
     render();
   });
 
-  // Day change
   daySelect.addEventListener("change", () => {
     currentDayIndex = Number(daySelect.value);
     currentDateStr = dayIndexToDateStr(currentDayIndex);
     currentSong = pickSongForDay(currentDayIndex);
-    state = loadStateForDay(currentDateStr) || defaultState();
+    state = loadState(currentDateStr) || defaultState();
     closeGuess();
-    hideOverlay(); // in case open
+    hideOverlay();
     render();
   });
 
-  // Play Notes (post-game plays full tune)
   btnPlay.addEventListener("click", () => {
-    const over = isOver();
-    const count = over ? MAX_NOTES : revealedCount();
+    const count = isOver() ? MAX_NOTES : revealedCount();
     playSequence(currentSong.notes.slice(0, count));
   });
 
-  // Add a Note
   btnAdd.addEventListener("click", () => {
     if(isOver()) return;
     const rev = revealedCount();
@@ -1229,9 +1097,7 @@ Refresh if issues.`;
     }
   });
 
-  // Name the Song
   btnName.addEventListener("click", openGuess);
-
   btnCancelGuess.addEventListener("click", closeGuess);
 
   btnSubmitGuess.addEventListener("click", () => {
@@ -1245,60 +1111,54 @@ Refresh if issues.`;
       state.solvedIn = revealedCount();
       state.gaveUpAt = null;
       persist();
-
       closeGuess();
-      render();           // immediate status update (no refresh)
+      render();
       showOverlay("solved");
     } else {
-      // minimal feedback without clutter
       guessInput.select();
-      toast.textContent = ""; // keep overlay toast clean; guess UI has no toast
-      // subtle shake? no. Keep stable.
       guessInput.style.outline = "3px solid #111";
       setTimeout(() => guessInput.style.outline = "", 180);
     }
   });
 
   guessInput.addEventListener("keydown", (e) => {
-    if(e.key === "Enter"){
-      e.preventDefault();
-      btnSubmitGuess.click();
-    }
-    if(e.key === "Escape"){
-      e.preventDefault();
-      closeGuess();
-    }
+    if(e.key === "Enter"){ e.preventDefault(); btnSubmitGuess.click(); }
+    if(e.key === "Escape"){ e.preventDefault(); closeGuess(); }
   });
 
-  // Give up
   btnGiveUp.addEventListener("click", () => {
     if(isOver()) return;
     state.status = "gaveup";
     state.gaveUpAt = revealedCount();
     state.solvedIn = null;
     persist();
-
     closeGuess();
-    render();          // immediate status update
+    render();
     showOverlay("gaveup");
   });
 
-  // Overlay controls
   modalClose.addEventListener("click", hideOverlay);
-  overlay.addEventListener("click", (e) => {
-    if(e.target === overlay) hideOverlay();
-  });
+  overlay.addEventListener("click", (e) => { if(e.target === overlay) hideOverlay(); });
   btnCopy.addEventListener("click", copyShare);
 
-  // Ensure audio starts on gesture (iOS)
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape"){
+      if(overlay.classList.contains("show")) hideOverlay();
+      if(drawer.classList.contains("show")) closeDrawer();
+      closeGuess();
+    }
+  });
+
+  // iOS: ensure audio starts on gesture
   document.addEventListener("pointerdown", () => {
-    // create audio context lazily on first interaction
-    if(!audioCtx) ensureAudio();
-    if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+    try{
+      ensureAudio();
+      if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+    } catch {}
   }, { once: true });
 
   /**************************************************************************
-   *  INITIAL RENDER
+   *  INIT
    **************************************************************************/
   render();
 })();
