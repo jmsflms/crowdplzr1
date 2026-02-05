@@ -2,314 +2,809 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Song Guess</title>
   <style>
     :root{
       --bg:#ffffff;
-      --fg:#111;
+      --fg:#111111;
       --muted:#444;
       --border:#111;
       --panel:#fff;
-      --yellow:#c9b458;
-      --green:#6aaa64;
+
+      /* Wordle-ish */
+      --w-green:#6aaa64;
+      --w-yellow:#c9b458;
+      --w-gray:#d3d6da;
+
+      --danger:#e06b6b;
+      --shadow: 0 2px 0 rgba(0,0,0,.12);
     }
+
     *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family: "Clear Sans", "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       background:var(--bg);
       color:var(--fg);
-      display:flex;
-      min-height:100vh;
-      align-items:flex-start;
-      justify-content:center;
-      padding:18px 12px 40px;
+      font-family: "Clear Sans","Helvetica Neue",Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-    .wrap{ width:min(740px, 96vw); }
-    .header{
+
+    .page{
+      min-height:100%;
       display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:12px;
+      justify-content:center;
+      padding:14px 12px 40px;
+    }
+
+    .wrap{
+      width:min(760px, 100%);
+    }
+
+    .topbar{
+      display:grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items:center;
+      gap:10px;
       margin-bottom:10px;
     }
-    h1{ margin:0; font-size:22px; letter-spacing:.12em; text-transform:uppercase; }
-    .sub{ margin:6px 0 0 0; font-size:14px; color:var(--muted); line-height:1.25; max-width:52ch; }
-    .dayPicker{ display:flex; gap:8px; align-items:center; white-space:nowrap; font-size:13px; }
+
+    .rules-link{
+      justify-self:start;
+      font-size:13px;
+      color:#111;
+      text-decoration: underline;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .title{
+      justify-self:center;
+      font-weight:900;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size:26px;
+      margin:0;
+      line-height:1;
+    }
+
+    .daybox{
+      justify-self:end;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      color:var(--fg);
+    }
+
+    .daybox label{ font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
     select{
       border:2px solid var(--border);
       border-radius:0;
-      padding:6px 8px;
+      padding:8px 10px;
       background:#fff;
       color:#111;
-      font-weight:600;
+      font-weight:800;
+      min-width: 130px;
     }
+
     .panel{
       border:3px solid var(--border);
       border-radius:0;
       background:var(--panel);
-      padding:16px;
+      padding:16px 14px 14px;
     }
-    .dots{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      justify-content:center;
-      padding:10px 0 14px;
-      min-height:54px;
+
+    .staff-wrap{
+      padding:10px 6px 8px;
+      border:2px solid transparent;
     }
-    .dot{
-      width:34px;
-      height:34px;
-      border-radius:999px;
-      background:var(--yellow);
-      border:2px solid #000;
-      position:relative;
+
+    .staff-svg{
+      width:100%;
+      height:auto;
+      display:block;
     }
-    .dot .greendot{
-      display:none;
-      position:absolute;
-      width:12px;
-      height:12px;
-      border-radius:999px;
-      background:var(--green);
-      border:2px solid #000;
-      left:50%;
-      top:50%;
-      transform:translate(-50%,-50%);
-    }
-    .dot.solved .greendot{ display:block; }
 
     .controls{
       display:flex;
       flex-direction:column;
       gap:10px;
       align-items:center;
-      margin:8px 0 10px;
+      margin-top:10px;
     }
+
     button{
-      width:min(360px, 92vw);
+      width:min(420px, 92vw);
       border:3px solid var(--border);
       border-radius:0;
-      background:#fff;
-      color:#111;
-      padding:12px 12px;
-      font-weight:800;
-      letter-spacing:.02em;
-      cursor:pointer;
+      padding:14px 12px;
+      font-weight:900;
+      letter-spacing:.06em;
       text-transform:uppercase;
-    }
-    button:disabled{ opacity:.45; cursor:not-allowed; }
-
-    .help{
-      margin:10px 0 0;
-      text-align:center;
-      font-size:13px;
+      cursor:pointer;
       color:#111;
-      line-height:1.35;
+      background:#fff;
+      box-shadow: var(--shadow);
+      touch-action: manipulation;
     }
-    .help span{ display:block; }
 
-    .guessBox{
-      display:none;
+    button:active{ transform: translateY(1px); box-shadow:none; }
+    button:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+      box-shadow:none;
+      transform:none;
+    }
+
+    .btn-green{ background: var(--w-green); color:#fff; }
+    .btn-yellow{ background: var(--w-yellow); color:#111; }
+    .btn-danger{ background: var(--danger); color:#111; }
+
+    .guess-box{
       margin:14px auto 0;
-      max-width:520px;
-      border-top:2px solid #ddd;
+      width:min(520px, 92vw);
+      display:none;
+      border-top:1px solid #ddd;
       padding-top:14px;
       text-align:center;
     }
-    input{
-      width:min(420px, 92vw);
+
+    input[type="text"]{
+      width:100%;
       border:3px solid var(--border);
       border-radius:0;
       padding:12px 10px;
       font-size:16px;
-      font-weight:700;
+      font-weight:800;
       outline:none;
     }
-    .guessActions{
+
+    .guess-actions{
       margin-top:10px;
       display:flex;
-      gap:10px;
       justify-content:center;
+      gap:10px;
       flex-wrap:wrap;
     }
 
-    .msg{ min-height:22px; margin-top:10px; text-align:center; font-weight:700; }
-    .share{ display:none; margin-top:8px; text-align:center; font-size:13px; color:var(--muted); white-space:pre-line; user-select:text; }
-    .micro{ display:none; margin-top:10px; border:2px solid #ddd; padding:10px; text-align:center; font-size:13px; white-space:pre-line; }
+    .msg{
+      min-height:22px;
+      margin-top:12px;
+      text-align:center;
+      font-weight:800;
+    }
 
-    .lb{
-      margin-top:16px;
+    /* Rules drawer */
+    .drawer-backdrop{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.25);
+      display:none;
+    }
+    .drawer{
+      position:fixed;
+      top:0; left:0;
+      height:100%;
+      width:min(320px, 86vw);
+      background:#fff;
+      border-right:3px solid var(--border);
+      transform: translateX(-105%);
+      transition: transform 160ms ease;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .drawer.open{ transform: translateX(0); }
+    .drawer-backdrop.open{ display:block; }
+
+    .drawer-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid #ddd;
+      padding-bottom:10px;
+    }
+    .drawer-title{
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:14px;
+      margin:0;
+    }
+    .drawer-close{
+      border:2px solid var(--border);
+      border-radius:0;
+      background:#fff;
+      width:34px;
+      height:34px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow: var(--shadow);
+    }
+    .drawer-text{
+      font-size:14px;
+      line-height:1.35;
+      color:#111;
+      white-space:pre-line;
+    }
+
+    /* Overlay */
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      background: rgba(0,0,0,.30);
+    }
+    .overlay.open{ display:flex; }
+    .modal{
+      width:min(620px, 96vw);
+      background:#fff;
+      border:3px solid var(--border);
+      border-radius:0;
+      padding:16px;
+    }
+    .modal-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modal-title{
+      margin:0;
+      font-weight:900;
+      font-size:22px;
+      line-height:1.15;
+    }
+    .modal-close{
+      border:2px solid var(--border);
+      border-radius:0;
+      background:#fff;
+      width:34px;
+      height:34px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow: var(--shadow);
+      flex:0 0 auto;
+    }
+
+    .share-card{
+      margin-top:12px;
       border:3px solid var(--border);
       border-radius:0;
       padding:12px;
+    }
+    .share-caption{
+      font-weight:900;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      font-size:14px;
+      margin:0 0 10px 0;
+    }
+    .share-preview{
+      width:100%;
+      display:block;
+      border:2px solid #ddd;
       background:#fff;
     }
-    .lbHead{ display:flex; justify-content:space-between; gap:12px; align-items:baseline; margin-bottom:8px; }
-    .lbTitle{ margin:0; font-size:14px; letter-spacing:.12em; text-transform:uppercase; font-weight:900; }
-    .lbNote{ font-size:12px; color:var(--muted); margin:0; }
-    table{ width:100%; border-collapse:collapse; font-size:14px; }
-    th, td{ border-top:1px solid #ddd; padding:8px 6px; text-align:left; }
-    th{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border-top:none; padding-top:0; }
-    .rank{ width:54px; color:var(--muted); font-weight:700; }
-    .notes{ width:80px; font-weight:900; }
+    .modal-actions{
+      margin-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:center;
+    }
+    .hint{
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+      min-height:18px;
+    }
+
+    @media (max-width: 420px){
+      .title{ font-size:22px; }
+      button{ padding:13px 12px; }
+    }
   </style>
 </head>
-
 <body>
-<div class="wrap">
-  <div class="header">
-    <div>
-      <h1>Song Guess</h1>
-      <p class="sub" id="subhead">Guess the tune in the fewest notes you can.</p>
-    </div>
-    <div class="dayPicker">
-      <label for="daySelect"><b>DAY</b></label>
-      <select id="daySelect"></select>
+  <div class="page">
+    <div class="wrap">
+
+      <div class="topbar">
+        <div class="rules-link" id="rulesLink">Rules</div>
+        <h1 class="title">Song Guess</h1>
+        <div class="daybox">
+          <label for="daySelect">Day</label>
+          <select id="daySelect" aria-label="Select day"></select>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="staff-wrap">
+          <svg id="staffSVG" class="staff-svg" viewBox="0 0 640 140" role="img" aria-label="Stave showing revealed notes">
+            <!-- drawn by JS -->
+          </svg>
+        </div>
+
+        <div class="controls">
+          <button id="playBtn" class="btn-green">Play Notes</button>
+          <button id="addBtn" class="btn-yellow">Add a Note</button>
+          <button id="nameBtn" class="btn-green">Name the Song</button>
+          <button id="giveBtn" class="btn-danger">Give up</button>
+        </div>
+
+        <div class="guess-box" id="guessBox">
+          <input id="guessInput" type="text" placeholder="Type the song name exactly…" autocomplete="off" />
+          <div class="guess-actions">
+            <button id="submitGuessBtn" class="btn-green">Submit</button>
+            <button id="cancelGuessBtn">Cancel</button>
+          </div>
+        </div>
+
+        <div class="msg" id="msg"></div>
+      </div>
+
     </div>
   </div>
 
-  <div class="panel">
-    <div class="dots" id="dots"></div>
-
-    <div class="controls">
-      <button id="playBtn">Play Song</button>
-      <button id="addBtn">Add a Note</button>
-      <button id="nameBtn">Name the Song</button>
-      <button id="giveBtn">Give up</button>
+  <!-- Rules drawer -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <p class="drawer-title">Rules</p>
+      <button class="drawer-close" id="drawerClose" aria-label="Close rules">X</button>
     </div>
+    <div class="drawer-text">
+Guess the tune in the fewest notes you can.
+Name must match our database.
+Ensure your phone volume is up, and not on silent.
+Refresh if issues.
+    </div>
+  </aside>
 
-    <p class="help">
-      <span>Name must match our database.</span>
-      <span>Ensure your phone volume is up, and not on silent.</span>
-      <span>Refresh if issues.</span>
-    </p>
+  <!-- Win / giveup overlay -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h2 class="modal-title" id="modalTitle">You got it in X notes.</h2>
+        <button class="modal-close" id="modalClose" aria-label="Close">X</button>
+      </div>
 
-    <div class="guessBox" id="guessBox">
-      <input id="guessInput" type="text" placeholder="Type the song name exactly…" autocomplete="off" />
-      <div class="guessActions">
-        <button id="submitBtn">Submit</button>
-        <button id="cancelBtn">Cancel</button>
+      <div class="share-card">
+        <p class="share-caption" id="shareCaption">SONG GUESS — X notes</p>
+        <canvas id="shareCanvas" class="share-preview" width="600" height="220"></canvas>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-green" id="copyBtn">Copy score to share with friends</button>
+        <div class="hint" id="copyHint"></div>
       </div>
     </div>
-
-    <div class="msg" id="msg"></div>
-    <div class="share" id="share"></div>
-    <div class="micro" id="micro"></div>
   </div>
-
-  <div class="lb" aria-label="leaderboard">
-    <div class="lbHead">
-      <p class="lbTitle">Leaderboard</p>
-      <p class="lbNote" id="lbNote">Loading…</p>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th class="rank">#</th>
-          <th>Name</th>
-          <th class="notes">Notes</th>
-        </tr>
-      </thead>
-      <tbody id="lbBody"></tbody>
-    </table>
-  </div>
-</div>
 
 <script>
 (() => {
   /*********************************************************************
-   * REQUIRED: paste your Google Apps Script Web App URL here
+   * SONG CONFIG (EDIT HERE)
    *********************************************************************/
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0qSJcs_x0ekFuK78WbgrDTudYbeeNq4ny2ENO-tCnPFX5FdY_qExqbyNQpIgSBqALbA/exec";
+  const START_DATE_UTC = "2026-02-06"; // YYYY-MM-DD
 
-  /*********************************************************************
-   * CONFIG: EDIT SONGS HERE (title + notes)
-   *********************************************************************/
+  // Each song must have EXACTLY 12 notes: {m: MIDI, d: beats}
   const SONGS = [
-    { title: "Ode to Joy", notes: [
-      {m:64,d:1},{m:64,d:1},{m:65,d:1},{m:67,d:1},{m:67,d:1},{m:65,d:1},{m:64,d:1},{m:62,d:1},
-      {m:60,d:1},{m:60,d:1},{m:62,d:1},{m:64,d:1},{m:64,d:1.5},{m:62,d:0.5},{m:62,d:2}
-    ]},
-    { title: "Beethoven 5th", notes: [
-      {m:67,d:0.5},{m:67,d:0.5},{m:67,d:0.5},{m:63,d:1.5},
-      {m:66,d:0.5},{m:66,d:0.5},{m:66,d:0.5},{m:62,d:1.5}
-    ]},
-    { title: "Carmen Habanera", notes: [
-      {m:64,d:1},{m:64,d:1},{m:64,d:1},{m:64,d:1},
-      {m:64,d:1},{m:62,d:1},{m:60,d:1},{m:62,d:1},
-    ]},
-    { title: "Eine kleine Nachtmusik", notes: [
-      {m:79,d:1},{m:79,d:1},{m:79,d:1},{m:75,d:1},
-      {m:76,d:1},{m:76,d:1},{m:76,d:1},{m:72,d:1}
-    ]},
-    { title: "Turkish March", notes: [
-      {m:76,d:0.5},{m:74,d:0.5},{m:76,d:0.5},{m:74,d:0.5},
-      {m:76,d:0.5},{m:74,d:0.5},{m:72,d:1},{m:72,d:1}
-    ]},
-    { title: "Canon in D", notes: [
-      {m:74,d:1},{m:69,d:1},{m:71,d:1},{m:66,d:1},
-      {m:67,d:1},{m:62,d:1},{m:66,d:1},{m:62,d:1},
-    ]},
-    { title: "Spring (Vivaldi)", notes: [
-      {m:76,d:0.5},{m:81,d:0.5},{m:81,d:0.5},{m:81,d:0.5},
-      {m:79,d:0.5},{m:76,d:0.5},{m:74,d:1},{m:74,d:1}
-    ]},
-    { title: "Swan Lake", notes: [
-      {m:69,d:1},{m:71,d:1},{m:72,d:1},{m:74,d:1},
-      {m:72,d:1},{m:71,d:1},{m:69,d:2}
-    ]},
-    { title: "Sugar Plum Fairy", notes: [
-      {m:76,d:0.5},{m:77,d:0.5},{m:76,d:0.5},{m:74,d:0.5},
-      {m:72,d:1},{m:74,d:1},{m:76,d:1},{m:72,d:1}
-    ]},
-    { title: "Ride of the Valkyries", notes: [
-      {m:76,d:1},{m:72,d:1},{m:76,d:1},{m:79,d:1},
-      {m:81,d:1},{m:79,d:1},{m:76,d:2}
-    ]},
-    { title: "Hallelujah Chorus", notes: [
-      {m:72,d:1},{m:72,d:1},{m:72,d:1},{m:71,d:1},
-      {m:72,d:1},{m:74,d:1},{m:76,d:2}
-    ]},
-    { title: "Clair de Lune", notes: [
-      {m:69,d:1},{m:72,d:1},{m:76,d:1},{m:74,d:1},
-      {m:72,d:2},{m:69,d:2}
-    ]},
-    { title: "Blue Danube", notes: [
-      {m:69,d:1},{m:69,d:1},{m:71,d:1},{m:72,d:1},
-      {m:74,d:1},{m:72,d:1},{m:71,d:2}
-    ]},
-    { title: "William Tell Overture", notes: [
-      {m:76,d:0.5},{m:76,d:0.5},{m:76,d:0.5},{m:76,d:0.5},
-      {m:74,d:0.5},{m:74,d:0.5},{m:72,d:1},{m:72,d:1}
-    ]},
+    {
+      title: "Ode to Joy",
+      notes: [
+        {m:64,d:1},{m:64,d:1},{m:65,d:1},{m:67,d:1},{m:67,d:1},{m:65,d:1},
+        {m:64,d:1},{m:62,d:1},{m:60,d:1},{m:60,d:1},{m:62,d:1},{m:64,d:1},
+      ]
+    },
+    {
+      title: "Beethoven 5th",
+      notes: [
+        {m:67,d:0.5},{m:67,d:0.5},{m:67,d:0.5},{m:63,d:1.5},
+        {m:66,d:0.5},{m:66,d:0.5},{m:66,d:0.5},{m:62,d:1.5},
+        {m:67,d:0.5},{m:67,d:0.5},{m:67,d:0.5},{m:63,d:1.5},
+      ]
+    }
   ];
 
-  const START_DATE_UTC = "2026-02-06"; // Day 1 date (UTC)
+  const MAX_NOTES = 12;
 
-  // --- DOM ---
-  const dotsEl = document.getElementById("dots");
+  /*********************************************************************
+   * VALIDATION (pads/clamps with console warning)
+   *********************************************************************/
+  for (const s of SONGS) {
+    if (!Array.isArray(s.notes)) s.notes = [];
+    if (s.notes.length !== MAX_NOTES) {
+      console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; expected ${MAX_NOTES}. Auto-adjusting.`);
+      if (s.notes.length === 0) {
+        s.notes = Array.from({length: MAX_NOTES}, () => ({m:64,d:1}));
+      } else if (s.notes.length < MAX_NOTES) {
+        const last = s.notes[s.notes.length - 1];
+        while (s.notes.length < MAX_NOTES) s.notes.push({m:last.m, d:last.d});
+      } else {
+        s.notes = s.notes.slice(0, MAX_NOTES);
+      }
+    }
+  }
+
+  /*********************************************************************
+   * DOM
+   *********************************************************************/
+  const staffSVG = document.getElementById("staffSVG");
   const playBtn = document.getElementById("playBtn");
   const addBtn = document.getElementById("addBtn");
   const nameBtn = document.getElementById("nameBtn");
   const giveBtn = document.getElementById("giveBtn");
-
   const guessBox = document.getElementById("guessBox");
   const guessInput = document.getElementById("guessInput");
-  const submitBtn = document.getElementById("submitBtn");
-  const cancelBtn = document.getElementById("cancelBtn");
-
+  const submitGuessBtn = document.getElementById("submitGuessBtn");
+  const cancelGuessBtn = document.getElementById("cancelGuessBtn");
   const msgEl = document.getElementById("msg");
-  const shareEl = document.getElementById("share");
-  const microEl = document.getElementById("micro");
-
   const daySelect = document.getElementById("daySelect");
-  const lbBody = document.getElementById("lbBody");
-  const lbNote = document.getElementById("lbNote");
 
-  // --- Audio ---
+  const rulesLink = document.getElementById("rulesLink");
+  const drawerBackdrop = document.getElementById("drawerBackdrop");
+  const drawer = document.getElementById("drawer");
+  const drawerClose = document.getElementById("drawerClose");
+
+  const overlay = document.getElementById("overlay");
+  const modalClose = document.getElementById("modalClose");
+  const modalTitle = document.getElementById("modalTitle");
+  const shareCaption = document.getElementById("shareCaption");
+  const shareCanvas = document.getElementById("shareCanvas");
+  const copyBtn = document.getElementById("copyBtn");
+  const copyHint = document.getElementById("copyHint");
+
+  /*********************************************************************
+   * DATE / DAY HELPERS
+   *********************************************************************/
+  function parseUTCDate(yyyy_mm_dd){
+    const [y,m,d] = yyyy_mm_dd.split("-").map(Number);
+    return new Date(Date.UTC(y, m-1, d, 0,0,0));
+  }
+  function todayUTC(){
+    const now = new Date();
+    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0,0,0));
+  }
+  function fmtDate(d){
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth()+1).padStart(2,"0");
+    const da = String(d.getUTCDate()).padStart(2,"0");
+    return `${y}-${m}-${da}`;
+  }
+  function dayIndexFromDate(dateUTC){
+    const start = parseUTCDate(START_DATE_UTC);
+    const diffMs = dateUTC.getTime() - start.getTime();
+    return Math.floor(diffMs / (24*60*60*1000));
+  }
+  function dateFromDayIndex(idx){
+    const start = parseUTCDate(START_DATE_UTC);
+    return new Date(start.getTime() + idx*(24*60*60*1000));
+  }
+  function dayKey(idx){
+    return fmtDate(dateFromDayIndex(idx)); // YYYY-MM-DD
+  }
+
+  /*********************************************************************
+   * STATE
+   *********************************************************************/
+  let selectedDayIdx = 0;
+  let revealed = 1;
+  let solved = false;
+  let gaveUp = false;
+
+  function songForDay(dayIdx){
+    const i = ((dayIdx % SONGS.length) + SONGS.length) % SONGS.length;
+    return SONGS[i];
+  }
+
+  function storageKey(dayIdx){
+    return `songguess:v3:${START_DATE_UTC}:day:${dayIdx}`;
+  }
+  function loadProgress(dayIdx){
+    const raw = localStorage.getItem(storageKey(dayIdx));
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+  function saveProgress(){
+    localStorage.setItem(storageKey(selectedDayIdx), JSON.stringify({revealed, solved, gaveUp}));
+  }
+
+  function resetMessage(){
+    msgEl.textContent = "";
+  }
+
+  /*********************************************************************
+   * RULES DRAWER
+   *********************************************************************/
+  function openDrawer(){
+    drawerBackdrop.classList.add("open");
+    drawer.classList.add("open");
+    drawer.setAttribute("aria-hidden","false");
+  }
+  function closeDrawer(){
+    drawerBackdrop.classList.remove("open");
+    drawer.classList.remove("open");
+    drawer.setAttribute("aria-hidden","true");
+  }
+  rulesLink.addEventListener("click", openDrawer);
+  drawerClose.addEventListener("click", closeDrawer);
+  drawerBackdrop.addEventListener("click", closeDrawer);
+
+  /*********************************************************************
+   * STAFF RENDERING (SVG)
+   * Simple mapping: MIDI 64 (E4) is bottom line of staff.
+   * Semitone step => fixed vertical spacing (stable, consistent).
+   *********************************************************************/
+  const Staff = {
+    vbW: 640,
+    vbH: 140,
+    left: 40,
+    right: 600,
+    topLineY: 44,
+    lineGap: 10, // px between staff lines
+    noteR: 8,
+    stemLen: 28,
+    semitoneStep: 5, // px per semitone
+    slotCount: MAX_NOTES,
+    slotStartX: 70,
+    slotEndX: 590,
+  };
+
+  function midiToY(midi){
+    // bottom line (line 5) is E4 (64)
+    const bottomLineY = Staff.topLineY + Staff.lineGap*4;
+    const delta = midi - 64; // semitone steps
+    return bottomLineY - (delta * Staff.semitoneStep);
+  }
+
+  function slotX(i){
+    const t = (Staff.slotCount === 1) ? 0 : (i / (Staff.slotCount - 1));
+    return Staff.slotStartX + t*(Staff.slotEndX - Staff.slotStartX);
+  }
+
+  function clearSVG(el){
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function svgEl(tag, attrs){
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [k,v] of Object.entries(attrs || {})) el.setAttribute(k, String(v));
+    return el;
+  }
+
+  function drawStaffBase(svg){
+    // border area (subtle)
+    svg.appendChild(svgEl("rect", {x:16, y:18, width:Staff.vbW-32, height:Staff.vbH-36, fill:"transparent", stroke:"transparent"}));
+
+    // 5 lines
+    for (let i=0;i<5;i++){
+      const y = Staff.topLineY + i*Staff.lineGap;
+      svg.appendChild(svgEl("line", {
+        x1: Staff.left, y1: y, x2: Staff.right, y2: y,
+        stroke:"#111", "stroke-width":"2"
+      }));
+    }
+
+    // Optional: simple treble clef hint (tiny), purely decorative
+    svg.appendChild(svgEl("text", {
+      x: Staff.left - 18,
+      y: Staff.topLineY + Staff.lineGap*4 + 4,
+      fill:"#111",
+      "font-size":"22",
+      "font-weight":"900"
+    })).textContent = "𝄞";
+  }
+
+  function drawLedgerLines(svg, x, y){
+    const topY = Staff.topLineY;
+    const bottomY = Staff.topLineY + Staff.lineGap*4;
+
+    // Staff line positions extend above/below in lineGap steps
+    // We'll draw ledger lines at each line position outside staff that the note crosses.
+    const ledgerHalf = 14; // half-length of ledger line
+    const strokeW = 2;
+
+    if (y < topY){
+      // draw from topY up in steps of lineGap until we pass y
+      for (let ly = topY - Staff.lineGap; ly >= y - 1; ly -= Staff.lineGap){
+        svg.appendChild(svgEl("line", {
+          x1: x - ledgerHalf, y1: ly, x2: x + ledgerHalf, y2: ly,
+          stroke:"#111", "stroke-width": strokeW
+        }));
+      }
+    } else if (y > bottomY){
+      for (let ly = bottomY + Staff.lineGap; ly <= y + 1; ly += Staff.lineGap){
+        svg.appendChild(svgEl("line", {
+          x1: x - ledgerHalf, y1: ly, x2: x + ledgerHalf, y2: ly,
+          stroke:"#111", "stroke-width": strokeW
+        }));
+      }
+    }
+  }
+
+  function drawNote(svg, x, y){
+    drawLedgerLines(svg, x, y);
+
+    // Notehead (yellow fill + black outline)
+    svg.appendChild(svgEl("circle", {
+      cx:x, cy:y, r:Staff.noteR,
+      fill:"var(--w-yellow)",
+      stroke:"#111",
+      "stroke-width":"2"
+    }));
+
+    // Stem (fixed direction up, from right side of notehead)
+    const stemX = x + Staff.noteR - 1;
+    const stemY1 = y;
+    const stemY2 = y - Staff.stemLen;
+    svg.appendChild(svgEl("line", {
+      x1: stemX, y1: stemY1, x2: stemX, y2: stemY2,
+      stroke:"#111", "stroke-width":"2"
+    }));
+  }
+
+  function renderStaff(revealedCount){
+    clearSVG(staffSVG);
+    drawStaffBase(staffSVG);
+
+    const song = songForDay(selectedDayIdx);
+    const notes = song.notes;
+
+    for (let i=0;i<MAX_NOTES;i++){
+      const x = slotX(i);
+      if (i < revealedCount){
+        const y = midiToY(notes[i].m);
+        drawNote(staffSVG, x, y);
+      } else {
+        // empty slot hint (very subtle)
+        staffSVG.appendChild(svgEl("circle", {
+          cx:x, cy: Staff.topLineY + Staff.lineGap*2,
+          r: 2.5, fill:"#000", opacity:"0.10"
+        }));
+      }
+    }
+  }
+
+  /*********************************************************************
+   * SHARE CARD CANVAS
+   *********************************************************************/
+  function drawShareCardCanvas(statusText, revealedCount){
+    const ctx = shareCanvas.getContext("2d");
+    const W = shareCanvas.width, H = shareCanvas.height;
+
+    // background
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0,0,W,H);
+
+    // border
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(1.5,1.5,W-3,H-3);
+
+    // caption
+    ctx.fillStyle = "#111";
+    ctx.font = "900 18px Arial, system-ui, -apple-system, Segoe UI, Roboto";
+    ctx.textBaseline = "top";
+    ctx.fillText(statusText, 18, 16);
+
+    // staff area
+    const staffLeft = 30;
+    const staffRight = W - 30;
+    const staffTop = 70;
+    const lineGap = 12;
+    const topLineY = staffTop;
+    const bottomLineY = staffTop + lineGap*4;
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 2;
+    for (let i=0;i<5;i++){
+      const y = topLineY + i*lineGap;
+      ctx.beginPath();
+      ctx.moveTo(staffLeft, y);
+      ctx.lineTo(staffRight, y);
+      ctx.stroke();
+    }
+
+    // note mapping compatible with SVG
+    const semitoneStep = 6; // canvas version
+    function midiToYc(midi){
+      const delta = midi - 64;
+      return bottomLineY - (delta * semitoneStep);
+    }
+    function slotXc(i){
+      const startX = staffLeft + 40;
+      const endX = staffRight - 10;
+      const t = (MAX_NOTES === 1) ? 0 : (i / (MAX_NOTES - 1));
+      return startX + t*(endX - startX);
+    }
+
+    function drawLedger(x,y){
+      const ledgerHalf = 16;
+      if (y < topLineY){
+        for (let ly = topLineY - lineGap; ly >= y - 1; ly -= lineGap){
+          ctx.beginPath();
+          ctx.moveTo(x - ledgerHalf, ly);
+          ctx.lineTo(x + ledgerHalf, ly);
+          ctx.stroke();
+        }
+      } else if (y > bottomLineY){
+        for (let ly = bottomLineY + lineGap; ly <= y + 1; ly += lineGap){
+          ctx.beginPath();
+          ctx.moveTo(x - ledgerHalf, ly);
+          ctx.lineTo(x + ledgerHalf, ly);
+          ctx.stroke();
+        }
+      }
+    }
+
+    const song = songForDay(selectedDayIdx);
+    for (let i=0;i<MAX_NOTES;i++){
+      const x = slotXc(i);
+      if (i < revealedCount){
+        const y = midiToYc(song.notes[i].m);
+
+        drawLedger(x,y);
+
+        // notehead
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--w-yellow").trim() || "#c9b458";
+        ctx.strokeStyle = "#111";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, 9, 0, Math.PI*2);
+        ctx.fill();
+        ctx.stroke();
+
+        // stem
+        ctx.beginPath();
+        ctx.moveTo(x + 8, y);
+        ctx.lineTo(x + 8, y - 34);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = "rgba(0,0,0,0.10)";
+        ctx.beginPath();
+        ctx.arc(x, topLineY + lineGap*2, 3, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+  }
+
+  async function copyShareCardToClipboard(textFallback){
+    copyHint.textContent = "";
+    // Try image copy first
+    try {
+      if (navigator.clipboard && window.ClipboardItem && shareCanvas.toBlob) {
+        const blob = await new Promise((res) => shareCanvas.toBlob(res, "image/png"));
+        if (!blob) throw new Error("blob failed");
+        await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
+        copyHint.textContent = "Copied image to clipboard.";
+        return;
+      }
+      throw new Error("no image clipboard");
+    } catch {
+      // Fallback to text
+      try {
+        await navigator.clipboard.writeText(textFallback);
+        copyHint.textContent = "Copied text to clipboard (image not supported).";
+      } catch {
+        copyHint.textContent = "Copy failed on this device/browser.";
+      }
+    }
+  }
+
+  /*********************************************************************
+   * AUDIO (pleasant oscillator + short reverb)
+   *********************************************************************/
   let audioCtx = null;
   let isPlaying = false;
 
@@ -317,9 +812,10 @@
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === "suspended") audioCtx.resume();
   }
-  const midiToFreq = (m) => 440 * Math.pow(2, (m - 69) / 12);
 
-  function makeConvolver(ctx, seconds=0.45, decay=2.6){
+  function midiToFreq(m){ return 440 * Math.pow(2, (m - 69) / 12); }
+
+  function makeConvolver(ctx, seconds=0.40, decay=2.4){
     const rate = ctx.sampleRate;
     const length = Math.max(1, Math.floor(rate * seconds));
     const impulse = ctx.createBuffer(2, length, rate);
@@ -335,351 +831,246 @@
     return convolver;
   }
 
-  // --- Date helpers ---
-  function parseUTCDate(yyyy_mm_dd){
-    const [y,m,d] = yyyy_mm_dd.split("-").map(Number);
-    return new Date(Date.UTC(y, m-1, d, 0,0,0));
-  }
-  function todayUTC(){
-    const now = new Date();
-    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0,0,0));
-  }
-  function dayIndexFromDate(dateUTC){
-    const start = parseUTCDate(START_DATE_UTC);
-    const diffMs = dateUTC.getTime() - start.getTime();
-    return Math.floor(diffMs / (24*60*60*1000));
-  }
-  function dateFromDayIndex(idx){
-    const start = parseUTCDate(START_DATE_UTC);
-    return new Date(start.getTime() + idx*(24*60*60*1000));
-  }
-  function fmtDate(d){
-    const y = d.getUTCFullYear();
-    const m = String(d.getUTCMonth()+1).padStart(2,"0");
-    const da = String(d.getUTCDate()).padStart(2,"0");
-    return `${y}-${m}-${da}`;
-  }
+  async function playNotes(){
+    if (isPlaying) return;
+    if (solved || gaveUp) return;
 
-  // --- State ---
-  let selectedDayIdx = 0;
-  let revealed = 1;
-  let solved = false;
-  let gaveUp = false;
-
-  function songForDay(dayIdx){
-    const safeIdx = ((dayIdx % SONGS.length) + SONGS.length) % SONGS.length;
-    return { song: SONGS[safeIdx], songIndex: safeIdx };
-  }
-  function dayKey(dayIdx){
-    return fmtDate(dateFromDayIndex(dayIdx)); // YYYY-MM-DD
-  }
-
-  function storageKey(dayIdx){ return `songguess:v2:${START_DATE_UTC}:day:${dayIdx}`; }
-
-  function loadProgress(dayIdx){
-    const raw = localStorage.getItem(storageKey(dayIdx));
-    if (!raw) return null;
-    try { return JSON.parse(raw); } catch { return null; }
-  }
-  function saveProgress(dayIdx, data){
-    localStorage.setItem(storageKey(dayIdx), JSON.stringify(data));
-  }
-
-  function resetUIMessage(){
-    msgEl.textContent = "";
-    shareEl.style.display = "none";
-    shareEl.textContent = "";
-    microEl.style.display = "none";
-    microEl.textContent = "";
-  }
-
-  function lockGame(){
-    playBtn.disabled = true;
-    addBtn.disabled = true;
-    nameBtn.disabled = true;
-    giveBtn.disabled = true;
-    guessBox.style.display = "none";
-  }
-  function unlockGame(){
-    playBtn.disabled = false;
-    addBtn.disabled = false;
-    nameBtn.disabled = false;
-    giveBtn.disabled = false;
-  }
-
-  function renderDots(){
-    dotsEl.innerHTML = "";
-    for (let i=0; i<revealed; i++){
-      const dot = document.createElement("div");
-      dot.className = "dot";
-      if (solved) dot.classList.add("solved");
-      const gd = document.createElement("div");
-      gd.className = "greendot";
-      dot.appendChild(gd);
-      dotsEl.appendChild(dot);
-    }
-  }
-
-  async function playTune(){
-    if (solved || gaveUp || isPlaying) return;
     ensureAudio();
     isPlaying = true;
-    resetUIMessage();
-
-    const { song } = songForDay(selectedDayIdx);
-    const notes = song.notes;
-
-    const tempo = 118;
-    const beat = 60 / tempo;
+    resetMessage();
 
     const ctx = audioCtx;
-    const now = ctx.currentTime;
-    let t = now + 0.02;
+    const song = songForDay(selectedDayIdx);
+    const tempo = 118;
+    const beat = 60 / tempo;
 
     const master = ctx.createGain();
     master.gain.value = 0.95;
 
     const dry = ctx.createGain();
-    dry.gain.value = 0.65;
+    dry.gain.value = 0.60;
 
     const wet = ctx.createGain();
     wet.gain.value = 0.35;
 
-    const convolver = makeConvolver(ctx, 0.45, 2.6);
+    const convolver = makeConvolver(ctx);
 
     dry.connect(master);
     convolver.connect(wet);
     wet.connect(master);
     master.connect(ctx.destination);
 
-    // disable while playing
-    lockGame();
+    const now = ctx.currentTime;
+    let t = now + 0.02;
 
-    for (let i=0; i<Math.min(revealed, notes.length); i++){
-      const {m, d} = notes[i];
-      const dur = d * beat;
+    disableGameplay();
 
-      const osc = ctx.createOscillator();
-      osc.type = "triangle";
-      osc.frequency.value = midiToFreq(m);
+    for (let i=0;i<revealed;i++){
+      const {m,d} = song.notes[i];
+      const dur = Math.max(0.06, d * beat);
 
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.25, t + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      // Layer a sine + triangle for a pleasant tone
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      osc1.type = "triangle";
+      osc2.type = "sine";
+      osc1.frequency.value = midiToFreq(m);
+      osc2.frequency.value = midiToFreq(m);
 
-      osc.connect(gain);
-      gain.connect(dry);
-      gain.connect(convolver);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.35, t + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
-      osc.start(t);
-      osc.stop(t + dur + 0.02);
+      // mild lowpass
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.frequency.value = 2200;
+      lp.Q.value = 0.7;
+
+      osc1.connect(g);
+      osc2.connect(g);
+      g.connect(lp);
+      lp.connect(dry);
+      lp.connect(convolver);
+
+      osc1.start(t);
+      osc2.start(t);
+      osc1.stop(t + dur + 0.02);
+      osc2.stop(t + dur + 0.02);
 
       t += dur + 0.03;
     }
 
     const totalMs = Math.max(250, (t - now) * 1000);
-    window.setTimeout(() => {
+    setTimeout(() => {
       isPlaying = false;
-      if (!solved && !gaveUp) unlockGame();
+      if (!solved && !gaveUp) enableGameplay();
     }, totalMs);
   }
 
+  function disableGameplay(){
+    playBtn.disabled = true;
+    addBtn.disabled = true;
+    nameBtn.disabled = true;
+    giveBtn.disabled = true;
+    submitGuessBtn.disabled = true;
+    cancelGuessBtn.disabled = true;
+  }
+  function enableGameplay(){
+    playBtn.disabled = false;
+    addBtn.disabled = false;
+    nameBtn.disabled = false;
+    giveBtn.disabled = false;
+    submitGuessBtn.disabled = false;
+    cancelGuessBtn.disabled = false;
+  }
+
+  /*********************************************************************
+   * GUESS / WIN / GIVE UP
+   *********************************************************************/
   function norm(s){
     return String(s || "").trim().replace(/\s+/g," ").toLowerCase();
   }
 
-  // --- Leaderboard via JSONP (GET) ---
-  function fetchLeaderboard(dayStr){
-    return new Promise((resolve, reject) => {
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-        reject(new Error("Missing GOOGLE_SCRIPT_URL"));
-        return;
-      }
-      const cbName = "cb_" + Math.random().toString(16).slice(2);
-      const script = document.createElement("script");
-
-      window[cbName] = (data) => {
-        cleanup();
-        resolve(data);
-      };
-
-      function cleanup(){
-        try { delete window[cbName]; } catch {}
-        if (script.parentNode) script.parentNode.removeChild(script);
-      }
-
-      const url = new URL(GOOGLE_SCRIPT_URL);
-      url.searchParams.set("action", "leaderboard");
-      url.searchParams.set("day", dayStr);
-      url.searchParams.set("callback", cbName);
-
-      script.src = url.toString();
-      script.onerror = () => { cleanup(); reject(new Error("Leaderboard load failed")); };
-      document.head.appendChild(script);
-    });
+  function openOverlay(){
+    overlay.classList.add("open");
+    overlay.setAttribute("aria-hidden","false");
   }
-
-  // --- Submit score via POST ---
-function submitScore(dayStr, name, notes){
-  return new Promise((resolve, reject) => {
-    const cbName = "cb_" + Math.random().toString(16).slice(2);
-    const script = document.createElement("script");
-
-    window[cbName] = (data) => {
-      cleanup();
-      if (data && data.ok) resolve(true);
-      else reject(new Error("submit failed"));
-    };
-
-    function cleanup(){
-      try { delete window[cbName]; } catch {}
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-
-    const url = new URL(GOOGLE_SCRIPT_URL);
-    url.searchParams.set("action", "submit");
-    url.searchParams.set("day", dayStr);
-    url.searchParams.set("name", name);
-    url.searchParams.set("notes", String(notes));
-    url.searchParams.set("ua", navigator.userAgent.slice(0,120));
-    url.searchParams.set("callback", cbName);
-
-    script.src = url.toString();
-    script.onerror = () => { cleanup(); reject(new Error("submit load failed")); };
-    document.head.appendChild(script);
-  });
-}
-
-
-  function renderLeaderboardFromData(data){
-    lbBody.innerHTML = "";
-
-    if (!data || !data.ok) {
-      lbNote.textContent = "Leaderboard unavailable";
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td class="rank">—</td><td>Could not load</td><td class="notes">—</td>`;
-      lbBody.appendChild(tr);
-      return;
-    }
-
-    lbNote.textContent = `${data.uniquePlayers} players • ${data.totalRows} plays • ${data.day}`;
-
-    const rows = Array.isArray(data.rows) ? data.rows : [];
-    if (!rows.length){
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td class="rank">—</td><td>No entries yet</td><td class="notes">—</td>`;
-      lbBody.appendChild(tr);
-      return;
-    }
-
-    rows.forEach((r, i) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="rank">${i+1}</td>
-        <td>${escapeHtml(r.name)}</td>
-        <td class="notes">${Number(r.notes)}</td>
-      `;
-      lbBody.appendChild(tr);
-    });
+  function closeOverlay(){
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden","true");
+    copyHint.textContent = "";
   }
+  modalClose.addEventListener("click", closeOverlay);
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[c]));
-  }
-
-  function showWinUI(){
+  function showWin(){
     solved = true;
-    renderDots();
-    lockGame();
-
-    msgEl.textContent = `You got it in ${revealed} note${revealed===1?"":"s"}.`;
-
-    const line = "🟩".repeat(revealed) + "⬜".repeat(Math.max(0, 12 - revealed));
-    shareEl.style.display = "block";
-    shareEl.textContent = `Share with your friends:\nSONG GUESS — ${revealed} notes\n${line}`;
-
-    microEl.style.display = "block";
-    microEl.textContent = `Come back tomorrow.`;
-  }
-
-  function showGiveUpUI(){
-    gaveUp = true;
-    const { song } = songForDay(selectedDayIdx);
-    renderDots();
-    lockGame();
-    msgEl.textContent = `You gave up after ${revealed} note${revealed===1?"":"s"}.`;
-    shareEl.style.display = "block";
-    shareEl.textContent = `Answer: ${song.title}\nCome back tomorrow.`;
-  }
-
-  async function refreshLeaderboard(){
-    lbNote.textContent = "Loading…";
-    try {
-      const d = await fetchLeaderboard(dayKey(selectedDayIdx));
-      renderLeaderboardFromData(d);
-    } catch {
-      renderLeaderboardFromData(null);
-    }
-  }
-
-  function setDay(dayIdx){
-    selectedDayIdx = dayIdx;
-    revealed = 1;
-    solved = false;
-    gaveUp = false;
+    saveProgress();
     guessBox.style.display = "none";
-    guessInput.value = "";
-    resetUIMessage();
-    unlockGame();
 
-    const prog = loadProgress(dayIdx);
-    if (prog){
-      revealed = Math.max(1, Math.min(prog.revealed || 1, 999));
-      solved = !!prog.solved;
-      gaveUp = !!prog.gaveUp;
+    const x = revealed;
+    modalTitle.textContent = `You got it in ${x} note${x===1?"":"s"}.`;
+    shareCaption.textContent = `SONG GUESS — ${x} notes`;
+    drawShareCardCanvas(`SONG GUESS — ${x} notes`, x);
+    openOverlay();
+
+    // lock gameplay
+    playBtn.disabled = true;
+    addBtn.disabled = true;
+    nameBtn.disabled = true;
+    giveBtn.disabled = true;
+
+    // update main staff to show revealed state
+    renderStaff(revealed);
+  }
+
+  function showGiveUp(){
+    gaveUp = true;
+    saveProgress();
+    guessBox.style.display = "none";
+
+    const x = revealed;
+    const answer = songForDay(selectedDayIdx).title;
+    modalTitle.textContent = `You gave up after ${x} note${x===1?"":"s"}.`;
+    shareCaption.textContent = `Answer: ${answer}`;
+    drawShareCardCanvas(`SONG GUESS — ${x} notes`, x);
+    openOverlay();
+
+    playBtn.disabled = true;
+    addBtn.disabled = true;
+    nameBtn.disabled = true;
+    giveBtn.disabled = true;
+
+    renderStaff(revealed);
+  }
+
+  async function submitGuess(){
+    if (solved || gaveUp) return;
+
+    const guess = norm(guessInput.value);
+    if (!guess) return;
+
+    const song = songForDay(selectedDayIdx);
+    const answer = norm(song.title);
+
+    if (guess === answer){
+      resetMessage();
+      showWin();
+    } else {
+      msgEl.textContent = "Nope. Try again (or add another note).";
+      guessInput.select();
     }
-
-    renderDots();
-    refreshLeaderboard();
-
-    if (solved) showWinUI();
-    if (gaveUp) showGiveUpUI();
   }
 
-  function saveCurrentProgress(){
-    saveProgress(selectedDayIdx, { revealed, solved, gaveUp });
-  }
-
+  /*********************************************************************
+   * DAY PICKER
+   *********************************************************************/
   function buildDayPicker(){
     const today = todayUTC();
     const todayIdx = Math.max(0, dayIndexFromDate(today));
     const maxIdx = todayIdx + 13;
 
     daySelect.innerHTML = "";
-    for (let i=0; i<=maxIdx; i++){
-      const d = dateFromDayIndex(i);
+    for (let i=0;i<=maxIdx;i++){
       const opt = document.createElement("option");
       opt.value = String(i);
-      opt.textContent = (i === todayIdx) ? `Today (${fmtDate(d)})` : `Day ${i+1} (${fmtDate(d)})`;
+      opt.textContent = `Day ${i+1}`;
       daySelect.appendChild(opt);
     }
+
     daySelect.value = String(todayIdx);
     setDay(todayIdx);
   }
 
-  // --- Events ---
-  playBtn.addEventListener("click", () => { playTune().catch(()=>{}); });
+  function setDay(dayIdx){
+    selectedDayIdx = dayIdx;
+
+    // default
+    revealed = 1;
+    solved = false;
+    gaveUp = false;
+
+    // load
+    const p = loadProgress(dayIdx);
+    if (p){
+      revealed = Math.max(1, Math.min(MAX_NOTES, Number(p.revealed) || 1));
+      solved = !!p.solved;
+      gaveUp = !!p.gaveUp;
+    }
+
+    // UI
+    guessBox.style.display = "none";
+    guessInput.value = "";
+    resetMessage();
+
+    renderStaff(revealed);
+
+    if (solved || gaveUp){
+      playBtn.disabled = true;
+      addBtn.disabled = true;
+      nameBtn.disabled = true;
+      giveBtn.disabled = true;
+      msgEl.textContent = solved ? `Solved in ${revealed} note${revealed===1?"":"s"}.` : `Gave up after ${revealed} note${revealed===1?"":"s"}.`;
+    } else {
+      enableGameplay();
+      // keep guess box buttons enabled state consistent
+      guessBox.style.display = "none";
+    }
+  }
+
+  /*********************************************************************
+   * EVENTS
+   *********************************************************************/
+  playBtn.addEventListener("click", () => { playNotes().catch(()=>{}); });
 
   addBtn.addEventListener("click", () => {
     if (solved || gaveUp) return;
-    const { song } = songForDay(selectedDayIdx);
-    revealed = Math.min(revealed + 1, song.notes.length);
-    renderDots();
+    revealed = Math.min(MAX_NOTES, revealed + 1);
+    renderStaff(revealed);
     msgEl.textContent = `Notes revealed: ${revealed}`;
-    saveCurrentProgress();
+    saveProgress();
   });
 
   nameBtn.addEventListener("click", () => {
@@ -688,55 +1079,20 @@ function submitScore(dayStr, name, notes){
     guessInput.focus();
   });
 
-  cancelBtn.addEventListener("click", () => {
+  cancelGuessBtn.addEventListener("click", () => {
     guessBox.style.display = "none";
     guessInput.value = "";
+    resetMessage();
   });
 
-  async function submitGuess(){
-    if (solved || gaveUp) return;
-
-    const guess = norm(guessInput.value);
-    if (!guess) return;
-
-    const { song } = songForDay(selectedDayIdx);
-    const answer = norm(song.title);
-
-    if (guess === answer){
-      let playerName = localStorage.getItem("songguess:playerName") || "";
-      if (!playerName){
-        playerName = prompt("Enter a name for the leaderboard (e.g. James):") || "";
-        playerName = playerName.trim().slice(0, 24);
-        if (playerName) localStorage.setItem("songguess:playerName", playerName);
-      }
-      if (!playerName) playerName = "Anonymous";
-
-      try {
-        await submitScore(dayKey(selectedDayIdx), playerName, revealed);
-      } catch {
-        msgEl.textContent = "Saved failed. Refresh and try again.";
-        return;
-      }
-
-      solved = true;
-      saveCurrentProgress();
-      showWinUI();
-      refreshLeaderboard();
-    } else {
-      msgEl.textContent = "Nope. Try again (or add another note).";
-      guessInput.select();
-    }
-  }
-
-  submitBtn.addEventListener("click", submitGuess);
+  submitGuessBtn.addEventListener("click", () => { submitGuess().catch(()=>{}); });
   guessInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") submitGuess();
+    if (e.key === "Enter") submitGuess().catch(()=>{});
   });
 
   giveBtn.addEventListener("click", () => {
     if (solved || gaveUp) return;
-    showGiveUpUI();
-    saveCurrentProgress();
+    showGiveUp();
   });
 
   daySelect.addEventListener("change", () => {
@@ -744,7 +1100,15 @@ function submitScore(dayStr, name, notes){
     setDay(Number.isFinite(idx) ? idx : 0);
   });
 
-  // --- Init ---
+  copyBtn.addEventListener("click", async () => {
+    const x = revealed;
+    const text = `SONG GUESS — ${x} notes`;
+    await copyShareCardToClipboard(text);
+  });
+
+  /*********************************************************************
+   * INIT
+   *********************************************************************/
   buildDayPicker();
 })();
 </script>
