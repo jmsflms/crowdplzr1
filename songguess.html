@@ -8,6 +8,7 @@
     :root{
       --bg:#ffffff;
       --ink:#111;
+      --muted:#666;
       --border:#111;
       --panel:#fff;
 
@@ -26,25 +27,34 @@
       margin:0;
       background:var(--bg);
       color:var(--ink);
-      font-family:"Clear Sans","Helvetica Neue",Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-      -webkit-font-smoothing:antialiased;
-      text-rendering:geometricPrecision;
+      font-family: "Clear Sans", "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
     }
 
+    /* ---- Top bar (desktop default) ---- */
     .topbar{
-      width:min(760px,94vw);
+      width:min(760px, 94vw);
       margin:18px auto 10px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
     }
-
     .topbar .left{
       display:flex;
       align-items:center;
       gap:14px;
       min-width:120px;
+      flex:0 0 auto;
+    }
+    .right{
+      min-width:160px;
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+      align-items:center;
+      flex:0 0 auto;
     }
 
     a.link{
@@ -66,14 +76,7 @@
       line-height:1;
       margin:0;
       text-transform:uppercase;
-    }
-
-    .right{
-      min-width:160px;
-      display:flex;
-      justify-content:flex-end;
-      gap:12px;
-      align-items:center;
+      white-space:nowrap;
     }
 
     .daypick{
@@ -84,6 +87,7 @@
       letter-spacing:0.12em;
       text-transform:uppercase;
       font-size:13px;
+      white-space:nowrap;
     }
 
     select{
@@ -96,10 +100,11 @@
       letter-spacing:0.02em;
       outline:none;
       border-radius:0;
+      max-width:46vw;
     }
 
     .wrap{
-      width:min(760px,94vw);
+      width:min(760px, 94vw);
       margin:0 auto 40px;
     }
 
@@ -109,11 +114,13 @@
       padding:18px 14px 18px;
     }
 
-    .staffWrap{ width:100%; margin:0 0 12px; }
-    .staffBox{ width:100%; margin:0 auto; padding:6px 0 0; }
+    .staffWrap{ margin:0 0 12px; }
+    .staffBox{ width:100%; padding:6px 0 0; }
 
+    /* Controls are full-width inside panel, but capped */
     .controls{
-      width:min(520px,92vw);
+      width:100%;
+      max-width:520px;
       margin:0 auto;
       display:flex;
       flex-direction:column;
@@ -134,7 +141,7 @@
       background:#fff;
       color:var(--ink);
     }
-    button.btn:active{transform:translateY(1px);}
+    button.btn:active{transform: translateY(1px);}
     button.btn[disabled]{
       opacity:0.45;
       cursor:not-allowed;
@@ -147,7 +154,8 @@
     .btn.giveup{ background:var(--salmon); color:var(--btnTextDark); }
 
     .guessBox{
-      width:min(520px,92vw);
+      width:100%;
+      max-width:520px;
       margin:14px auto 0;
       border:3px solid var(--border);
       padding:14px;
@@ -166,6 +174,7 @@
       outline:none;
     }
 
+    /* Submit/Cancel fixed alignment: stacked full-width */
     .guess-actions{
       width:100%;
       margin:12px auto 0;
@@ -177,7 +186,8 @@
     .guess-actions button{ width:100%; }
 
     .status{
-      width:min(520px,92vw);
+      width:100%;
+      max-width:520px;
       margin:14px auto 0;
       text-align:center;
       font-weight:900;
@@ -186,18 +196,13 @@
       white-space:pre-line;
     }
 
-    /* Error banner (if JS blows up) */
-    .err{
-      width:min(760px,94vw);
+    /* Secret reset (bottom right under panel) */
+    .footerLinks{
+      width:min(760px, 94vw);
       margin:10px auto 0;
-      border:3px solid var(--border);
-      padding:10px 12px;
-      font-weight:800;
-      background:#fff3f3;
-      display:none;
-      white-space:pre-wrap;
+      display:flex;
+      justify-content:flex-end;
     }
-    .err.show{ display:block; }
 
     /* Drawer */
     .drawerBackdrop{
@@ -213,7 +218,7 @@
       position:fixed;
       top:0; left:0;
       height:100%;
-      width:min(360px,88vw);
+      width:min(360px, 88vw);
       background:#fff;
       border-right:3px solid var(--border);
       transform:translateX(-102%);
@@ -269,7 +274,9 @@
     .overlay.show{ display:flex; }
 
     .modal{
-      width:min(640px,96vw);
+      width:min(640px, 96vw);
+      max-height:86vh;
+      overflow:auto;
       background:#fff;
       border:3px solid var(--border);
       padding:16px 14px 14px;
@@ -287,7 +294,7 @@
       cursor:pointer;
     }
     .modal h3{
-      margin:0 48px 10px 0;
+      margin:0 52px 10px 0;
       font-size:22px;
       font-weight:900;
       line-height:1.2;
@@ -313,6 +320,9 @@
       font-size:14px;
       margin:0 0 8px;
     }
+    /* ensure SVG never overflows on mobile */
+    #shareStaffHost svg{ width:100%; height:auto; display:block; }
+    #staffHost svg{ width:100%; height:auto; display:block; }
 
     .copyBtn{
       border:3px solid var(--border);
@@ -337,6 +347,23 @@
       min-height:18px;
     }
 
+    /* ---- Mobile layout fixes (prevents overlaps) ---- */
+    @media (max-width:560px){
+      .topbar{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "left right"
+          "title title";
+        gap:8px 12px;
+        align-items:center;
+      }
+      .topbar .left{ grid-area:left; min-width:0; }
+      .right{ grid-area:right; min-width:0; justify-content:flex-end; }
+      .title{ grid-area:title; font-size:24px; letter-spacing:0.20em; white-space:normal; }
+      .daypick{ font-size:12px; letter-spacing:0.10em; }
+      select{ font-size:13px; padding:7px 8px; }
+    }
     @media (max-width:420px){
       .title{ font-size:22px; }
       button.btn{ font-size:13px; padding:13px 10px; }
@@ -345,8 +372,6 @@
   </style>
 </head>
 <body>
-  <div class="err" id="errBox"></div>
-
   <div class="topbar">
     <div class="left">
       <a class="link" id="rulesLink">Rules</a>
@@ -355,7 +380,6 @@
     <h1 class="title">SONG GUESS</h1>
 
     <div class="right">
-      <a class="link" id="resetLink" title="Clears this day's saved progress (for testing)">Secret reset</a>
       <div class="daypick">
         <span>DAY</span>
         <select id="daySelect" aria-label="Select day"></select>
@@ -388,6 +412,10 @@
     </div>
   </div>
 
+  <div class="footerLinks">
+    <a class="link" id="resetLink" title="Clears this day's saved progress (for testing)">Secret reset</a>
+  </div>
+
   <!-- Rules Drawer -->
   <div class="drawerBackdrop" id="drawerBackdrop"></div>
   <aside class="drawer" id="drawer">
@@ -417,23 +445,10 @@
 
 <script>
 (() => {
-  const errBox = document.getElementById("errBox");
-  function showErr(msg){
-    errBox.textContent = String(msg || "Unknown error");
-    errBox.classList.add("show");
-  }
-  window.addEventListener("error", (e) => {
-    showErr(`JS error: ${e.message}\n${e.filename || ""}:${e.lineno || ""}`);
-  });
-  window.addEventListener("unhandledrejection", (e) => {
-    showErr(`Promise error: ${e.reason && e.reason.message ? e.reason.message : e.reason}`);
-  });
-
   /**************************************************************************
    *  SONG CONFIG (EDIT HERE)
    **************************************************************************/
   const START_DATE_UTC = "2026-02-06"; // YYYY-MM-DD
-  const MAX_NOTES = 16;
 
   // Each song must have EXACTLY 16 notes: {m: MIDI, d: beats}
   const SONGS = [
@@ -457,8 +472,10 @@
     },
   ];
 
+  const MAX_NOTES = 16;
+
   /**************************************************************************
-   *  RULES TEXT
+   *  RULES TEXT (DO NOT MOVE TO MAIN PAGE)
    **************************************************************************/
   const RULES_TEXT =
 `Guess the tune in the fewest notes you can.
@@ -467,27 +484,7 @@ Ensure your phone volume is up, and not on silent.
 Refresh if issues.`;
 
   /**************************************************************************
-   *  STORAGE (version bump avoids broken old states)
-   **************************************************************************/
-  const STORAGE_PREFIX = "songguess:v3:"; // <- bumping this fixes "many levels" caused by old bad localStorage
-  function storageKeyForDay(day){ return `${STORAGE_PREFIX}${day}`; }
-  function loadState(day){
-    const raw = localStorage.getItem(storageKeyForDay(day));
-    if(!raw) return null;
-    try{ return JSON.parse(raw); } catch { return null; }
-  }
-  function saveState(day, st){
-    localStorage.setItem(storageKeyForDay(day), JSON.stringify(st));
-  }
-  function clearState(day){
-    localStorage.removeItem(storageKeyForDay(day));
-  }
-  function defaultState(){
-    return { revealed: 1, status: "playing", solvedIn: null, gaveUpAt: null };
-  }
-
-  /**************************************************************************
-   *  DATE HELPERS (UTC)
+   *  HELPERS: DATE / STORAGE
    **************************************************************************/
   const pad2 = (n) => String(n).padStart(2, "0");
   function parseUTCDate(yyyy_mm_dd){
@@ -513,19 +510,55 @@ Refresh if issues.`;
     return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0,0,0,0));
   }
 
+  function storageKeyForDay(yyyy_mm_dd){
+    return `songguess:v3:${yyyy_mm_dd}`;
+  }
+
+  function loadStateForDay(yyyy_mm_dd){
+    const raw = localStorage.getItem(storageKeyForDay(yyyy_mm_dd));
+    if(!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function saveStateForDay(yyyy_mm_dd, state){
+    localStorage.setItem(storageKeyForDay(yyyy_mm_dd), JSON.stringify(state));
+  }
+
+  function clearStateForDay(yyyy_mm_dd){
+    localStorage.removeItem(storageKeyForDay(yyyy_mm_dd));
+  }
+
+  function defaultState(){
+    return {
+      revealed: 1,
+      status: "playing", // playing | solved | gaveup
+      solvedIn: null,
+      gaveUpAt: null
+    };
+  }
+
   /**************************************************************************
-   *  SONG VALIDATION (hard, predictable)
+   *  HELPERS: NORMALIZE TITLE
    **************************************************************************/
-  function normalizeSongs(){
+  function normTitle(s){
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  /**************************************************************************
+   *  VALIDATE SONGS
+   **************************************************************************/
+  function clampSongs(){
     for(const s of SONGS){
-      if(!s || typeof s !== "object") continue;
       if(!Array.isArray(s.notes)) s.notes = [];
       if(s.notes.length !== MAX_NOTES){
-        console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; expected ${MAX_NOTES}. Padding/trimming.`);
+        console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; expected ${MAX_NOTES}. Will pad/trim for safety.`);
         if(s.notes.length > MAX_NOTES) s.notes = s.notes.slice(0, MAX_NOTES);
         while(s.notes.length < MAX_NOTES){
           const last = s.notes.length ? s.notes[s.notes.length-1] : {m:64,d:1};
-          s.notes.push({m:last.m, d:last.d});
+          s.notes.push({m: last.m, d: last.d});
         }
       }
       s.notes = s.notes.map(n => ({
@@ -534,14 +567,10 @@ Refresh if issues.`;
       }));
     }
   }
-  normalizeSongs();
-
-  function normTitle(s){
-    return String(s||"").trim().toLowerCase().replace(/\s+/g," ");
-  }
+  clampSongs();
 
   /**************************************************************************
-   *  DOM
+   *  UI ELEMENTS
    **************************************************************************/
   const daySelect = document.getElementById("daySelect");
   const staffHost = document.getElementById("staffHost");
@@ -578,14 +607,13 @@ Refresh if issues.`;
   drawerText.textContent = RULES_TEXT;
 
   /**************************************************************************
-   *  DAY SELECTOR
+   *  DAY SELECTOR (1..Today+13)
    **************************************************************************/
   const startUTC = parseUTCDate(START_DATE_UTC);
   const todayUTC = todayUTCDate();
   const todayIndex = Math.max(1, daysBetweenUTC(startUTC, todayUTC) + 1);
   const maxIndex = todayIndex + 13;
 
-  daySelect.innerHTML = "";
   for(let i=1;i<=maxIndex;i++){
     const opt = document.createElement("option");
     opt.value = String(i);
@@ -595,127 +623,138 @@ Refresh if issues.`;
   daySelect.value = String(todayIndex);
 
   function dayIndexToDateStr(dayIndex){
-    return dateToYYYYMMDDUTC(addDaysUTC(startUTC, dayIndex - 1));
+    const d = addDaysUTC(startUTC, dayIndex - 1);
+    return dateToYYYYMMDDUTC(d);
   }
+
   function pickSongForDay(dayIndex){
     if(!SONGS.length){
       return { title:"(No songs configured)", notes: Array.from({length:MAX_NOTES}, () => ({m:64,d:1})) };
     }
-    return SONGS[(dayIndex - 1) % SONGS.length];
+    const idx = (dayIndex - 1) % SONGS.length;
+    return SONGS[idx];
   }
 
   /**************************************************************************
-   *  STAFF RENDER (SVG)
+   *  STAFF RENDERING (SVG + Canvas)
    **************************************************************************/
-  function buildStaffSVG({notes, shownCount, width=700, height=120, slots=MAX_NOTES}){
-    const ns = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(ns, "svg");
-    svg.setAttribute("width","100%");
-    svg.setAttribute("viewBox",`0 0 ${width} ${height}`);
-    svg.setAttribute("preserveAspectRatio","xMidYMid meet");
-    svg.setAttribute("role","img");
-
-    const css = getComputedStyle(document.documentElement);
-    const yellow = (css.getPropertyValue("--yellow").trim() || "#c9b458");
-    const ink = "#111";
-
-    const paddingX = 34;
-    const showClef = true;
+  function buildStaffSVG(opts){
+    const {
+      notes,
+      shownCount,
+      width = 680,
+      height = 110,
+      slots = MAX_NOTES,
+      showClef = true,
+      paddingX = 34,
+      noteFill = getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim() || '#c9b458',
+      ink = '#111'
+    } = opts;
 
     const lineGap = 10;
     const topLineY = 28;
     const bottomLineY = topLineY + 4*lineGap;
-
-    const staffLeft = paddingX + (showClef ? 18 : 0);
+    const staffLeft = paddingX + (showClef ? 16 : 0);
     const staffRight = width - paddingX;
     const staffWidth = staffRight - staffLeft;
 
-    const semitoneStepPx = 4; // stable mapping
+    const semitoneStepPx = 4;
+
+    function yForMidi(m){
+      return bottomLineY - (m - 64) * semitoneStepPx;
+    }
 
     const slotXs = [];
     for(let i=0;i<slots;i++){
-      const t = (slots===1) ? 0.5 : (i/(slots-1));
+      const t = slots === 1 ? 0.5 : (i/(slots-1));
       slotXs.push(staffLeft + t*staffWidth);
     }
 
-    function yForMidi(m){ return bottomLineY - (m - 64) * semitoneStepPx; }
-
-    function ledgerYsFor(y){
+    function ledgerYsForNoteY(y){
       const ys = [];
+      const k = Math.round((y - topLineY) / lineGap);
       const above = y < topLineY - lineGap*0.6;
       const below = y > bottomLineY + lineGap*0.6;
-      if(!above && !below) return ys;
-      const k = Math.round((y - topLineY) / lineGap);
       if(above){
-        for(let kk=k; kk<=-1; kk++) ys.push(topLineY + kk*lineGap);
-      }else{
-        for(let kk=5; kk<=k; kk++) ys.push(topLineY + kk*lineGap);
+        for(let kk=k; kk<=-1; kk++){
+          ys.push(topLineY + kk*lineGap);
+        }
+      } else if(below){
+        for(let kk=5; kk<=k; kk++){
+          ys.push(topLineY + kk*lineGap);
+        }
       }
       return Array.from(new Set(ys));
     }
 
-    // staff lines
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.setAttribute('role', 'img');
+
     for(let i=0;i<5;i++){
       const y = topLineY + i*lineGap;
-      const line = document.createElementNS(ns, "line");
-      line.setAttribute("x1", staffLeft);
-      line.setAttribute("x2", staffRight);
-      line.setAttribute("y1", y);
-      line.setAttribute("y2", y);
-      line.setAttribute("stroke", ink);
-      line.setAttribute("stroke-width", "2");
+      const line = document.createElementNS(ns, 'line');
+      line.setAttribute('x1', staffLeft);
+      line.setAttribute('x2', staffRight);
+      line.setAttribute('y1', y);
+      line.setAttribute('y2', y);
+      line.setAttribute('stroke', ink);
+      line.setAttribute('stroke-width', '2');
       svg.appendChild(line);
     }
 
-    // clef
     if(showClef){
-      const clef = document.createElementNS(ns, "text");
-      clef.setAttribute("x", paddingX);
-      clef.setAttribute("y", bottomLineY + 6);
-      clef.setAttribute("font-size", "26");
-      clef.setAttribute("font-weight", "700");
-      clef.setAttribute("fill", ink);
-      clef.textContent = "𝄞";
+      const clef = document.createElementNS(ns, 'text');
+      clef.setAttribute('x', paddingX);
+      clef.setAttribute('y', bottomLineY + 6);
+      clef.setAttribute('font-size', '26');
+      clef.setAttribute('font-weight', '700');
+      clef.setAttribute('fill', ink);
+      clef.textContent = '𝄞';
       svg.appendChild(clef);
     }
 
-    // notes
-    const rx = 9, ry = 7, stemH = 32;
-    const count = Math.min(shownCount|0, slots, notes.length);
+    const noteRadiusX = 9;
+    const noteRadiusY = 7;
+    const stemH = 32;
 
-    for(let i=0;i<count;i++){
+    for(let i=0;i<Math.min(shownCount, slots);i++){
       const n = notes[i];
       const x = slotXs[i];
       const y = yForMidi(n.m);
 
-      for(const ly of ledgerYsFor(y)){
-        const ll = document.createElementNS(ns, "line");
-        ll.setAttribute("x1", x-14);
-        ll.setAttribute("x2", x+14);
-        ll.setAttribute("y1", ly);
-        ll.setAttribute("y2", ly);
-        ll.setAttribute("stroke", ink);
-        ll.setAttribute("stroke-width", "2");
+      const ledgers = ledgerYsForNoteY(y);
+      for(const ly of ledgers){
+        const ll = document.createElementNS(ns, 'line');
+        ll.setAttribute('x1', x - 14);
+        ll.setAttribute('x2', x + 14);
+        ll.setAttribute('y1', ly);
+        ll.setAttribute('y2', ly);
+        ll.setAttribute('stroke', ink);
+        ll.setAttribute('stroke-width', '2');
         svg.appendChild(ll);
       }
 
-      const stem = document.createElementNS(ns, "line");
-      stem.setAttribute("x1", x + rx - 1);
-      stem.setAttribute("x2", x + rx - 1);
-      stem.setAttribute("y1", y);
-      stem.setAttribute("y2", y - stemH);
-      stem.setAttribute("stroke", ink);
-      stem.setAttribute("stroke-width", "3");
+      const stem = document.createElementNS(ns, 'line');
+      stem.setAttribute('x1', x + noteRadiusX - 1);
+      stem.setAttribute('x2', x + noteRadiusX - 1);
+      stem.setAttribute('y1', y);
+      stem.setAttribute('y2', y - stemH);
+      stem.setAttribute('stroke', ink);
+      stem.setAttribute('stroke-width', '3');
       svg.appendChild(stem);
 
-      const head = document.createElementNS(ns, "ellipse");
-      head.setAttribute("cx", x);
-      head.setAttribute("cy", y);
-      head.setAttribute("rx", rx);
-      head.setAttribute("ry", ry);
-      head.setAttribute("fill", yellow);
-      head.setAttribute("stroke", ink);
-      head.setAttribute("stroke-width", "3");
+      const head = document.createElementNS(ns, 'ellipse');
+      head.setAttribute('cx', x);
+      head.setAttribute('cy', y);
+      head.setAttribute('rx', noteRadiusX);
+      head.setAttribute('ry', noteRadiusY);
+      head.setAttribute('fill', noteFill);
+      head.setAttribute('stroke', ink);
+      head.setAttribute('stroke-width', '3');
       svg.appendChild(head);
     }
 
@@ -724,21 +763,33 @@ Refresh if issues.`;
 
   function renderStaffInto(el, songNotes, shownCount){
     el.innerHTML = "";
-    el.appendChild(buildStaffSVG({notes:songNotes, shownCount}));
+    el.appendChild(buildStaffSVG({
+      notes: songNotes,
+      shownCount,
+      width: 700,
+      height: 120,
+      slots: MAX_NOTES,
+      showClef: true
+    }));
   }
 
-  /**************************************************************************
-   *  SHARE CANVAS
-   **************************************************************************/
-  function drawShareCardToCanvas({songTitleText, shownCount, notes, width=900, height=360}){
+  function drawShareCardToCanvas(opts){
+    const {
+      songTitleText,
+      shownCount,
+      notes,
+      width = 900,
+      height = 360
+    } = opts;
+
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext("2d");
 
     const css = getComputedStyle(document.documentElement);
-    const yellow = (css.getPropertyValue("--yellow").trim() || "#c9b458");
     const ink = "#111";
+    const yellow = (css.getPropertyValue('--yellow').trim() || "#c9b458");
     const borderW = 6;
 
     ctx.fillStyle = "#fff";
@@ -774,41 +825,48 @@ Refresh if issues.`;
       ctx.stroke();
     }
 
-    ctx.fillStyle = ink;
     ctx.font = "700 46px Arial, Helvetica, sans-serif";
     ctx.fillText("𝄞", clefX, bottomLineY - 42);
 
     const semitoneStepPx = 7;
-    const noteRx = 16, noteRy = 13, stemH = 62;
+    const noteRx = 16;
+    const noteRy = 13;
+    const stemH = 62;
+
+    function yForMidi(m){
+      return bottomLineY - (m - 64) * semitoneStepPx;
+    }
 
     const slotXs = [];
     for(let i=0;i<MAX_NOTES;i++){
-      const t = (MAX_NOTES===1) ? 0.5 : (i/(MAX_NOTES-1));
+      const t = (MAX_NOTES === 1) ? 0.5 : (i/(MAX_NOTES-1));
       slotXs.push(staffLeft + t*staffWidth);
     }
 
-    function yForMidi(m){ return bottomLineY - (m - 64) * semitoneStepPx; }
-    function ledgerYsFor(y){
+    function ledgerYsForNoteY(y){
       const ys = [];
+      const k = Math.round((y - topLineY) / lineGap);
       const above = y < topLineY - lineGap*0.6;
       const below = y > bottomLineY + lineGap*0.6;
-      if(!above && !below) return ys;
-      const k = Math.round((y - topLineY) / lineGap);
       if(above){
-        for(let kk=k; kk<=-1; kk++) ys.push(topLineY + kk*lineGap);
-      }else{
-        for(let kk=5; kk<=k; kk++) ys.push(topLineY + kk*lineGap);
+        for(let kk=k; kk<=-1; kk++){
+          ys.push(topLineY + kk*lineGap);
+        }
+      } else if(below){
+        for(let kk=5; kk<=k; kk++){
+          ys.push(topLineY + kk*lineGap);
+        }
       }
       return Array.from(new Set(ys));
     }
 
-    const count = Math.min(shownCount|0, MAX_NOTES, notes.length);
-    for(let i=0;i<count;i++){
+    for(let i=0;i<Math.min(shownCount, MAX_NOTES);i++){
       const n = notes[i];
       const x = slotXs[i];
       const y = yForMidi(n.m);
 
-      for(const ly of ledgerYsFor(y)){
+      const ledgers = ledgerYsForNoteY(y);
+      for(const ly of ledgers){
         ctx.beginPath();
         ctx.moveTo(x - 26, ly);
         ctx.lineTo(x + 26, ly);
@@ -834,9 +892,34 @@ Refresh if issues.`;
   }
 
   /**************************************************************************
-   *  AUDIO (more robust chain)
+   *  AUDIO (WebAudio + simple reverb)
    **************************************************************************/
-  let audioCtx=null, master=null, dryGain=null, wetGain=null, reverb=null, comp=null;
+  let audioCtx = null;
+  let master = null;
+  let reverb = null;
+  let wetGain = null;
+  let dryGain = null;
+
+  function ensureAudio(){
+    if(audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    master = audioCtx.createGain();
+    master.gain.value = 0.9;
+    master.connect(audioCtx.destination);
+
+    dryGain = audioCtx.createGain();
+    wetGain = audioCtx.createGain();
+    dryGain.gain.value = 0.85;
+    wetGain.gain.value = 0.35;
+
+    dryGain.connect(master);
+    wetGain.connect(master);
+
+    reverb = audioCtx.createConvolver();
+    reverb.buffer = makeImpulseResponse(audioCtx, 1.1, 2.6);
+    reverb.connect(wetGain);
+  }
 
   function makeImpulseResponse(ctx, durationSec, decay){
     const rate = ctx.sampleRate;
@@ -844,87 +927,60 @@ Refresh if issues.`;
     const impulse = ctx.createBuffer(2, length, rate);
     for(let ch=0; ch<2; ch++){
       const data = impulse.getChannelData(ch);
-      for(let i=0;i<length;i++){
-        const t = i/length;
-        data[i] = (Math.random()*2-1) * Math.pow(1 - t, decay);
+      for(let i=0; i<length; i++){
+        const t = i / length;
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, decay);
       }
     }
     return impulse;
   }
 
-  function ensureAudio(){
-    if(audioCtx) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    master = audioCtx.createGain();
-    master.gain.value = 0.95;
-
-    comp = audioCtx.createDynamicsCompressor();
-    comp.threshold.value = -20;
-    comp.knee.value = 18;
-    comp.ratio.value = 4;
-    comp.attack.value = 0.005;
-    comp.release.value = 0.12;
-
-    master.connect(comp);
-    comp.connect(audioCtx.destination);
-
-    dryGain = audioCtx.createGain();
-    wetGain = audioCtx.createGain();
-    dryGain.gain.value = 0.9;
-    wetGain.gain.value = 0.35;
-
-    dryGain.connect(master);
-    wetGain.connect(master);
-
-    reverb = audioCtx.createConvolver();
-    reverb.buffer = makeImpulseResponse(audioCtx, 1.0, 2.3);
-    reverb.connect(wetGain);
+  function midiToFreq(m){
+    return 440 * Math.pow(2, (m - 69) / 12);
   }
 
-  function midiToFreq(m){ return 440 * Math.pow(2, (m - 69) / 12); }
-
-  function playSequence(seq){
+  function playSequence(notes){
     ensureAudio();
     if(audioCtx.state === "suspended") audioCtx.resume();
 
     const now = audioCtx.currentTime;
     const bpm = 105;
     const secPerBeat = 60 / bpm;
+
     let t = now + 0.02;
 
-    for(const n of seq){
-      const dur = Math.max(0.06, (n.d || 1) * secPerBeat);
+    for(const n of notes){
+      const dur = Math.max(0.05, (n.d || 1) * secPerBeat);
       const freq = midiToFreq(n.m);
 
-      const oscA = audioCtx.createOscillator();
-      const oscB = audioCtx.createOscillator();
-      oscA.type = "triangle";
-      oscB.type = "sine";
-      oscA.frequency.setValueAtTime(freq, t);
-      oscB.frequency.setValueAtTime(freq*0.5, t);
+      const osc = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      osc.type = "triangle";
+      osc2.type = "sine";
+      osc.frequency.setValueAtTime(freq, t);
+      osc2.frequency.setValueAtTime(freq*0.5, t);
 
       const filt = audioCtx.createBiquadFilter();
       filt.type = "lowpass";
-      filt.frequency.setValueAtTime(2200, t);
+      filt.frequency.setValueAtTime(2000, t);
       filt.Q.setValueAtTime(0.7, t);
 
       const env = audioCtx.createGain();
       env.gain.setValueAtTime(0.0001, t);
-      env.gain.exponentialRampToValueAtTime(0.7, t + 0.012);
+      env.gain.exponentialRampToValueAtTime(0.55, t + 0.015);
       env.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
-      oscA.connect(filt);
-      oscB.connect(filt);
+      osc.connect(filt);
+      osc2.connect(filt);
       filt.connect(env);
 
       env.connect(dryGain);
       env.connect(reverb);
 
-      oscA.start(t);
-      oscB.start(t);
-      oscA.stop(t + dur + 0.02);
-      oscB.stop(t + dur + 0.02);
+      osc.start(t);
+      osc2.start(t);
+      osc.stop(t + dur + 0.02);
+      osc2.stop(t + dur + 0.02);
 
       t += dur + 0.015;
     }
@@ -936,11 +992,19 @@ Refresh if issues.`;
   let currentDayIndex = Number(daySelect.value);
   let currentDateStr = dayIndexToDateStr(currentDayIndex);
   let currentSong = pickSongForDay(currentDayIndex);
-  let state = loadState(currentDateStr) || defaultState();
+  let state = loadStateForDay(currentDateStr) || defaultState();
 
-  function persist(){ saveState(currentDateStr, state); }
-  function isOver(){ return state.status === "solved" || state.status === "gaveup"; }
-  function revealedCount(){ return Math.max(1, Math.min(MAX_NOTES, Number(state.revealed) || 1)); }
+  function persist(){
+    saveStateForDay(currentDateStr, state);
+  }
+
+  function isOver(){
+    return state.status === "solved" || state.status === "gaveup";
+  }
+
+  function revealedCount(){
+    return Math.max(1, Math.min(MAX_NOTES, Number(state.revealed) || 1));
+  }
 
   function setStatusMessage(){
     const dayLabel = `Day ${currentDayIndex}`;
@@ -956,11 +1020,16 @@ Refresh if issues.`;
   function updateButtons(){
     const over = isOver();
     const rev = revealedCount();
-    btnPlay.disabled = false;                 // always
+
+    btnPlay.disabled = false;
+
     btnAdd.disabled = over || (rev >= MAX_NOTES);
     btnName.disabled = over;
     btnGiveUp.disabled = over;
-    if(over) guessBox.classList.remove("show");
+
+    if(over){
+      guessBox.classList.remove("show");
+    }
   }
 
   function render(){
@@ -975,45 +1044,62 @@ Refresh if issues.`;
     guessInput.value = "";
     setTimeout(() => guessInput.focus(), 0);
   }
-  function closeGuess(){ guessBox.classList.remove("show"); }
+
+  function closeGuess(){
+    guessBox.classList.remove("show");
+  }
 
   /**************************************************************************
-   *  OVERLAY
+   *  OVERLAY (WIN / GIVEUP)
    **************************************************************************/
   let lastShareCanvas = null;
 
   function showOverlay(kind){
     toast.textContent = "";
-    const rev = revealedCount();
-    const dayLabel = `Day ${currentDayIndex}`;
-    const title = currentSong.title;
-
-    // Ensure the main page message is updated immediately (even while overlay is open)
-    setStatusMessage();
 
     if(kind === "solved"){
       modalHeadline.textContent = `You got it in ${state.solvedIn} notes.`;
-      modalSub.textContent = `${dayLabel}: ${title}`;
+
+      /* IMPORTANT: do NOT reveal the song title in the win popup */
+      modalSub.textContent = `Day ${currentDayIndex}`;
+
       shareTitle.textContent = `SONG GUESS — ${state.solvedIn} notes`;
       shareStaffHost.innerHTML = "";
-      shareStaffHost.appendChild(buildStaffSVG({notes: currentSong.notes, shownCount: state.solvedIn}));
+      shareStaffHost.appendChild(buildStaffSVG({
+        notes: currentSong.notes,
+        shownCount: state.solvedIn,
+        width: 700,
+        height: 120,
+        slots: MAX_NOTES,
+        showClef: true
+      }));
       lastShareCanvas = drawShareCardToCanvas({
         songTitleText: `SONG GUESS — ${state.solvedIn} notes`,
         shownCount: state.solvedIn,
         notes: currentSong.notes
       });
     } else {
+      const rev = revealedCount();
       modalHeadline.textContent = `You gave up after ${state.gaveUpAt} notes.`;
-      modalSub.textContent = `Answer: ${title}`;
+      modalSub.textContent = `Answer: ${currentSong.title}`;
+
       shareTitle.textContent = `SONG GUESS — ${rev} notes`;
       shareStaffHost.innerHTML = "";
-      shareStaffHost.appendChild(buildStaffSVG({notes: currentSong.notes, shownCount: rev}));
+      shareStaffHost.appendChild(buildStaffSVG({
+        notes: currentSong.notes,
+        shownCount: rev,
+        width: 700,
+        height: 120,
+        slots: MAX_NOTES,
+        showClef: true
+      }));
       lastShareCanvas = drawShareCardToCanvas({
         songTitleText: `SONG GUESS — ${rev} notes`,
         shownCount: rev,
         notes: currentSong.notes
       });
     }
+
     overlay.classList.add("show");
   }
 
@@ -1032,6 +1118,7 @@ Refresh if issues.`;
       if(!lastShareCanvas) throw new Error("no canvas");
       const blob = await new Promise((res) => lastShareCanvas.toBlob(res, "image/png"));
       if(!blob) throw new Error("blob failed");
+
       if(navigator.clipboard && window.ClipboardItem){
         const item = new ClipboardItem({ "image/png": blob });
         await navigator.clipboard.write([item]);
@@ -1066,9 +1153,11 @@ Refresh if issues.`;
 
   resetLink.addEventListener("click", (e) => {
     e.preventDefault();
-    clearState(currentDateStr);
+    clearStateForDay(currentDateStr);
     state = defaultState();
     persist();
+    overlay.classList.remove("show");
+    closeGuess();
     render();
   });
 
@@ -1076,9 +1165,9 @@ Refresh if issues.`;
     currentDayIndex = Number(daySelect.value);
     currentDateStr = dayIndexToDateStr(currentDayIndex);
     currentSong = pickSongForDay(currentDayIndex);
-    state = loadState(currentDateStr) || defaultState();
+    state = loadStateForDay(currentDateStr) || defaultState();
     closeGuess();
-    hideOverlay();
+    overlay.classList.remove("show");
     render();
   });
 
@@ -1111,6 +1200,7 @@ Refresh if issues.`;
       state.solvedIn = revealedCount();
       state.gaveUpAt = null;
       persist();
+
       closeGuess();
       render();
       showOverlay("solved");
@@ -1122,8 +1212,14 @@ Refresh if issues.`;
   });
 
   guessInput.addEventListener("keydown", (e) => {
-    if(e.key === "Enter"){ e.preventDefault(); btnSubmitGuess.click(); }
-    if(e.key === "Escape"){ e.preventDefault(); closeGuess(); }
+    if(e.key === "Enter"){
+      e.preventDefault();
+      btnSubmitGuess.click();
+    }
+    if(e.key === "Escape"){
+      e.preventDefault();
+      closeGuess();
+    }
   });
 
   btnGiveUp.addEventListener("click", () => {
@@ -1132,34 +1228,23 @@ Refresh if issues.`;
     state.gaveUpAt = revealedCount();
     state.solvedIn = null;
     persist();
+
     closeGuess();
     render();
     showOverlay("gaveup");
   });
 
   modalClose.addEventListener("click", hideOverlay);
-  overlay.addEventListener("click", (e) => { if(e.target === overlay) hideOverlay(); });
+  overlay.addEventListener("click", (e) => {
+    if(e.target === overlay) hideOverlay();
+  });
   btnCopy.addEventListener("click", copyShare);
 
-  document.addEventListener("keydown", (e) => {
-    if(e.key === "Escape"){
-      if(overlay.classList.contains("show")) hideOverlay();
-      if(drawer.classList.contains("show")) closeDrawer();
-      closeGuess();
-    }
-  });
-
-  // iOS: ensure audio starts on gesture
   document.addEventListener("pointerdown", () => {
-    try{
-      ensureAudio();
-      if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
-    } catch {}
+    if(!audioCtx) ensureAudio();
+    if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
   }, { once: true });
 
-  /**************************************************************************
-   *  INIT
-   **************************************************************************/
   render();
 })();
 </script>
