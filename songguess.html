@@ -2,424 +2,432 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Song Guess</title>
   <style>
     :root{
       --bg:#ffffff;
-      --fg:#111111;
-      --muted:#444;
+      --ink:#111;
+      --muted:#666;
       --border:#111;
       --panel:#fff;
 
       /* Wordle-ish */
-      --w-green:#6aaa64;
-      --w-yellow:#c9b458;
-      --w-gray:#d3d6da;
+      --green:#6aaa64;
+      --yellow:#c9b458;
+      --salmon:#e56b6f;
 
-      --danger:#e06b6b;
-      --shadow: 0 2px 0 rgba(0,0,0,.12);
+      --btnTextDark:#111;
+      --btnTextLight:#fff;
     }
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       background:var(--bg);
-      color:var(--fg);
-      font-family: "Clear Sans","Helvetica Neue",Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--ink);
+      font-family: "Clear Sans", "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    .page{
-      min-height:100%;
-      display:flex;
-      justify-content:center;
-      padding:14px 12px 40px;
-    }
-
-    .wrap{
-      width:min(760px, 100%);
+      text-rendering: geometricPrecision;
     }
 
     .topbar{
-      display:grid;
-      grid-template-columns: 1fr auto 1fr;
+      width:min(760px, 94vw);
+      margin:18px auto 10px;
+      display:flex;
       align-items:center;
-      gap:10px;
-      margin-bottom:10px;
+      justify-content:space-between;
+      gap:12px;
     }
 
-    .rules-link{
-      justify-self:start;
+    .topbar .left{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:120px;
+    }
+
+    a.link{
       font-size:13px;
-      color:#111;
-      text-decoration: underline;
+      color:#222;
+      text-decoration:underline;
+      text-underline-offset:2px;
       cursor:pointer;
       user-select:none;
+      white-space:nowrap;
     }
 
     .title{
-      justify-self:center;
+      flex:1;
+      text-align:center;
       font-weight:900;
-      letter-spacing:.18em;
-      text-transform:uppercase;
+      letter-spacing:0.22em;
       font-size:26px;
-      margin:0;
       line-height:1;
+      margin:0;
+      text-transform:uppercase;
     }
 
-    .daybox{
-      justify-self:end;
+    .right{
+      min-width:160px;
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+      align-items:center;
+    }
+
+    .daypick{
       display:flex;
       align-items:center;
-      gap:8px;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
       font-size:13px;
-      color:var(--fg);
     }
 
-    .daybox label{ font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
     select{
       border:2px solid var(--border);
-      border-radius:0;
-      padding:8px 10px;
       background:#fff;
-      color:#111;
+      color:var(--ink);
+      padding:8px 10px;
       font-weight:800;
-      min-width: 130px;
+      font-size:14px;
+      letter-spacing:0.02em;
+      outline:none;
+      border-radius:0;
+    }
+
+    .wrap{
+      width:min(760px, 94vw);
+      margin:0 auto 40px;
     }
 
     .panel{
       border:3px solid var(--border);
-      border-radius:0;
       background:var(--panel);
-      padding:16px 14px 14px;
+      padding:18px 14px 18px;
     }
 
-    .staff-wrap{
-      padding:10px 6px 8px;
-      border:2px solid transparent;
-    }
-
-    .staff-svg{
+    .staffWrap{
       width:100%;
-      height:auto;
-      display:block;
+      border:0;
+      padding:0;
+      margin:0 0 12px;
+    }
+
+    .staffBox{
+      width:100%;
+      border:0;
+      margin:0 auto;
+      padding:6px 0 0;
     }
 
     .controls{
+      width:min(520px, 92vw);
+      margin:0 auto;
       display:flex;
       flex-direction:column;
-      gap:10px;
-      align-items:center;
-      margin-top:10px;
+      gap:12px;
+      align-items:stretch;
     }
 
-    button{
-      width:min(420px, 92vw);
+    button.btn{
+      width:100%;
       border:3px solid var(--border);
       border-radius:0;
       padding:14px 12px;
       font-weight:900;
-      letter-spacing:.06em;
+      letter-spacing:0.18em;
       text-transform:uppercase;
+      font-size:14px;
       cursor:pointer;
-      color:#111;
       background:#fff;
-      box-shadow: var(--shadow);
-      touch-action: manipulation;
+      color:var(--ink);
     }
-
-    button:active{ transform: translateY(1px); box-shadow:none; }
-    button:disabled{
-      opacity:.45;
+    button.btn:active{transform: translateY(1px);}
+    button.btn[disabled]{
+      opacity:0.45;
       cursor:not-allowed;
-      box-shadow:none;
       transform:none;
+      filter:grayscale(0.15);
     }
 
-    .btn-green{ background: var(--w-green); color:#fff; }
-    .btn-yellow{ background: var(--w-yellow); color:#111; }
-    .btn-danger{ background: var(--danger); color:#111; }
+    .btn.play, .btn.name{ background:var(--green); color:var(--btnTextLight); }
+    .btn.add{ background:var(--yellow); color:var(--btnTextDark); }
+    .btn.giveup{ background:var(--salmon); color:var(--btnTextDark); }
 
-    .guess-box{
-      margin:14px auto 0;
+    .guessBox{
       width:min(520px, 92vw);
+      margin:14px auto 0;
+      border:3px solid var(--border);
+      padding:14px;
       display:none;
-      border-top:1px solid #ddd;
-      padding-top:14px;
-      text-align:center;
+      background:#fff;
     }
+    .guessBox.show{ display:block; }
 
-    input[type="text"]{
+    .guessBox input{
       width:100%;
       border:3px solid var(--border);
       border-radius:0;
-      padding:12px 10px;
-      font-size:16px;
+      padding:14px 12px;
+      font-size:18px;
       font-weight:800;
       outline:none;
     }
 
-   .guess-actions{
-  width:min(420px, 92vw);
-  margin:10px auto 0;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  align-items:stretch;
-}
+    .guess-actions{
+      width:100%;
+      margin:12px auto 0;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:stretch;
+    }
+    .guess-actions button{ width:100%; }
 
-.guess-actions button{
-  width:100%;
-}
-
-    .msg{
-      min-height:22px;
-      margin-top:12px;
+    .status{
+      width:min(520px, 92vw);
+      margin:14px auto 0;
       text-align:center;
-      font-weight:800;
-      white-space: pre-line; /* enables \n\n spacing */
+      font-weight:900;
+      font-size:20px;
+      line-height:1.35;
+      white-space:pre-line;
     }
 
-    /* Rules drawer */
-    .drawer-backdrop{
+    /* Drawer */
+    .drawerBackdrop{
       position:fixed;
       inset:0;
-      background: rgba(0,0,0,.25);
+      background:rgba(0,0,0,0.25);
       display:none;
+      z-index:50;
     }
+    .drawerBackdrop.show{display:block;}
+
     .drawer{
       position:fixed;
       top:0; left:0;
       height:100%;
-      width:min(320px, 86vw);
+      width:min(360px, 88vw);
       background:#fff;
       border-right:3px solid var(--border);
-      transform: translateX(-105%);
-      transition: transform 160ms ease;
-      padding:14px;
+      transform:translateX(-102%);
+      transition:transform 180ms ease-out;
+      z-index:60;
+      padding:18px 16px;
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap:12px;
     }
-    .drawer.open{ transform: translateX(0); }
-    .drawer-backdrop.open{ display:block; }
+    .drawer.show{ transform:translateX(0); }
 
-    .drawer-head{
+    .drawerTop{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      border-bottom:1px solid #ddd;
-      padding-bottom:10px;
     }
-    .drawer-title{
-      font-weight:900;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      font-size:14px;
+    .drawerTop h2{
       margin:0;
-    }
-    .drawer-close{
-      border:2px solid var(--border);
-      border-radius:0;
-      background:#fff;
-      width:34px;
-      height:34px;
+      font-size:16px;
       font-weight:900;
-      cursor:pointer;
-      box-shadow: var(--shadow);
+      letter-spacing:0.12em;
+      text-transform:uppercase;
     }
-    .drawer-text{
-      font-size:14px;
-      line-height:1.35;
-      color:#111;
+    .drawerClose{
+      border:3px solid var(--border);
+      background:#fff;
+      border-radius:0;
+      font-weight:900;
+      width:42px; height:38px;
+      cursor:pointer;
+    }
+    .drawerText{
+      font-size:16px;
+      font-weight:700;
+      line-height:1.55;
       white-space:pre-line;
+      color:#111;
     }
 
     /* Overlay */
     .overlay{
       position:fixed;
       inset:0;
+      background:rgba(0,0,0,0.35);
       display:none;
       align-items:center;
       justify-content:center;
-      padding:16px;
-      background: rgba(0,0,0,.30);
+      z-index:80;
+      padding:14px;
     }
-    .overlay.open{ display:flex; }
+    .overlay.show{ display:flex; }
+
     .modal{
-      width:min(620px, 96vw);
+      width:min(640px, 96vw);
       background:#fff;
       border:3px solid var(--border);
-      border-radius:0;
-      padding:16px;
+      padding:16px 14px 14px;
+      position:relative;
     }
-    .modal-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .modal-title{
-      margin:0;
-      font-weight:900;
-      font-size:22px;
-      line-height:1.15;
-    }
-    .modal-close{
-      border:2px solid var(--border);
-      border-radius:0;
+    .modalClose{
+      position:absolute;
+      top:10px;
+      right:10px;
+      border:3px solid var(--border);
       background:#fff;
-      width:34px;
-      height:34px;
+      border-radius:0;
       font-weight:900;
+      width:42px; height:38px;
       cursor:pointer;
-      box-shadow: var(--shadow);
-      flex:0 0 auto;
+    }
+    .modal h3{
+      margin:0 48px 10px 0;
+      font-size:22px;
+      font-weight:900;
+      line-height:1.2;
+    }
+    .modal .sub{
+      margin:0 0 10px;
+      color:#111;
+      font-weight:800;
+      font-size:14px;
+      letter-spacing:0.04em;
     }
 
-    .share-card{
-      margin-top:12px;
+    .shareCard{
       border:3px solid var(--border);
-      border-radius:0;
       padding:12px;
+      background:#fff;
+      margin:10px 0 12px;
     }
-    .share-caption{
+    .shareTitle{
       font-weight:900;
-      letter-spacing:.06em;
+      letter-spacing:0.14em;
       text-transform:uppercase;
       font-size:14px;
-      margin:0 0 10px 0;
+      margin:0 0 8px;
     }
-    .share-preview{
+
+    .copyBtn{
+      border:3px solid var(--border);
+      background:var(--green);
+      color:#fff;
+      border-radius:0;
       width:100%;
-      display:block;
-      border:2px solid #ddd;
-      background:#fff;
-    }
-    .modal-actions{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      align-items:center;
-    }
-    .hint{
-      text-align:center;
+      padding:14px 12px;
+      font-weight:900;
+      letter-spacing:0.10em;
+      text-transform:uppercase;
+      cursor:pointer;
       font-size:13px;
-      color:var(--muted);
+    }
+
+    .toast{
+      margin-top:10px;
+      font-weight:800;
+      color:#111;
+      font-size:13px;
+      text-align:center;
       min-height:18px;
     }
 
-    @media (max-width: 420px){
+    @media (max-width:420px){
       .title{ font-size:22px; }
-      button{ padding:13px 12px; }
+      button.btn{ font-size:13px; padding:13px 10px; }
+      .status{ font-size:18px; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="wrap">
+  <div class="topbar">
+    <div class="left">
+      <a class="link" id="rulesLink">Rules</a>
+    </div>
 
-      <div class="topbar">
-        <div class="rules-link" id="rulesLink">Rules</div>
-        <h1 class="title">Song Guess</h1>
-        <div class="daybox">
-          <label for="daySelect">Day</label>
-          <select id="daySelect" aria-label="Select day"></select>
-        </div>
+    <h1 class="title">SONG GUESS</h1>
+
+    <div class="right">
+      <a class="link" id="resetLink" title="Clears this day's saved progress (for testing)">Secret reset</a>
+      <div class="daypick">
+        <span>DAY</span>
+        <select id="daySelect" aria-label="Select day"></select>
       </div>
-
-      <div class="panel">
-        <div class="staff-wrap">
-          <svg id="staffSVG" class="staff-svg" viewBox="0 0 640 140" role="img" aria-label="Stave showing revealed notes">
-          </svg>
-        </div>
-
-        <div class="controls">
-          <button id="playBtn" class="btn-green">Play Notes</button>
-          <button id="addBtn" class="btn-yellow">Add a Note</button>
-          <button id="nameBtn" class="btn-green">Name the Song</button>
-          <button id="giveBtn" class="btn-danger">Give up</button>
-        </div>
-
-        <div class="guess-box" id="guessBox">
-          <input id="guessInput" type="text" placeholder="Type the song name exactly…" autocomplete="off" />
-          <div class="guess-actions">
-            <button id="submitGuessBtn" class="btn-green">Submit</button>
-            <button id="cancelGuessBtn">Cancel</button>
-          </div>
-        </div>
-
-        <div class="msg" id="msg"></div>
-      </div>
-
     </div>
   </div>
 
-  <!-- Rules drawer -->
-  <div class="drawer-backdrop" id="drawerBackdrop"></div>
-  <aside class="drawer" id="drawer" aria-hidden="true">
-    <div class="drawer-head">
-      <p class="drawer-title">Rules</p>
-      <button class="drawer-close" id="drawerClose" aria-label="Close rules">X</button>
+  <div class="wrap">
+    <div class="panel">
+      <div class="staffWrap">
+        <div class="staffBox" id="staffHost" aria-label="Music staff"></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn play" id="btnPlay">Play Notes</button>
+        <button class="btn add" id="btnAdd">Add a Note</button>
+        <button class="btn name" id="btnName">Name the Song</button>
+        <button class="btn giveup" id="btnGiveUp">Give up</button>
+      </div>
+
+      <div class="guessBox" id="guessBox">
+        <input id="guessInput" type="text" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the song title" />
+        <div class="guess-actions">
+          <button class="btn play" id="btnSubmitGuess">Submit</button>
+          <button class="btn" id="btnCancelGuess">Cancel</button>
+        </div>
+      </div>
+
+      <div class="status" id="statusText"></div>
     </div>
-    <div class="drawer-text">
-Guess the tune in the fewest notes you can.
-Name must match our database.
-Ensure your phone volume is up, and not on silent.
-Refresh if issues.
+  </div>
+
+  <!-- Rules Drawer -->
+  <div class="drawerBackdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawerTop">
+      <h2>Rules</h2>
+      <button class="drawerClose" id="drawerClose" aria-label="Close rules">X</button>
     </div>
+    <div class="drawerText" id="drawerText"></div>
   </aside>
 
-  <!-- Win / giveup overlay -->
-  <div class="overlay" id="overlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <h2 class="modal-title" id="modalTitle">You got it in X notes.</h2>
-        <button class="modal-close" id="modalClose" aria-label="Close">X</button>
+  <!-- Win / GiveUp Overlay -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <button class="modalClose" id="modalClose" aria-label="Close">X</button>
+      <h3 id="modalHeadline">You got it in X notes.</h3>
+      <div class="sub" id="modalSub"></div>
+
+      <div class="shareCard" id="shareCard">
+        <div class="shareTitle" id="shareTitle">SONG GUESS — X notes</div>
+        <div id="shareStaffHost"></div>
       </div>
 
-      <div class="share-card">
-        <p class="share-caption" id="shareCaption">SONG GUESS — X notes</p>
-        <canvas id="shareCanvas" class="share-preview" width="600" height="220"></canvas>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-green" id="copyBtn">Copy score to share with friends</button>
-        <div class="hint" id="copyHint"></div>
-      </div>
+      <button class="copyBtn" id="btnCopy">Copy score to share with friends</button>
+      <div class="toast" id="toast"></div>
     </div>
   </div>
 
 <script>
 (() => {
-  /*********************************************************************
-   * SONG CONFIG (EDIT HERE)
-   *********************************************************************/
+  /**************************************************************************
+   *  SONG CONFIG (EDIT HERE)
+   **************************************************************************/
   const START_DATE_UTC = "2026-02-06"; // YYYY-MM-DD
 
-  // Each song must have EXACTLY 12 notes: {m: MIDI, d: beats}
+  // Each song must have EXACTLY 16 notes: {m: MIDI, d: beats}
   const SONGS = [
-    
-      {
-      title: "Never Gonna Give You Up",
-      notes: [
-    
-    {m:69,d:1}, {m:71,d:1}, {m:74,d:1}, {m:71,d:1},
-  {m:78,d:1}, {m:78,d:1}, {m:76,d:1}, {m:69,d:1},
-  {m:71,d:1}, {m:74,d:1}, {m:71,d:1}, {m:76,d:1},
-      ]
-    },
-    
     {
       title: "Ode to Joy",
       notes: [
-        {m:64,d:1},{m:64,d:1},{m:65,d:1},{m:67,d:1},{m:67,d:1},{m:65,d:1},
-        {m:64,d:1},{m:62,d:1},{m:60,d:1},{m:60,d:1},{m:62,d:1},{m:64,d:1},
+        {m:64,d:1},{m:64,d:1},{m:65,d:1},{m:67,d:1},
+        {m:67,d:1},{m:65,d:1},{m:64,d:1},{m:62,d:1},
+        {m:60,d:1},{m:60,d:1},{m:62,d:1},{m:64,d:1},
+        {m:64,d:1},{m:62,d:1},{m:62,d:1},{m:60,d:2},
       ]
     },
     {
@@ -428,285 +436,388 @@ Refresh if issues.
         {m:67,d:0.5},{m:67,d:0.5},{m:67,d:0.5},{m:63,d:1.5},
         {m:66,d:0.5},{m:66,d:0.5},{m:66,d:0.5},{m:62,d:1.5},
         {m:67,d:0.5},{m:67,d:0.5},{m:67,d:0.5},{m:63,d:1.5},
+        {m:66,d:0.5},{m:66,d:0.5},{m:66,d:0.5},{m:62,d:1.5},
       ]
-    }
+    },
   ];
 
-  const MAX_NOTES = 12;
+  const MAX_NOTES = 16;
 
-  /*********************************************************************
-   * VALIDATION (pads/clamps with console warning)
-   *********************************************************************/
-  for (const s of SONGS) {
-    if (!Array.isArray(s.notes)) s.notes = [];
-    if (s.notes.length !== MAX_NOTES) {
-      console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; expected ${MAX_NOTES}. Auto-adjusting.`);
-      if (s.notes.length === 0) {
-        s.notes = Array.from({length: MAX_NOTES}, () => ({m:64,d:1}));
-      } else if (s.notes.length < MAX_NOTES) {
-        const last = s.notes[s.notes.length - 1];
-        while (s.notes.length < MAX_NOTES) s.notes.push({m:last.m, d:last.d});
-      } else {
-        s.notes = s.notes.slice(0, MAX_NOTES);
-      }
-    }
+  /**************************************************************************
+   *  RULES TEXT (DO NOT MOVE TO MAIN PAGE)
+   **************************************************************************/
+  const RULES_TEXT =
+`Guess the tune in the fewest notes you can.
+Name must match our database.
+Ensure your phone volume is up, and not on silent.
+Refresh if issues.`;
+
+  /**************************************************************************
+   *  HELPERS: DATE / STORAGE
+   **************************************************************************/
+  const pad2 = (n) => String(n).padStart(2, "0");
+  function parseUTCDate(yyyy_mm_dd){
+    const [y,m,d] = yyyy_mm_dd.split("-").map(Number);
+    return new Date(Date.UTC(y, (m-1), d, 0,0,0,0));
+  }
+  function dateToYYYYMMDDUTC(dt){
+    return `${dt.getUTCFullYear()}-${pad2(dt.getUTCMonth()+1)}-${pad2(dt.getUTCDate())}`;
+  }
+  function addDaysUTC(dt, days){
+    const x = new Date(dt.getTime());
+    x.setUTCDate(x.getUTCDate() + days);
+    return x;
+  }
+  function daysBetweenUTC(a,b){
+    const ms = 24*60*60*1000;
+    const ta = Date.UTC(a.getUTCFullYear(), a.getUTCMonth(), a.getUTCDate());
+    const tb = Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate());
+    return Math.floor((tb - ta) / ms);
+  }
+  function todayUTCDate(){
+    const now = new Date();
+    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0,0,0,0));
   }
 
-  /*********************************************************************
-   * DOM
-   *********************************************************************/
-  const staffSVG = document.getElementById("staffSVG");
-  const playBtn = document.getElementById("playBtn");
-  const addBtn = document.getElementById("addBtn");
-  const nameBtn = document.getElementById("nameBtn");
-  const giveBtn = document.getElementById("giveBtn");
+  function storageKeyForDay(yyyy_mm_dd){
+    return `songguess:v2:${yyyy_mm_dd}`;
+  }
+
+  function loadStateForDay(yyyy_mm_dd){
+    const raw = localStorage.getItem(storageKeyForDay(yyyy_mm_dd));
+    if(!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function saveStateForDay(yyyy_mm_dd, state){
+    localStorage.setItem(storageKeyForDay(yyyy_mm_dd), JSON.stringify(state));
+  }
+
+  function clearStateForDay(yyyy_mm_dd){
+    localStorage.removeItem(storageKeyForDay(yyyy_mm_dd));
+  }
+
+  function defaultState(){
+    return {
+      revealed: 1,
+      status: "playing", // playing | solved | gaveup
+      solvedIn: null,
+      gaveUpAt: null
+    };
+  }
+
+  /**************************************************************************
+   *  HELPERS: NORMALIZE TITLE
+   **************************************************************************/
+  function normTitle(s){
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  /**************************************************************************
+   *  VALIDATE SONGS
+   **************************************************************************/
+  function clampSongs(){
+    for(const s of SONGS){
+      if(!Array.isArray(s.notes)) s.notes = [];
+      if(s.notes.length !== MAX_NOTES){
+        console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; expected ${MAX_NOTES}. Will pad/trim for safety.`);
+        if(s.notes.length > MAX_NOTES) s.notes = s.notes.slice(0, MAX_NOTES);
+        while(s.notes.length < MAX_NOTES){
+          const last = s.notes.length ? s.notes[s.notes.length-1] : {m:64,d:1};
+          s.notes.push({m: last.m, d: last.d});
+        }
+      }
+      // sanitize
+      s.notes = s.notes.map(n => ({
+        m: Number.isFinite(n.m) ? n.m : 64,
+        d: Number.isFinite(n.d) ? n.d : 1
+      }));
+    }
+  }
+  clampSongs();
+
+  /**************************************************************************
+   *  UI ELEMENTS
+   **************************************************************************/
+  const daySelect = document.getElementById("daySelect");
+  const staffHost = document.getElementById("staffHost");
+
+  const btnPlay = document.getElementById("btnPlay");
+  const btnAdd = document.getElementById("btnAdd");
+  const btnName = document.getElementById("btnName");
+  const btnGiveUp = document.getElementById("btnGiveUp");
+
   const guessBox = document.getElementById("guessBox");
   const guessInput = document.getElementById("guessInput");
-  const submitGuessBtn = document.getElementById("submitGuessBtn");
-  const cancelGuessBtn = document.getElementById("cancelGuessBtn");
-  const msgEl = document.getElementById("msg");
-  const daySelect = document.getElementById("daySelect");
+  const btnSubmitGuess = document.getElementById("btnSubmitGuess");
+  const btnCancelGuess = document.getElementById("btnCancelGuess");
+
+  const statusText = document.getElementById("statusText");
 
   const rulesLink = document.getElementById("rulesLink");
-  const drawerBackdrop = document.getElementById("drawerBackdrop");
+  const resetLink = document.getElementById("resetLink");
+
   const drawer = document.getElementById("drawer");
+  const drawerBackdrop = document.getElementById("drawerBackdrop");
   const drawerClose = document.getElementById("drawerClose");
+  const drawerText = document.getElementById("drawerText");
 
   const overlay = document.getElementById("overlay");
   const modalClose = document.getElementById("modalClose");
-  const modalTitle = document.getElementById("modalTitle");
-  const shareCaption = document.getElementById("shareCaption");
-  const shareCanvas = document.getElementById("shareCanvas");
-  const copyBtn = document.getElementById("copyBtn");
-  const copyHint = document.getElementById("copyHint");
+  const modalHeadline = document.getElementById("modalHeadline");
+  const modalSub = document.getElementById("modalSub");
+  const shareTitle = document.getElementById("shareTitle");
+  const shareStaffHost = document.getElementById("shareStaffHost");
+  const btnCopy = document.getElementById("btnCopy");
+  const toast = document.getElementById("toast");
 
-  /*********************************************************************
-   * DATE / DAY HELPERS
-   *********************************************************************/
-  function parseUTCDate(yyyy_mm_dd){
-    const [y,m,d] = yyyy_mm_dd.split("-").map(Number);
-    return new Date(Date.UTC(y, m-1, d, 0,0,0));
-  }
-  function todayUTC(){
-    const now = new Date();
-    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0,0,0));
-  }
-  function dayIndexFromDate(dateUTC){
-    const start = parseUTCDate(START_DATE_UTC);
-    const diffMs = dateUTC.getTime() - start.getTime();
-    return Math.floor(diffMs / (24*60*60*1000));
-  }
+  drawerText.textContent = RULES_TEXT;
 
-  /*********************************************************************
-   * STATE
-   *********************************************************************/
-  let selectedDayIdx = 0;
-  let revealed = 1;
-  let solved = false;
-  let gaveUp = false;
+  /**************************************************************************
+   *  DAY SELECTOR (1..Today+13)
+   **************************************************************************/
+  const startUTC = parseUTCDate(START_DATE_UTC);
+  const todayUTC = todayUTCDate();
+  const todayIndex = Math.max(1, daysBetweenUTC(startUTC, todayUTC) + 1);
+  const maxIndex = todayIndex + 13;
 
-  function songForDay(dayIdx){
-    const i = ((dayIdx % SONGS.length) + SONGS.length) % SONGS.length;
-    return SONGS[i];
+  for(let i=1;i<=maxIndex;i++){
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = `Day ${i}`;
+    daySelect.appendChild(opt);
+  }
+  daySelect.value = String(todayIndex);
+
+  function dayIndexToDateStr(dayIndex){
+    const d = addDaysUTC(startUTC, dayIndex - 1);
+    return dateToYYYYMMDDUTC(d);
   }
 
-  function storageKey(dayIdx){
-    return `songguess:v4:${START_DATE_UTC}:day:${dayIdx}`;
-  }
-  function loadProgress(dayIdx){
-    const raw = localStorage.getItem(storageKey(dayIdx));
-    if (!raw) return null;
-    try { return JSON.parse(raw); } catch { return null; }
-  }
-  function saveProgress(){
-    localStorage.setItem(storageKey(selectedDayIdx), JSON.stringify({revealed, solved, gaveUp}));
+  function pickSongForDay(dayIndex){
+    if(!SONGS.length){
+      return { title:"(No songs configured)", notes: Array.from({length:MAX_NOTES}, () => ({m:64,d:1})) };
+    }
+    const idx = (dayIndex - 1) % SONGS.length;
+    return SONGS[idx];
   }
 
-  function setStatusMessageFromState(){
-    const song = songForDay(selectedDayIdx);
-    const dayLabel = `Day ${selectedDayIdx + 1}: ${song.title}.`;
+  /**************************************************************************
+   *  STAFF RENDERING (SVG + Canvas)
+   **************************************************************************/
+  function buildStaffSVG(opts){
+    const {
+      notes,               // array of {m,d}
+      shownCount,          // how many notes to show
+      width = 680,
+      height = 110,
+      slots = MAX_NOTES,
+      showClef = true,
+      paddingX = 34,
+      noteFill = getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim() || '#c9b458',
+      ink = '#111'
+    } = opts;
 
-    if (solved){
-      msgEl.textContent =
-        `${dayLabel} Solved in ${revealed} note${revealed===1?"":"s"}.\n\n` +
-        `Come back tomorrow for a new song.`;
-      return;
+    // Staff geometry
+    const lineGap = 10;                 // distance between staff lines
+    const topLineY = 28;                // y of top staff line
+    const bottomLineY = topLineY + 4*lineGap; // 5 lines total
+    const staffLeft = paddingX + (showClef ? 16 : 0);
+    const staffRight = width - paddingX;
+    const staffWidth = staffRight - staffLeft;
+
+    // Pitch mapping: MIDI 64 (E4) is bottom line
+    // semitone step to y step: 4px per semitone (stable, not engraving-correct, but consistent)
+    const semitoneStepPx = 4;
+
+    function yForMidi(m){
+      return bottomLineY - (m - 64) * semitoneStepPx;
     }
 
-    if (gaveUp){
-      msgEl.textContent =
-        `${dayLabel} You gave up after ${revealed} note${revealed===1?"":"s"}.\n\n` +
-        `Come back tomorrow for a new song.`;
-      return;
+    // slot positions across staff
+    const slotXs = [];
+    for(let i=0;i<slots;i++){
+      const t = slots === 1 ? 0.5 : (i/(slots-1));
+      slotXs.push(staffLeft + t*staffWidth);
     }
 
-    msgEl.textContent = "";
-  }
-
-  /*********************************************************************
-   * RULES DRAWER
-   *********************************************************************/
-  function openDrawer(){
-    drawerBackdrop.classList.add("open");
-    drawer.classList.add("open");
-    drawer.setAttribute("aria-hidden","false");
-  }
-  function closeDrawer(){
-    drawerBackdrop.classList.remove("open");
-    drawer.classList.remove("open");
-    drawer.setAttribute("aria-hidden","true");
-  }
-  rulesLink.addEventListener("click", openDrawer);
-  drawerClose.addEventListener("click", closeDrawer);
-  drawerBackdrop.addEventListener("click", closeDrawer);
-
-  /*********************************************************************
-   * STAFF RENDERING (SVG)
-   *********************************************************************/
-  const Staff = {
-    vbW: 640,
-    vbH: 140,
-    left: 40,
-    right: 600,
-    topLineY: 44,
-    lineGap: 10,
-    noteR: 8,
-    stemLen: 28,
-    semitoneStep: 5,
-    slotCount: MAX_NOTES,
-    slotStartX: 70,
-    slotEndX: 590,
-  };
-
-  function midiToY(midi){
-    const bottomLineY = Staff.topLineY + Staff.lineGap*4; // E4 line
-    const delta = midi - 64;
-    return bottomLineY - (delta * Staff.semitoneStep);
-  }
-
-  function slotX(i){
-    const t = (Staff.slotCount === 1) ? 0 : (i / (Staff.slotCount - 1));
-    return Staff.slotStartX + t*(Staff.slotEndX - Staff.slotStartX);
-  }
-
-  function clearSVG(el){
-    while (el.firstChild) el.removeChild(el.firstChild);
-  }
-
-  function svgEl(tag, attrs){
-    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
-    for (const [k,v] of Object.entries(attrs || {})) el.setAttribute(k, String(v));
-    return el;
-  }
-
-  function drawStaffBase(svg){
-    for (let i=0;i<5;i++){
-      const y = Staff.topLineY + i*Staff.lineGap;
-      svg.appendChild(svgEl("line", {
-        x1: Staff.left, y1: y, x2: Staff.right, y2: y,
-        stroke:"#111", "stroke-width":"2"
-      }));
-    }
-
-    svg.appendChild(svgEl("text", {
-      x: Staff.left - 18,
-      y: Staff.topLineY + Staff.lineGap*4 + 4,
-      fill:"#111",
-      "font-size":"22",
-      "font-weight":"900"
-    })).textContent = "𝄞";
-  }
-
-  function drawLedgerLines(svg, x, y){
-    const topY = Staff.topLineY;
-    const bottomY = Staff.topLineY + Staff.lineGap*4;
-    const ledgerHalf = 14;
-
-    if (y < topY){
-      for (let ly = topY - Staff.lineGap; ly >= y - 1; ly -= Staff.lineGap){
-        svg.appendChild(svgEl("line", {
-          x1: x - ledgerHalf, y1: ly, x2: x + ledgerHalf, y2: ly,
-          stroke:"#111", "stroke-width":"2"
-        }));
+    // Ledger lines: draw for out-of-staff notes.
+    // We'll draw lines on the 10px grid beyond staff, up to whatever range notes require.
+    function ledgerYsForNoteY(y){
+      const ys = [];
+      // line positions are multiples of lineGap from topLineY
+      // staff lines at: topLineY + k*lineGap for k=0..4
+      // ledger lines beyond: k<0 or k>4
+      const k = Math.round((y - topLineY) / lineGap); // nearest line index
+      const yNearestLine = topLineY + k*lineGap;
+      // if note is outside staff bounds (with a little tolerance), generate ledgers between note and staff edge
+      const above = y < topLineY - lineGap*0.6;
+      const below = y > bottomLineY + lineGap*0.6;
+      if(above){
+        // from k up to -1
+        const kMax = -1;
+        for(let kk=k; kk<=kMax; kk++){
+          ys.push(topLineY + kk*lineGap);
+        }
+      } else if(below){
+        // from 5 up to k
+        const kMin = 5;
+        for(let kk=kMin; kk<=k; kk++){
+          ys.push(topLineY + kk*lineGap);
+        }
       }
-    } else if (y > bottomY){
-      for (let ly = bottomY + Staff.lineGap; ly <= y + 1; ly += Staff.lineGap){
-        svg.appendChild(svgEl("line", {
-          x1: x - ledgerHalf, y1: ly, x2: x + ledgerHalf, y2: ly,
-          stroke:"#111", "stroke-width":"2"
-        }));
-      }
+      // de-dup
+      return Array.from(new Set(ys));
     }
+
+    // Build SVG string
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.setAttribute('role', 'img');
+
+    // staff lines
+    for(let i=0;i<5;i++){
+      const y = topLineY + i*lineGap;
+      const line = document.createElementNS(ns, 'line');
+      line.setAttribute('x1', staffLeft);
+      line.setAttribute('x2', staffRight);
+      line.setAttribute('y1', y);
+      line.setAttribute('y2', y);
+      line.setAttribute('stroke', ink);
+      line.setAttribute('stroke-width', '2');
+      svg.appendChild(line);
+    }
+
+    // clef (simple text)
+    if(showClef){
+      const clef = document.createElementNS(ns, 'text');
+      clef.setAttribute('x', paddingX);
+      clef.setAttribute('y', bottomLineY + 6);
+      clef.setAttribute('font-size', '26');
+      clef.setAttribute('font-weight', '700');
+      clef.setAttribute('fill', ink);
+      clef.textContent = '𝄞';
+      svg.appendChild(clef);
+    }
+
+    // notes (up to shownCount)
+    const noteRadiusX = 9;
+    const noteRadiusY = 7;
+    const stemH = 32;
+
+    for(let i=0;i<Math.min(shownCount, slots);i++){
+      const n = notes[i];
+      const x = slotXs[i];
+      const y = yForMidi(n.m);
+
+      // ledger lines if needed
+      const ledgers = ledgerYsForNoteY(y);
+      for(const ly of ledgers){
+        const ll = document.createElementNS(ns, 'line');
+        ll.setAttribute('x1', x - 14);
+        ll.setAttribute('x2', x + 14);
+        ll.setAttribute('y1', ly);
+        ll.setAttribute('y2', ly);
+        ll.setAttribute('stroke', ink);
+        ll.setAttribute('stroke-width', '2');
+        svg.appendChild(ll);
+      }
+
+      // stem (fixed direction: up from right side)
+      const stem = document.createElementNS(ns, 'line');
+      stem.setAttribute('x1', x + noteRadiusX - 1);
+      stem.setAttribute('x2', x + noteRadiusX - 1);
+      stem.setAttribute('y1', y);
+      stem.setAttribute('y2', y - stemH);
+      stem.setAttribute('stroke', ink);
+      stem.setAttribute('stroke-width', '3');
+      svg.appendChild(stem);
+
+      // notehead (ellipse)
+      const head = document.createElementNS(ns, 'ellipse');
+      head.setAttribute('cx', x);
+      head.setAttribute('cy', y);
+      head.setAttribute('rx', noteRadiusX);
+      head.setAttribute('ry', noteRadiusY);
+      head.setAttribute('fill', noteFill);
+      head.setAttribute('stroke', ink);
+      head.setAttribute('stroke-width', '3');
+      svg.appendChild(head);
+    }
+
+    return svg;
   }
 
-  function drawNote(svg, x, y){
-    drawLedgerLines(svg, x, y);
-
-    svg.appendChild(svgEl("circle", {
-      cx:x, cy:y, r:Staff.noteR,
-      fill:"var(--w-yellow)",
-      stroke:"#111",
-      "stroke-width":"2"
+  function renderStaffInto(el, songNotes, shownCount){
+    el.innerHTML = "";
+    el.appendChild(buildStaffSVG({
+      notes: songNotes,
+      shownCount,
+      width: 700,
+      height: 120,
+      slots: MAX_NOTES,
+      showClef: true
     }));
-
-    const stemX = x + Staff.noteR - 1;
-    svg.appendChild(svgEl("line", {
-      x1: stemX, y1: y, x2: stemX, y2: y - Staff.stemLen,
-      stroke:"#111", "stroke-width":"2"
-    }));
   }
 
-  function renderStaff(revealedCount){
-    clearSVG(staffSVG);
-    drawStaffBase(staffSVG);
+  // Canvas rendering for clipboard image
+  function drawShareCardToCanvas(opts){
+    const {
+      songTitleText,
+      shownCount,
+      notes,
+      width = 900,
+      height = 360
+    } = opts;
 
-    const song = songForDay(selectedDayIdx);
-    const notes = song.notes;
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
 
-    for (let i=0;i<MAX_NOTES;i++){
-      const x = slotX(i);
-      if (i < revealedCount){
-        const y = midiToY(notes[i].m);
-        drawNote(staffSVG, x, y);
-      } else {
-        staffSVG.appendChild(svgEl("circle", {
-          cx:x, cy: Staff.topLineY + Staff.lineGap*2,
-          r: 2.5, fill:"#000", opacity:"0.10"
-        }));
-      }
-    }
-  }
+    // colors
+    const css = getComputedStyle(document.documentElement);
+    const ink = "#111";
+    const yellow = (css.getPropertyValue('--yellow').trim() || "#c9b458");
+    const borderW = 6;
 
-  /*********************************************************************
-   * SHARE CARD CANVAS
-   *********************************************************************/
-  function drawShareCardCanvas(statusText, revealedCount){
-    const ctx = shareCanvas.getContext("2d");
-    const W = shareCanvas.width, H = shareCanvas.height;
-
-    ctx.clearRect(0,0,W,H);
+    // background
     ctx.fillStyle = "#fff";
-    ctx.fillRect(0,0,W,H);
+    ctx.fillRect(0,0,width,height);
 
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(1.5,1.5,W-3,H-3);
+    // border
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = borderW;
+    ctx.strokeRect(borderW/2, borderW/2, width-borderW, height-borderW);
 
-    ctx.fillStyle = "#111";
-    ctx.font = "900 18px Arial, system-ui, -apple-system, Segoe UI, Roboto";
+    // title text
+    ctx.fillStyle = ink;
+    ctx.font = "900 34px Arial, Helvetica, sans-serif";
     ctx.textBaseline = "top";
-    ctx.fillText(statusText, 18, 16);
+    ctx.fillText(songTitleText, 40, 32);
 
-    const staffLeft = 30;
-    const staffRight = W - 30;
-    const staffTop = 70;
-    const lineGap = 12;
+    // staff geometry
+    const staffTop = 120;
+    const lineGap = 18;
     const topLineY = staffTop;
-    const bottomLineY = staffTop + lineGap*4;
+    const bottomLineY = topLineY + 4*lineGap;
 
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 2;
-    for (let i=0;i<5;i++){
+    const paddingX = 60;
+    const clefX = paddingX;
+    const staffLeft = clefX + 24;
+    const staffRight = width - paddingX;
+    const staffWidth = staffRight - staffLeft;
+
+    // staff lines
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = 4;
+    for(let i=0;i<5;i++){
       const y = topLineY + i*lineGap;
       ctx.beginPath();
       ctx.moveTo(staffLeft, y);
@@ -714,390 +825,462 @@ Refresh if issues.
       ctx.stroke();
     }
 
-    const semitoneStep = 6;
-    function midiToYc(midi){
-      const delta = midi - 64;
-      return bottomLineY - (delta * semitoneStep);
+    // clef (best-effort; some fonts may not draw it perfectly, still ok)
+    ctx.font = "700 46px Arial, Helvetica, sans-serif";
+    ctx.fillText("𝄞", clefX, bottomLineY - 42);
+
+    // mapping
+    const semitoneStepPx = 7; // larger for share card
+    const noteRx = 16;
+    const noteRy = 13;
+    const stemH = 62;
+
+    function yForMidi(m){
+      return bottomLineY - (m - 64) * semitoneStepPx;
     }
-    function slotXc(i){
-      const startX = staffLeft + 40;
-      const endX = staffRight - 10;
-      const t = (MAX_NOTES === 1) ? 0 : (i / (MAX_NOTES - 1));
-      return startX + t*(endX - startX);
+
+    const slotXs = [];
+    for(let i=0;i<MAX_NOTES;i++){
+      const t = (MAX_NOTES === 1) ? 0.5 : (i/(MAX_NOTES-1));
+      slotXs.push(staffLeft + t*staffWidth);
     }
-    function drawLedger(x,y){
-      const ledgerHalf = 16;
-      if (y < topLineY){
-        for (let ly = topLineY - lineGap; ly >= y - 1; ly -= lineGap){
-          ctx.beginPath();
-          ctx.moveTo(x - ledgerHalf, ly);
-          ctx.lineTo(x + ledgerHalf, ly);
-          ctx.stroke();
+
+    function ledgerYsForNoteY(y){
+      const ys = [];
+      const k = Math.round((y - topLineY) / lineGap);
+      const above = y < topLineY - lineGap*0.6;
+      const below = y > bottomLineY + lineGap*0.6;
+      if(above){
+        for(let kk=k; kk<=-1; kk++){
+          ys.push(topLineY + kk*lineGap);
         }
-      } else if (y > bottomLineY){
-        for (let ly = bottomLineY + lineGap; ly <= y + 1; ly += lineGap){
-          ctx.beginPath();
-          ctx.moveTo(x - ledgerHalf, ly);
-          ctx.lineTo(x + ledgerHalf, ly);
-          ctx.stroke();
+      } else if(below){
+        for(let kk=5; kk<=k; kk++){
+          ys.push(topLineY + kk*lineGap);
         }
       }
+      return Array.from(new Set(ys));
     }
 
-    const song = songForDay(selectedDayIdx);
-    const yellow = getComputedStyle(document.documentElement).getPropertyValue("--w-yellow").trim() || "#c9b458";
+    // notes
+    for(let i=0;i<Math.min(shownCount, MAX_NOTES);i++){
+      const n = notes[i];
+      const x = slotXs[i];
+      const y = yForMidi(n.m);
 
-    for (let i=0;i<MAX_NOTES;i++){
-      const x = slotXc(i);
-      if (i < revealedCount){
-        const y = midiToYc(song.notes[i].m);
-
-        drawLedger(x,y);
-
-        ctx.fillStyle = yellow;
-        ctx.strokeStyle = "#111";
-        ctx.lineWidth = 2;
+      // ledger lines
+      const ledgers = ledgerYsForNoteY(y);
+      for(const ly of ledgers){
         ctx.beginPath();
-        ctx.arc(x, y, 9, 0, Math.PI*2);
-        ctx.fill();
+        ctx.moveTo(x - 26, ly);
+        ctx.lineTo(x + 26, ly);
         ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(x + 8, y);
-        ctx.lineTo(x + 8, y - 34);
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = "rgba(0,0,0,0.10)";
-        ctx.beginPath();
-        ctx.arc(x, topLineY + lineGap*2, 3, 0, Math.PI*2);
-        ctx.fill();
       }
+
+      // stem
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(x + noteRx - 2, y);
+      ctx.lineTo(x + noteRx - 2, y - stemH);
+      ctx.stroke();
+
+      // notehead
+      ctx.fillStyle = yellow;
+      ctx.strokeStyle = ink;
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.ellipse(x, y, noteRx, noteRy, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.stroke();
     }
+
+    return canvas;
   }
 
-  async function copyShareCardToClipboard(textFallback){
-    copyHint.textContent = "";
-    try {
-      if (navigator.clipboard && window.ClipboardItem && shareCanvas.toBlob) {
-        const blob = await new Promise((res) => shareCanvas.toBlob(res, "image/png"));
-        if (!blob) throw new Error("blob failed");
-        await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
-        copyHint.textContent = "Copied image to clipboard.";
-        return;
-      }
-      throw new Error("no image clipboard");
-    } catch {
-      try {
-        await navigator.clipboard.writeText(textFallback);
-        copyHint.textContent = "Copied text to clipboard (image not supported).";
-      } catch {
-        copyHint.textContent = "Copy failed on this device/browser.";
-      }
-    }
-  }
-
-  /*********************************************************************
-   * AUDIO (pleasant oscillator + short reverb)
-   *********************************************************************/
+  /**************************************************************************
+   *  AUDIO (WebAudio + simple reverb)
+   **************************************************************************/
   let audioCtx = null;
-  let isPlaying = false;
+  let master = null;
+  let reverb = null;
+  let wetGain = null;
+  let dryGain = null;
 
   function ensureAudio(){
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if(audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    master = audioCtx.createGain();
+    master.gain.value = 0.9; // overall loudness
+    master.connect(audioCtx.destination);
+
+    // dry/wet split
+    dryGain = audioCtx.createGain();
+    wetGain = audioCtx.createGain();
+    dryGain.gain.value = 0.85;
+    wetGain.gain.value = 0.35;
+
+    dryGain.connect(master);
+    wetGain.connect(master);
+
+    // convolver reverb
+    reverb = audioCtx.createConvolver();
+    reverb.buffer = makeImpulseResponse(audioCtx, 1.1, 2.6); // short, pleasant
+    reverb.connect(wetGain);
   }
 
-  function midiToFreq(m){ return 440 * Math.pow(2, (m - 69) / 12); }
-
-  function makeConvolver(ctx, seconds=0.40, decay=2.4){
+  function makeImpulseResponse(ctx, durationSec, decay){
     const rate = ctx.sampleRate;
-    const length = Math.max(1, Math.floor(rate * seconds));
+    const length = Math.floor(rate * durationSec);
     const impulse = ctx.createBuffer(2, length, rate);
-    for (let ch=0; ch<2; ch++){
+    for(let ch=0; ch<2; ch++){
       const data = impulse.getChannelData(ch);
-      for (let i=0; i<length; i++){
+      for(let i=0; i<length; i++){
         const t = i / length;
-        data[i] = (Math.random()*2 - 1) * Math.pow(1 - t, decay);
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, decay);
       }
     }
-    const convolver = ctx.createConvolver();
-    convolver.buffer = impulse;
-    return convolver;
+    return impulse;
   }
 
-  async function playNotes(){
-    if (isPlaying) return;
-    if (solved || gaveUp) return;
+  function midiToFreq(m){
+    return 440 * Math.pow(2, (m - 69) / 12);
+  }
 
+  function playSequence(notes){
     ensureAudio();
-    isPlaying = true;
+    if(audioCtx.state === "suspended") audioCtx.resume();
 
-    const ctx = audioCtx;
-    const song = songForDay(selectedDayIdx);
-    const tempo = 118;
-    const beat = 60 / tempo;
+    const now = audioCtx.currentTime;
+    const bpm = 105; // stable, pleasant pace
+    const secPerBeat = 60 / bpm;
 
-    const master = ctx.createGain();
-    master.gain.value = 0.95;
-
-    const dry = ctx.createGain();
-    dry.gain.value = 0.60;
-
-    const wet = ctx.createGain();
-    wet.gain.value = 0.35;
-
-    const convolver = makeConvolver(ctx);
-
-    dry.connect(master);
-    convolver.connect(wet);
-    wet.connect(master);
-    master.connect(ctx.destination);
-
-    const now = ctx.currentTime;
     let t = now + 0.02;
 
-    disableGameplay();
+    for(const n of notes){
+      const dur = Math.max(0.05, (n.d || 1) * secPerBeat);
+      const freq = midiToFreq(n.m);
 
-    for (let i=0;i<revealed;i++){
-      const {m,d} = song.notes[i];
-      const dur = Math.max(0.06, d * beat);
-
-      const osc1 = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
-      osc1.type = "triangle";
+      // oscillator -> filter -> env -> dry/wet
+      const osc = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      osc.type = "triangle";
       osc2.type = "sine";
-      osc1.frequency.value = midiToFreq(m);
-      osc2.frequency.value = midiToFreq(m);
+      osc.frequency.setValueAtTime(freq, t);
+      osc2.frequency.setValueAtTime(freq*0.5, t); // subtle warmth
 
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.35, t + 0.015);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      const filt = audioCtx.createBiquadFilter();
+      filt.type = "lowpass";
+      filt.frequency.setValueAtTime(2000, t);
+      filt.Q.setValueAtTime(0.7, t);
 
-      const lp = ctx.createBiquadFilter();
-      lp.type = "lowpass";
-      lp.frequency.value = 2200;
-      lp.Q.value = 0.7;
+      const env = audioCtx.createGain();
+      env.gain.setValueAtTime(0.0001, t);
+      env.gain.exponentialRampToValueAtTime(0.55, t + 0.015);
+      env.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
-      osc1.connect(g);
-      osc2.connect(g);
-      g.connect(lp);
-      lp.connect(dry);
-      lp.connect(convolver);
+      osc.connect(filt);
+      osc2.connect(filt);
+      filt.connect(env);
 
-      osc1.start(t);
+      // split to dry and reverb
+      env.connect(dryGain);
+      env.connect(reverb);
+
+      osc.start(t);
       osc2.start(t);
-      osc1.stop(t + dur + 0.02);
+      osc.stop(t + dur + 0.02);
       osc2.stop(t + dur + 0.02);
 
-      t += dur + 0.03;
+      // tiny gap
+      t += dur + 0.015;
     }
-
-    const totalMs = Math.max(250, (t - now) * 1000);
-    setTimeout(() => {
-      isPlaying = false;
-      if (!solved && !gaveUp) enableGameplay();
-    }, totalMs);
   }
 
-  function disableGameplay(){
-    playBtn.disabled = true;
-    addBtn.disabled = true;
-    nameBtn.disabled = true;
-    giveBtn.disabled = true;
-    submitGuessBtn.disabled = true;
-    cancelGuessBtn.disabled = true;
-  }
-  function enableGameplay(){
-    playBtn.disabled = false;
-    addBtn.disabled = false;
-    nameBtn.disabled = false;
-    giveBtn.disabled = false;
-    submitGuessBtn.disabled = false;
-    cancelGuessBtn.disabled = false;
+  /**************************************************************************
+   *  GAME STATE
+   **************************************************************************/
+  let currentDayIndex = Number(daySelect.value);
+  let currentDateStr = dayIndexToDateStr(currentDayIndex);
+  let currentSong = pickSongForDay(currentDayIndex);
+  let state = loadStateForDay(currentDateStr) || defaultState();
+
+  function persist(){
+    saveStateForDay(currentDateStr, state);
   }
 
-  /*********************************************************************
-   * GUESS / WIN / GIVE UP
-   *********************************************************************/
-  function norm(s){
-    return String(s || "").trim().replace(/\s+/g," ").toLowerCase();
+  function isOver(){
+    return state.status === "solved" || state.status === "gaveup";
   }
 
-  function openOverlay(){
-    overlay.classList.add("open");
-    overlay.setAttribute("aria-hidden","false");
-  }
-  function closeOverlay(){
-    overlay.classList.remove("open");
-    overlay.setAttribute("aria-hidden","true");
-    copyHint.textContent = "";
-    // Immediately reflect solved/give-up status on the main screen (no manual refresh needed)
-    setStatusMessageFromState();
-  }
-  modalClose.addEventListener("click", closeOverlay);
-  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
-
-  function showWin(){
-    solved = true;
-    saveProgress();
-    guessBox.style.display = "none";
-
-    const x = revealed;
-    modalTitle.textContent = `You got it in ${x} note${x===1?"":"s"}.`;
-    shareCaption.textContent = `SONG GUESS — ${x} notes`;
-    drawShareCardCanvas(`SONG GUESS — ${x} notes`, x);
-    openOverlay();
-
-    playBtn.disabled = true;
-    addBtn.disabled = true;
-    nameBtn.disabled = true;
-    giveBtn.disabled = true;
-
-    renderStaff(revealed);
-
-    // Set the post-game message immediately (so it appears even before closing)
-    setStatusMessageFromState();
+  function revealedCount(){
+    return Math.max(1, Math.min(MAX_NOTES, Number(state.revealed) || 1));
   }
 
-  function showGiveUp(){
-    gaveUp = true;
-    saveProgress();
-    guessBox.style.display = "none";
-
-    const x = revealed;
-    const answer = songForDay(selectedDayIdx).title;
-    modalTitle.textContent = `You gave up after ${x} note${x===1?"":"s"}.`;
-    shareCaption.textContent = `Answer: ${answer}`;
-    drawShareCardCanvas(`SONG GUESS — ${x} notes`, x);
-    openOverlay();
-
-    playBtn.disabled = true;
-    addBtn.disabled = true;
-    nameBtn.disabled = true;
-    giveBtn.disabled = true;
-
-    renderStaff(revealed);
-    setStatusMessageFromState();
-  }
-
-  async function submitGuess(){
-    if (solved || gaveUp) return;
-
-    const guess = norm(guessInput.value);
-    if (!guess) return;
-
-    const song = songForDay(selectedDayIdx);
-    const answer = norm(song.title);
-
-    if (guess === answer){
-      showWin();
+  function setStatusMessage(){
+    const dayLabel = `Day ${currentDayIndex}`;
+    if(state.status === "solved"){
+      statusText.textContent = `${dayLabel}: ${currentSong.title}. Solved in ${state.solvedIn} notes.\n\nCome back tomorrow for a new song.`;
+    } else if(state.status === "gaveup"){
+      statusText.textContent = `${dayLabel}: ${currentSong.title}. You gave up after ${state.gaveUpAt} notes.\n\nCome back tomorrow for a new song.`;
     } else {
-      msgEl.textContent = "Nope. Try again (or add another note).";
-      guessInput.select();
+      statusText.textContent = "";
     }
   }
 
-  /*********************************************************************
-   * DAY PICKER
-   *********************************************************************/
-  function buildDayPicker(){
-    const todayIdx = Math.max(0, dayIndexFromDate(todayUTC()));
-    const maxIdx = todayIdx + 13;
+  function updateButtons(){
+    const over = isOver();
+    const rev = revealedCount();
 
-    daySelect.innerHTML = "";
-    for (let i=0;i<=maxIdx;i++){
-      const opt = document.createElement("option");
-      opt.value = String(i);
-      opt.textContent = `Day ${i+1}`;
-      daySelect.appendChild(opt);
+    // Always allow Play Notes
+    btnPlay.disabled = false;
+
+    btnAdd.disabled = over || (rev >= MAX_NOTES);
+    btnName.disabled = over;
+    btnGiveUp.disabled = over;
+
+    // hide guess box if game is over
+    if(over){
+      guessBox.classList.remove("show");
     }
-
-    daySelect.value = String(todayIdx);
-    setDay(todayIdx);
   }
 
-  function setDay(dayIdx){
-    selectedDayIdx = dayIdx;
+  function render(){
+    // Staff shows revealed notes (even after game over)
+    renderStaffInto(staffHost, currentSong.notes, revealedCount());
 
-    revealed = 1;
-    solved = false;
-    gaveUp = false;
+    setStatusMessage();
+    updateButtons();
+  }
 
-    const p = loadProgress(dayIdx);
-    if (p){
-      revealed = Math.max(1, Math.min(MAX_NOTES, Number(p.revealed) || 1));
-      solved = !!p.solved;
-      gaveUp = !!p.gaveUp;
-    }
-
-    guessBox.style.display = "none";
+  function openGuess(){
+    if(isOver()) return;
+    guessBox.classList.add("show");
     guessInput.value = "";
+    setTimeout(() => guessInput.focus(), 0);
+  }
 
-    renderStaff(revealed);
+  function closeGuess(){
+    guessBox.classList.remove("show");
+  }
 
-    if (solved || gaveUp){
-      playBtn.disabled = true;
-      addBtn.disabled = true;
-      nameBtn.disabled = true;
-      giveBtn.disabled = true;
+  /**************************************************************************
+   *  OVERLAY (WIN / GIVEUP)
+   **************************************************************************/
+  let lastShareCanvas = null;
+
+  function showOverlay(kind){
+    // kind: "solved" | "gaveup"
+    const rev = revealedCount();
+    const dayLabel = `Day ${currentDayIndex}`;
+    const title = currentSong.title;
+
+    toast.textContent = "";
+
+    if(kind === "solved"){
+      modalHeadline.textContent = `You got it in ${state.solvedIn} notes.`;
+      modalSub.textContent = `${dayLabel}: ${title}`;
+      shareTitle.textContent = `SONG GUESS — ${state.solvedIn} notes`;
+      shareStaffHost.innerHTML = "";
+      shareStaffHost.appendChild(buildStaffSVG({
+        notes: currentSong.notes,
+        shownCount: state.solvedIn,
+        width: 700,
+        height: 120,
+        slots: MAX_NOTES,
+        showClef: true
+      }));
+      lastShareCanvas = drawShareCardToCanvas({
+        songTitleText: `SONG GUESS — ${state.solvedIn} notes`,
+        shownCount: state.solvedIn,
+        notes: currentSong.notes
+      });
     } else {
-      enableGameplay();
+      modalHeadline.textContent = `You gave up after ${state.gaveUpAt} notes.`;
+      modalSub.textContent = `Answer: ${title}`;
+      shareTitle.textContent = `SONG GUESS — ${rev} notes`;
+      shareStaffHost.innerHTML = "";
+      shareStaffHost.appendChild(buildStaffSVG({
+        notes: currentSong.notes,
+        shownCount: rev,
+        width: 700,
+        height: 120,
+        slots: MAX_NOTES,
+        showClef: true
+      }));
+      lastShareCanvas = drawShareCardToCanvas({
+        songTitleText: `SONG GUESS — ${rev} notes`,
+        shownCount: rev,
+        notes: currentSong.notes
+      });
     }
 
-    setStatusMessageFromState();
+    overlay.classList.add("show");
   }
 
-  /*********************************************************************
-   * EVENTS
-   *********************************************************************/
-  playBtn.addEventListener("click", () => { playNotes().catch(()=>{}); });
+  function hideOverlay(){
+    overlay.classList.remove("show");
+    // ensure status message shows immediately (no refresh)
+    render();
+  }
 
-  addBtn.addEventListener("click", () => {
-    if (solved || gaveUp) return;
-    revealed = Math.min(MAX_NOTES, revealed + 1);
-    renderStaff(revealed);
-    msgEl.textContent = `Notes revealed: ${revealed}`;
-    saveProgress();
+  async function copyShare(){
+    toast.textContent = "";
+    const rev = revealedCount();
+    const notesCount = (state.status === "solved") ? state.solvedIn : rev;
+    const txt = `SONG GUESS — ${notesCount} notes`;
+
+    // Prefer image copy
+    try{
+      if(!lastShareCanvas) throw new Error("no canvas");
+      const blob = await new Promise((res) => lastShareCanvas.toBlob(res, "image/png"));
+      if(!blob) throw new Error("blob failed");
+
+      if(navigator.clipboard && window.ClipboardItem){
+        const item = new ClipboardItem({ "image/png": blob });
+        await navigator.clipboard.write([item]);
+        toast.textContent = "Copied image to clipboard.";
+        return;
+      }
+      throw new Error("image clipboard not supported");
+    } catch {
+      // fallback to text
+      try{
+        await navigator.clipboard.writeText(txt);
+        toast.textContent = "Copied text to clipboard (image not supported here).";
+      } catch {
+        toast.textContent = "Copy failed on this browser.";
+      }
+    }
+  }
+
+  /**************************************************************************
+   *  EVENTS
+   **************************************************************************/
+  // Drawer
+  function openDrawer(){
+    drawerBackdrop.classList.add("show");
+    drawer.classList.add("show");
+  }
+  function closeDrawer(){
+    drawerBackdrop.classList.remove("show");
+    drawer.classList.remove("show");
+  }
+  rulesLink.addEventListener("click", openDrawer);
+  drawerClose.addEventListener("click", closeDrawer);
+  drawerBackdrop.addEventListener("click", closeDrawer);
+
+  // Secret reset
+  resetLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    clearStateForDay(currentDateStr);
+    state = defaultState();
+    persist();
+    // re-render immediately (no need to reload, but allowed)
+    render();
   });
 
-  nameBtn.addEventListener("click", () => {
-    if (solved || gaveUp) return;
-    guessBox.style.display = "block";
-    guessInput.focus();
-  });
-
-  cancelGuessBtn.addEventListener("click", () => {
-    guessBox.style.display = "none";
-    guessInput.value = "";
-    msgEl.textContent = "";
-  });
-
-  submitGuessBtn.addEventListener("click", () => { submitGuess().catch(()=>{}); });
-  guessInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") submitGuess().catch(()=>{});
-  });
-
-  giveBtn.addEventListener("click", () => {
-    if (solved || gaveUp) return;
-    showGiveUp();
-  });
-
+  // Day change
   daySelect.addEventListener("change", () => {
-    const idx = Number(daySelect.value);
-    setDay(Number.isFinite(idx) ? idx : 0);
+    currentDayIndex = Number(daySelect.value);
+    currentDateStr = dayIndexToDateStr(currentDayIndex);
+    currentSong = pickSongForDay(currentDayIndex);
+    state = loadStateForDay(currentDateStr) || defaultState();
+    closeGuess();
+    hideOverlay(); // in case open
+    render();
   });
 
-  copyBtn.addEventListener("click", async () => {
-    const x = revealed;
-    const text = `SONG GUESS — ${x} notes`;
-    await copyShareCardToClipboard(text);
+  // Play Notes (post-game plays full tune)
+  btnPlay.addEventListener("click", () => {
+    const over = isOver();
+    const count = over ? MAX_NOTES : revealedCount();
+    playSequence(currentSong.notes.slice(0, count));
   });
 
-  /*********************************************************************
-   * INIT
-   *********************************************************************/
-  buildDayPicker();
+  // Add a Note
+  btnAdd.addEventListener("click", () => {
+    if(isOver()) return;
+    const rev = revealedCount();
+    if(rev < MAX_NOTES){
+      state.revealed = rev + 1;
+      persist();
+      render();
+    }
+  });
+
+  // Name the Song
+  btnName.addEventListener("click", openGuess);
+
+  btnCancelGuess.addEventListener("click", closeGuess);
+
+  btnSubmitGuess.addEventListener("click", () => {
+    if(isOver()) return;
+    const guess = normTitle(guessInput.value);
+    const answer = normTitle(currentSong.title);
+    if(!guess) return;
+
+    if(guess === answer){
+      state.status = "solved";
+      state.solvedIn = revealedCount();
+      state.gaveUpAt = null;
+      persist();
+
+      closeGuess();
+      render();           // immediate status update (no refresh)
+      showOverlay("solved");
+    } else {
+      // minimal feedback without clutter
+      guessInput.select();
+      toast.textContent = ""; // keep overlay toast clean; guess UI has no toast
+      // subtle shake? no. Keep stable.
+      guessInput.style.outline = "3px solid #111";
+      setTimeout(() => guessInput.style.outline = "", 180);
+    }
+  });
+
+  guessInput.addEventListener("keydown", (e) => {
+    if(e.key === "Enter"){
+      e.preventDefault();
+      btnSubmitGuess.click();
+    }
+    if(e.key === "Escape"){
+      e.preventDefault();
+      closeGuess();
+    }
+  });
+
+  // Give up
+  btnGiveUp.addEventListener("click", () => {
+    if(isOver()) return;
+    state.status = "gaveup";
+    state.gaveUpAt = revealedCount();
+    state.solvedIn = null;
+    persist();
+
+    closeGuess();
+    render();          // immediate status update
+    showOverlay("gaveup");
+  });
+
+  // Overlay controls
+  modalClose.addEventListener("click", hideOverlay);
+  overlay.addEventListener("click", (e) => {
+    if(e.target === overlay) hideOverlay();
+  });
+  btnCopy.addEventListener("click", copyShare);
+
+  // Ensure audio starts on gesture (iOS)
+  document.addEventListener("pointerdown", () => {
+    // create audio context lazily on first interaction
+    if(!audioCtx) ensureAudio();
+    if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+  }, { once: true });
+
+  /**************************************************************************
+   *  INITIAL RENDER
+   **************************************************************************/
+  render();
 })();
 </script>
 </body>
