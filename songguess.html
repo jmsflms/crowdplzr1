@@ -175,6 +175,7 @@
       margin-top:12px;
       text-align:center;
       font-weight:800;
+      white-space: pre-line; /* enables \n\n spacing */
     }
 
     /* Rules drawer */
@@ -330,7 +331,6 @@
       <div class="panel">
         <div class="staff-wrap">
           <svg id="staffSVG" class="staff-svg" viewBox="0 0 640 140" role="img" aria-label="Stave showing revealed notes">
-            <!-- drawn by JS -->
           </svg>
         </div>
 
@@ -475,23 +475,10 @@ Refresh if issues.
     const now = new Date();
     return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0,0,0));
   }
-  function fmtDate(d){
-    const y = d.getUTCFullYear();
-    const m = String(d.getUTCMonth()+1).padStart(2,"0");
-    const da = String(d.getUTCDate()).padStart(2,"0");
-    return `${y}-${m}-${da}`;
-  }
   function dayIndexFromDate(dateUTC){
     const start = parseUTCDate(START_DATE_UTC);
     const diffMs = dateUTC.getTime() - start.getTime();
     return Math.floor(diffMs / (24*60*60*1000));
-  }
-  function dateFromDayIndex(idx){
-    const start = parseUTCDate(START_DATE_UTC);
-    return new Date(start.getTime() + idx*(24*60*60*1000));
-  }
-  function dayKey(idx){
-    return fmtDate(dateFromDayIndex(idx)); // YYYY-MM-DD
   }
 
   /*********************************************************************
@@ -508,7 +495,7 @@ Refresh if issues.
   }
 
   function storageKey(dayIdx){
-    return `songguess:v3:${START_DATE_UTC}:day:${dayIdx}`;
+    return `songguess:v4:${START_DATE_UTC}:day:${dayIdx}`;
   }
   function loadProgress(dayIdx){
     const raw = localStorage.getItem(storageKey(dayIdx));
@@ -519,7 +506,24 @@ Refresh if issues.
     localStorage.setItem(storageKey(selectedDayIdx), JSON.stringify({revealed, solved, gaveUp}));
   }
 
-  function resetMessage(){
+  function setStatusMessageFromState(){
+    const song = songForDay(selectedDayIdx);
+    const dayLabel = `Day ${selectedDayIdx + 1}: ${song.title}.`;
+
+    if (solved){
+      msgEl.textContent =
+        `${dayLabel} Solved in ${revealed} note${revealed===1?"":"s"}.\n\n` +
+        `Come back tomorrow for a new song.`;
+      return;
+    }
+
+    if (gaveUp){
+      msgEl.textContent =
+        `${dayLabel} You gave up after ${revealed} note${revealed===1?"":"s"}.\n\n` +
+        `Come back tomorrow for a new song.`;
+      return;
+    }
+
     msgEl.textContent = "";
   }
 
@@ -542,8 +546,6 @@ Refresh if issues.
 
   /*********************************************************************
    * STAFF RENDERING (SVG)
-   * Simple mapping: MIDI 64 (E4) is bottom line of staff.
-   * Semitone step => fixed vertical spacing (stable, consistent).
    *********************************************************************/
   const Staff = {
     vbW: 640,
@@ -551,19 +553,18 @@ Refresh if issues.
     left: 40,
     right: 600,
     topLineY: 44,
-    lineGap: 10, // px between staff lines
+    lineGap: 10,
     noteR: 8,
     stemLen: 28,
-    semitoneStep: 5, // px per semitone
+    semitoneStep: 5,
     slotCount: MAX_NOTES,
     slotStartX: 70,
     slotEndX: 590,
   };
 
   function midiToY(midi){
-    // bottom line (line 5) is E4 (64)
-    const bottomLineY = Staff.topLineY + Staff.lineGap*4;
-    const delta = midi - 64; // semitone steps
+    const bottomLineY = Staff.topLineY + Staff.lineGap*4; // E4 line
+    const delta = midi - 64;
     return bottomLineY - (delta * Staff.semitoneStep);
   }
 
@@ -583,10 +584,6 @@ Refresh if issues.
   }
 
   function drawStaffBase(svg){
-    // border area (subtle)
-    svg.appendChild(svgEl("rect", {x:16, y:18, width:Staff.vbW-32, height:Staff.vbH-36, fill:"transparent", stroke:"transparent"}));
-
-    // 5 lines
     for (let i=0;i<5;i++){
       const y = Staff.topLineY + i*Staff.lineGap;
       svg.appendChild(svgEl("line", {
@@ -595,7 +592,6 @@ Refresh if issues.
       }));
     }
 
-    // Optional: simple treble clef hint (tiny), purely decorative
     svg.appendChild(svgEl("text", {
       x: Staff.left - 18,
       y: Staff.topLineY + Staff.lineGap*4 + 4,
@@ -608,25 +604,20 @@ Refresh if issues.
   function drawLedgerLines(svg, x, y){
     const topY = Staff.topLineY;
     const bottomY = Staff.topLineY + Staff.lineGap*4;
-
-    // Staff line positions extend above/below in lineGap steps
-    // We'll draw ledger lines at each line position outside staff that the note crosses.
-    const ledgerHalf = 14; // half-length of ledger line
-    const strokeW = 2;
+    const ledgerHalf = 14;
 
     if (y < topY){
-      // draw from topY up in steps of lineGap until we pass y
       for (let ly = topY - Staff.lineGap; ly >= y - 1; ly -= Staff.lineGap){
         svg.appendChild(svgEl("line", {
           x1: x - ledgerHalf, y1: ly, x2: x + ledgerHalf, y2: ly,
-          stroke:"#111", "stroke-width": strokeW
+          stroke:"#111", "stroke-width":"2"
         }));
       }
     } else if (y > bottomY){
       for (let ly = bottomY + Staff.lineGap; ly <= y + 1; ly += Staff.lineGap){
         svg.appendChild(svgEl("line", {
           x1: x - ledgerHalf, y1: ly, x2: x + ledgerHalf, y2: ly,
-          stroke:"#111", "stroke-width": strokeW
+          stroke:"#111", "stroke-width":"2"
         }));
       }
     }
@@ -635,7 +626,6 @@ Refresh if issues.
   function drawNote(svg, x, y){
     drawLedgerLines(svg, x, y);
 
-    // Notehead (yellow fill + black outline)
     svg.appendChild(svgEl("circle", {
       cx:x, cy:y, r:Staff.noteR,
       fill:"var(--w-yellow)",
@@ -643,12 +633,9 @@ Refresh if issues.
       "stroke-width":"2"
     }));
 
-    // Stem (fixed direction up, from right side of notehead)
     const stemX = x + Staff.noteR - 1;
-    const stemY1 = y;
-    const stemY2 = y - Staff.stemLen;
     svg.appendChild(svgEl("line", {
-      x1: stemX, y1: stemY1, x2: stemX, y2: stemY2,
+      x1: stemX, y1: y, x2: stemX, y2: y - Staff.stemLen,
       stroke:"#111", "stroke-width":"2"
     }));
   }
@@ -666,7 +653,6 @@ Refresh if issues.
         const y = midiToY(notes[i].m);
         drawNote(staffSVG, x, y);
       } else {
-        // empty slot hint (very subtle)
         staffSVG.appendChild(svgEl("circle", {
           cx:x, cy: Staff.topLineY + Staff.lineGap*2,
           r: 2.5, fill:"#000", opacity:"0.10"
@@ -682,23 +668,19 @@ Refresh if issues.
     const ctx = shareCanvas.getContext("2d");
     const W = shareCanvas.width, H = shareCanvas.height;
 
-    // background
     ctx.clearRect(0,0,W,H);
     ctx.fillStyle = "#fff";
     ctx.fillRect(0,0,W,H);
 
-    // border
     ctx.strokeStyle = "#111";
     ctx.lineWidth = 3;
     ctx.strokeRect(1.5,1.5,W-3,H-3);
 
-    // caption
     ctx.fillStyle = "#111";
     ctx.font = "900 18px Arial, system-ui, -apple-system, Segoe UI, Roboto";
     ctx.textBaseline = "top";
     ctx.fillText(statusText, 18, 16);
 
-    // staff area
     const staffLeft = 30;
     const staffRight = W - 30;
     const staffTop = 70;
@@ -716,8 +698,7 @@ Refresh if issues.
       ctx.stroke();
     }
 
-    // note mapping compatible with SVG
-    const semitoneStep = 6; // canvas version
+    const semitoneStep = 6;
     function midiToYc(midi){
       const delta = midi - 64;
       return bottomLineY - (delta * semitoneStep);
@@ -728,7 +709,6 @@ Refresh if issues.
       const t = (MAX_NOTES === 1) ? 0 : (i / (MAX_NOTES - 1));
       return startX + t*(endX - startX);
     }
-
     function drawLedger(x,y){
       const ledgerHalf = 16;
       if (y < topLineY){
@@ -749,6 +729,8 @@ Refresh if issues.
     }
 
     const song = songForDay(selectedDayIdx);
+    const yellow = getComputedStyle(document.documentElement).getPropertyValue("--w-yellow").trim() || "#c9b458";
+
     for (let i=0;i<MAX_NOTES;i++){
       const x = slotXc(i);
       if (i < revealedCount){
@@ -756,8 +738,7 @@ Refresh if issues.
 
         drawLedger(x,y);
 
-        // notehead
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--w-yellow").trim() || "#c9b458";
+        ctx.fillStyle = yellow;
         ctx.strokeStyle = "#111";
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -765,7 +746,6 @@ Refresh if issues.
         ctx.fill();
         ctx.stroke();
 
-        // stem
         ctx.beginPath();
         ctx.moveTo(x + 8, y);
         ctx.lineTo(x + 8, y - 34);
@@ -781,7 +761,6 @@ Refresh if issues.
 
   async function copyShareCardToClipboard(textFallback){
     copyHint.textContent = "";
-    // Try image copy first
     try {
       if (navigator.clipboard && window.ClipboardItem && shareCanvas.toBlob) {
         const blob = await new Promise((res) => shareCanvas.toBlob(res, "image/png"));
@@ -792,7 +771,6 @@ Refresh if issues.
       }
       throw new Error("no image clipboard");
     } catch {
-      // Fallback to text
       try {
         await navigator.clipboard.writeText(textFallback);
         copyHint.textContent = "Copied text to clipboard (image not supported).";
@@ -837,7 +815,6 @@ Refresh if issues.
 
     ensureAudio();
     isPlaying = true;
-    resetMessage();
 
     const ctx = audioCtx;
     const song = songForDay(selectedDayIdx);
@@ -869,7 +846,6 @@ Refresh if issues.
       const {m,d} = song.notes[i];
       const dur = Math.max(0.06, d * beat);
 
-      // Layer a sine + triangle for a pleasant tone
       const osc1 = ctx.createOscillator();
       const osc2 = ctx.createOscillator();
       osc1.type = "triangle";
@@ -882,7 +858,6 @@ Refresh if issues.
       g.gain.exponentialRampToValueAtTime(0.35, t + 0.015);
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
-      // mild lowpass
       const lp = ctx.createBiquadFilter();
       lp.type = "lowpass";
       lp.frequency.value = 2200;
@@ -941,6 +916,8 @@ Refresh if issues.
     overlay.classList.remove("open");
     overlay.setAttribute("aria-hidden","true");
     copyHint.textContent = "";
+    // Immediately reflect solved/give-up status on the main screen (no manual refresh needed)
+    setStatusMessageFromState();
   }
   modalClose.addEventListener("click", closeOverlay);
   overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
@@ -956,14 +933,15 @@ Refresh if issues.
     drawShareCardCanvas(`SONG GUESS — ${x} notes`, x);
     openOverlay();
 
-    // lock gameplay
     playBtn.disabled = true;
     addBtn.disabled = true;
     nameBtn.disabled = true;
     giveBtn.disabled = true;
 
-    // update main staff to show revealed state
     renderStaff(revealed);
+
+    // Set the post-game message immediately (so it appears even before closing)
+    setStatusMessageFromState();
   }
 
   function showGiveUp(){
@@ -984,6 +962,7 @@ Refresh if issues.
     giveBtn.disabled = true;
 
     renderStaff(revealed);
+    setStatusMessageFromState();
   }
 
   async function submitGuess(){
@@ -996,7 +975,6 @@ Refresh if issues.
     const answer = norm(song.title);
 
     if (guess === answer){
-      resetMessage();
       showWin();
     } else {
       msgEl.textContent = "Nope. Try again (or add another note).";
@@ -1008,8 +986,7 @@ Refresh if issues.
    * DAY PICKER
    *********************************************************************/
   function buildDayPicker(){
-    const today = todayUTC();
-    const todayIdx = Math.max(0, dayIndexFromDate(today));
+    const todayIdx = Math.max(0, dayIndexFromDate(todayUTC()));
     const maxIdx = todayIdx + 13;
 
     daySelect.innerHTML = "";
@@ -1027,12 +1004,10 @@ Refresh if issues.
   function setDay(dayIdx){
     selectedDayIdx = dayIdx;
 
-    // default
     revealed = 1;
     solved = false;
     gaveUp = false;
 
-    // load
     const p = loadProgress(dayIdx);
     if (p){
       revealed = Math.max(1, Math.min(MAX_NOTES, Number(p.revealed) || 1));
@@ -1040,10 +1015,8 @@ Refresh if issues.
       gaveUp = !!p.gaveUp;
     }
 
-    // UI
     guessBox.style.display = "none";
     guessInput.value = "";
-    resetMessage();
 
     renderStaff(revealed);
 
@@ -1052,12 +1025,11 @@ Refresh if issues.
       addBtn.disabled = true;
       nameBtn.disabled = true;
       giveBtn.disabled = true;
-      msgEl.textContent = solved ? `Solved in ${revealed} note${revealed===1?"":"s"}.` : `Gave up after ${revealed} note${revealed===1?"":"s"}.`;
     } else {
       enableGameplay();
-      // keep guess box buttons enabled state consistent
-      guessBox.style.display = "none";
     }
+
+    setStatusMessageFromState();
   }
 
   /*********************************************************************
@@ -1082,7 +1054,7 @@ Refresh if issues.
   cancelGuessBtn.addEventListener("click", () => {
     guessBox.style.display = "none";
     guessInput.value = "";
-    resetMessage();
+    msgEl.textContent = "";
   });
 
   submitGuessBtn.addEventListener("click", () => { submitGuess().catch(()=>{}); });
