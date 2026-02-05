@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Song Guess</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --fg:#111;
+      --muted:#444;
+      --border:#111;
+      --panel:#fff;
+      --yellow:#c9b458;
+      --green:#6aaa64;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: "Clear Sans", "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:var(--bg);
+      color:var(--fg);
+      display:flex;
+      min-height:100vh;
+      align-items:flex-start;
+      justify-content:center;
+      padding:18px 12px 40px;
+    }
+    .wrap{ width:min(740px, 96vw); }
+    .header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    h1{ margin:0; font-size:22px; letter-spacing:.12em; text-transform:uppercase; }
+    .sub{ margin:6px 0 0 0; font-size:14px; color:var(--muted); line-height:1.25; max-width:52ch; }
+    .dayPicker{ display:flex; gap:8px; align-items:center; white-space:nowrap; font-size:13px; }
+    select{
+      border:2px solid var(--border);
+      border-radius:0;
+      padding:6px 8px;
+      background:#fff;
+      color:#111;
+      font-weight:600;
+    }
+    .panel{
+      border:3px solid var(--border);
+      border-radius:0;
+      background:var(--panel);
+      padding:16px;
+    }
+    .dots{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      padding:10px 0 14px;
+      min-height:54px;
+    }
+    .dot{
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      background:var(--yellow);
+      border:2px solid #000;
+      position:relative;
+    }
+    .dot .greendot{
+      display:none;
+      position:absolute;
+      width:12px;
+      height:12px;
+      border-radius:999px;
+      background:var(--green);
+      border:2px solid #000;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+    }
+    .dot.solved .greendot{ display:block; }
+
+    .controls{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:center;
+      margin:8px 0 10px;
+    }
+    button{
+      width:min(360px, 92vw);
+      border:3px solid var(--border);
+      border-radius:0;
+      background:#fff;
+      color:#111;
+      padding:12px 12px;
+      font-weight:800;
+      letter-spacing:.02em;
+      cursor:pointer;
+      text-transform:uppercase;
+    }
+    button:disabled{ opacity:.45; cursor:not-allowed; }
+
+    .help{
+      margin:10px 0 0;
+      text-align:center;
+      font-size:13px;
+      color:#111;
+      line-height:1.35;
+    }
+    .help span{ display:block; }
+
+    .guessBox{
+      display:none;
+      margin:14px auto 0;
+      max-width:520px;
+      border-top:2px solid #ddd;
+      padding-top:14px;
+      text-align:center;
+    }
+    input{
+      width:min(420px, 92vw);
+      border:3px solid var(--border);
+      border-radius:0;
+      padding:12px 10px;
+      font-size:16px;
+      font-weight:700;
+      outline:none;
+    }
+    .guessActions{
+      margin-top:10px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    .msg{ min-height:22px; margin-top:10px; text-align:center; font-weight:700; }
+    .share{ display:none; margin-top:8px; text-align:center; font-size:13px; color:var(--muted); white-space:pre-line; user-select:text; }
+    .micro{ display:none; margin-top:10px; border:2px solid #ddd; padding:10px; text-align:center; font-size:13px; white-space:pre-line; }
+
+    .lb{
+      margin-top:16px;
+      border:3px solid var(--border);
+      border-radius:0;
+      padding:12px;
+      background:#fff;
+    }
+    .lbHead{ display:flex; justify-content:space-between; gap:12px; align-items:baseline; margin-bottom:8px; }
+    .lbTitle{ margin:0; font-size:14px; letter-spacing:.12em; text-transform:uppercase; font-weight:900; }
+    .lbNote{ font-size:12px; color:var(--muted); margin:0; }
+    table{ width:100%; border-collapse:collapse; font-size:14px; }
+    th, td{ border-top:1px solid #ddd; padding:8px 6px; text-align:left; }
+    th{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border-top:none; padding-top:0; }
+    .rank{ width:54px; color:var(--muted); font-weight:700; }
+    .notes{ width:80px; font-weight:900; }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>Song Guess</h1>
+      <p class="sub" id="subhead">Guess the tune in the fewest notes you can.</p>
+    </div>
+    <div class="dayPicker">
+      <label for="daySelect"><b>DAY</b></label>
+      <select id="daySelect"></select>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="dots" id="dots"></div>
+
+    <div class="controls">
+      <button id="playBtn">Play Song</button>
+      <button id="addBtn">Add a Note</button>
+      <button id="nameBtn">Name the Song</button>
+      <button id="giveBtn">Give up</button>
+    </div>
+
+    <p class="help">
+      <span>Name must match our database.</span>
+      <span>Ensure your phone volume is up, and not on silent.</span>
+      <span>Refresh if issues.</span>
+    </p>
+
+    <div class="guessBox" id="guessBox">
+      <input id="guessInput" type="text" placeholder="Type the song name exactly…" autocomplete="off" />
+      <div class="guessActions">
+        <button id="submitBtn">Submit</button>
+        <button id="cancelBtn">Cancel</button>
+      </div>
+    </div>
+
+    <div class="msg" id="msg"></div>
+    <div class="share" id="share"></div>
+    <div class="micro" id="micro"></div>
+  </div>
+
+  <div class="lb" aria-label="leaderboard">
+    <div class="lbHead">
+      <p class="lbTitle">Leaderboard</p>
+      <p class="lbNote" id="lbNote">Loading…</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="rank">#</th>
+          <th>Name</th>
+          <th class="notes">Notes</th>
+        </tr>
+      </thead>
+      <tbody id="lbBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+(() => {
+  /*********************************************************************
+   * REQUIRED: paste your Google Apps Script Web App URL here
+   *********************************************************************/
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwWoSMW7O4CjCUwFxf23pIXENNy1MX6Tx3y26oI9ADHwi6jPDKEGNNtGgJPruDANX687w/exec";
+
+  /*********************************************************************
+   * CONFIG: EDIT SONGS HERE (title + notes)
+   *********************************************************************/
+  const SONGS = [
+    { title: "Ode to Joy", notes: [
+      {m:64,d:1},{m:64,d:1},{m:65,d:1},{m:67,d:1},{m:67,d:1},{m:65,d:1},{m:64,d:1},{m:62,d:1},
+      {m:60,d:1},{m:60,d:1},{m:62,d:1},{m:64,d:1},{m:64,d:1.5},{m:62,d:0.5},{m:62,d:2}
+    ]},
+    { title: "Beethoven 5th", notes: [
+      {m:67,d:0.5},{m:67,d:0.5},{m:67,d:0.5},{m:63,d:1.5},
+      {m:66,d:0.5},{m:66,d:0.5},{m:66,d:0.5},{m:62,d:1.5}
+    ]},
+    { title: "Carmen Habanera", notes: [
+      {m:64,d:1},{m:64,d:1},{m:64,d:1},{m:64,d:1},
+      {m:64,d:1},{m:62,d:1},{m:60,d:1},{m:62,d:1},
+    ]},
+    { title: "Eine kleine Nachtmusik", notes: [
+      {m:79,d:1},{m:79,d:1},{m:79,d:1},{m:75,d:1},
+      {m:76,d:1},{m:76,d:1},{m:76,d:1},{m:72,d:1}
+    ]},
+    { title: "Turkish March", notes: [
+      {m:76,d:0.5},{m:74,d:0.5},{m:76,d:0.5},{m:74,d:0.5},
+      {m:76,d:0.5},{m:74,d:0.5},{m:72,d:1},{m:72,d:1}
+    ]},
+    { title: "Canon in D", notes: [
+      {m:74,d:1},{m:69,d:1},{m:71,d:1},{m:66,d:1},
+      {m:67,d:1},{m:62,d:1},{m:66,d:1},{m:62,d:1},
+    ]},
+    { title: "Spring (Vivaldi)", notes: [
+      {m:76,d:0.5},{m:81,d:0.5},{m:81,d:0.5},{m:81,d:0.5},
+      {m:79,d:0.5},{m:76,d:0.5},{m:74,d:1},{m:74,d:1}
+    ]},
+    { title: "Swan Lake", notes: [
+      {m:69,d:1},{m:71,d:1},{m:72,d:1},{m:74,d:1},
+      {m:72,d:1},{m:71,d:1},{m:69,d:2}
+    ]},
+    { title: "Sugar Plum Fairy", notes: [
+      {m:76,d:0.5},{m:77,d:0.5},{m:76,d:0.5},{m:74,d:0.5},
+      {m:72,d:1},{m:74,d:1},{m:76,d:1},{m:72,d:1}
+    ]},
+    { title: "Ride of the Valkyries", notes: [
+      {m:76,d:1},{m:72,d:1},{m:76,d:1},{m:79,d:1},
+      {m:81,d:1},{m:79,d:1},{m:76,d:2}
+    ]},
+    { title: "Hallelujah Chorus", notes: [
+      {m:72,d:1},{m:72,d:1},{m:72,d:1},{m:71,d:1},
+      {m:72,d:1},{m:74,d:1},{m:76,d:2}
+    ]},
+    { title: "Clair de Lune", notes: [
+      {m:69,d:1},{m:72,d:1},{m:76,d:1},{m:74,d:1},
+      {m:72,d:2},{m:69,d:2}
+    ]},
+    { title: "Blue Danube", notes: [
+      {m:69,d:1},{m:69,d:1},{m:71,d:1},{m:72,d:1},
+      {m:74,d:1},{m:72,d:1},{m:71,d:2}
+    ]},
+    { title: "William Tell Overture", notes: [
+      {m:76,d:0.5},{m:76,d:0.5},{m:76,d:0.5},{m:76,d:0.5},
+      {m:74,d:0.5},{m:74,d:0.5},{m:72,d:1},{m:72,d:1}
+    ]},
+  ];
+
+  const START_DATE_UTC = "2026-02-06"; // Day 1 date (UTC)
+
+  // --- DOM ---
+  const dotsEl = document.getElementById("dots");
+  const playBtn = document.getElementById("playBtn");
+  const addBtn = document.getElementById("addBtn");
+  const nameBtn = document.getElementById("nameBtn");
+  const giveBtn = document.getElementById("giveBtn");
+
+  const guessBox = document.getElementById("guessBox");
+  const guessInput = document.getElementById("guessInput");
+  const submitBtn = document.getElementById("submitBtn");
+  const cancelBtn = document.getElementById("cancelBtn");
+
+  const msgEl = document.getElementById("msg");
+  const shareEl = document.getElementById("share");
+  const microEl = document.getElementById("micro");
+
+  const daySelect = document.getElementById("daySelect");
+  const lbBody = document.getElementById("lbBody");
+  const lbNote = document.getElementById("lbNote");
+
+  // --- Audio ---
+  let audioCtx = null;
+  let isPlaying = false;
+
+  function ensureAudio(){
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+  }
+  const midiToFreq = (m) => 440 * Math.pow(2, (m - 69) / 12);
+
+  function makeConvolver(ctx, seconds=0.45, decay=2.6){
+    const rate = ctx.sampleRate;
+    const length = Math.max(1, Math.floor(rate * seconds));
+    const impulse = ctx.createBuffer(2, length, rate);
+    for (let ch=0; ch<2; ch++){
+      const data = impulse.getChannelData(ch);
+      for (let i=0; i<length; i++){
+        const t = i / length;
+        data[i] = (Math.random()*2 - 1) * Math.pow(1 - t, decay);
+      }
+    }
+    const convolver = ctx.createConvolver();
+    convolver.buffer = impulse;
+    return convolver;
+  }
+
+  // --- Date helpers ---
+  function parseUTCDate(yyyy_mm_dd){
+    const [y,m,d] = yyyy_mm_dd.split("-").map(Number);
+    return new Date(Date.UTC(y, m-1, d, 0,0,0));
+  }
+  function todayUTC(){
+    const now = new Date();
+    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0,0,0));
+  }
+  function dayIndexFromDate(dateUTC){
+    const start = parseUTCDate(START_DATE_UTC);
+    const diffMs = dateUTC.getTime() - start.getTime();
+    return Math.floor(diffMs / (24*60*60*1000));
+  }
+  function dateFromDayIndex(idx){
+    const start = parseUTCDate(START_DATE_UTC);
+    return new Date(start.getTime() + idx*(24*60*60*1000));
+  }
+  function fmtDate(d){
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth()+1).padStart(2,"0");
+    const da = String(d.getUTCDate()).padStart(2,"0");
+    return `${y}-${m}-${da}`;
+  }
+
+  // --- State ---
+  let selectedDayIdx = 0;
+  let revealed = 1;
+  let solved = false;
+  let gaveUp = false;
+
+  function songForDay(dayIdx){
+    const safeIdx = ((dayIdx % SONGS.length) + SONGS.length) % SONGS.length;
+    return { song: SONGS[safeIdx], songIndex: safeIdx };
+  }
+  function dayKey(dayIdx){
+    return fmtDate(dateFromDayIndex(dayIdx)); // YYYY-MM-DD
+  }
+
+  function storageKey(dayIdx){ return `songguess:v2:${START_DATE_UTC}:day:${dayIdx}`; }
+
+  function loadProgress(dayIdx){
+    const raw = localStorage.getItem(storageKey(dayIdx));
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+  function saveProgress(dayIdx, data){
+    localStorage.setItem(storageKey(dayIdx), JSON.stringify(data));
+  }
+
+  function resetUIMessage(){
+    msgEl.textContent = "";
+    shareEl.style.display = "none";
+    shareEl.textContent = "";
+    microEl.style.display = "none";
+    microEl.textContent = "";
+  }
+
+  function lockGame(){
+    playBtn.disabled = true;
+    addBtn.disabled = true;
+    nameBtn.disabled = true;
+    giveBtn.disabled = true;
+    guessBox.style.display = "none";
+  }
+  function unlockGame(){
+    playBtn.disabled = false;
+    addBtn.disabled = false;
+    nameBtn.disabled = false;
+    giveBtn.disabled = false;
+  }
+
+  function renderDots(){
+    dotsEl.innerHTML = "";
+    for (let i=0; i<revealed; i++){
+      const dot = document.createElement("div");
+      dot.className = "dot";
+      if (solved) dot.classList.add("solved");
+      const gd = document.createElement("div");
+      gd.className = "greendot";
+      dot.appendChild(gd);
+      dotsEl.appendChild(dot);
+    }
+  }
+
+  async function playTune(){
+    if (solved || gaveUp || isPlaying) return;
+    ensureAudio();
+    isPlaying = true;
+    resetUIMessage();
+
+    const { song } = songForDay(selectedDayIdx);
+    const notes = song.notes;
+
+    const tempo = 118;
+    const beat = 60 / tempo;
+
+    const ctx = audioCtx;
+    const now = ctx.currentTime;
+    let t = now + 0.02;
+
+    const master = ctx.createGain();
+    master.gain.value = 0.95;
+
+    const dry = ctx.createGain();
+    dry.gain.value = 0.65;
+
+    const wet = ctx.createGain();
+    wet.gain.value = 0.35;
+
+    const convolver = makeConvolver(ctx, 0.45, 2.6);
+
+    dry.connect(master);
+    convolver.connect(wet);
+    wet.connect(master);
+    master.connect(ctx.destination);
+
+    // disable while playing
+    lockGame();
+
+    for (let i=0; i<Math.min(revealed, notes.length); i++){
+      const {m, d} = notes[i];
+      const dur = d * beat;
+
+      const osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.value = midiToFreq(m);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.25, t + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+      osc.connect(gain);
+      gain.connect(dry);
+      gain.connect(convolver);
+
+      osc.start(t);
+      osc.stop(t + dur + 0.02);
+
+      t += dur + 0.03;
+    }
+
+    const totalMs = Math.max(250, (t - now) * 1000);
+    window.setTimeout(() => {
+      isPlaying = false;
+      if (!solved && !gaveUp) unlockGame();
+    }, totalMs);
+  }
+
+  function norm(s){
+    return String(s || "").trim().replace(/\s+/g," ").toLowerCase();
+  }
+
+  // --- Leaderboard via JSONP (GET) ---
+  function fetchLeaderboard(dayStr){
+    return new Promise((resolve, reject) => {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+        reject(new Error("Missing GOOGLE_SCRIPT_URL"));
+        return;
+      }
+      const cbName = "cb_" + Math.random().toString(16).slice(2);
+      const script = document.createElement("script");
+
+      window[cbName] = (data) => {
+        cleanup();
+        resolve(data);
+      };
+
+      function cleanup(){
+        try { delete window[cbName]; } catch {}
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      const url = new URL(GOOGLE_SCRIPT_URL);
+      url.searchParams.set("action", "leaderboard");
+      url.searchParams.set("day", dayStr);
+      url.searchParams.set("callback", cbName);
+
+      script.src = url.toString();
+      script.onerror = () => { cleanup(); reject(new Error("Leaderboard load failed")); };
+      document.head.appendChild(script);
+    });
+  }
+
+  // --- Submit score via POST ---
+  async function submitScore(dayStr, name, notes){
+    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+      throw new Error("Missing GOOGLE_SCRIPT_URL");
+    }
+    const url = new URL(GOOGLE_SCRIPT_URL);
+    url.searchParams.set("ua", navigator.userAgent.slice(0,120));
+
+    // POST; we don't need to read response body for this to work
+    await fetch(url.toString(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ day: dayStr, name, notes }),
+    });
+  }
+
+  function renderLeaderboardFromData(data){
+    lbBody.innerHTML = "";
+
+    if (!data || !data.ok) {
+      lbNote.textContent = "Leaderboard unavailable";
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="rank">—</td><td>Could not load</td><td class="notes">—</td>`;
+      lbBody.appendChild(tr);
+      return;
+    }
+
+    lbNote.textContent = `${data.uniquePlayers} players • ${data.totalRows} plays • ${data.day}`;
+
+    const rows = Array.isArray(data.rows) ? data.rows : [];
+    if (!rows.length){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="rank">—</td><td>No entries yet</td><td class="notes">—</td>`;
+      lbBody.appendChild(tr);
+      return;
+    }
+
+    rows.forEach((r, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="rank">${i+1}</td>
+        <td>${escapeHtml(r.name)}</td>
+        <td class="notes">${Number(r.notes)}</td>
+      `;
+      lbBody.appendChild(tr);
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  function showWinUI(){
+    solved = true;
+    renderDots();
+    lockGame();
+
+    msgEl.textContent = `You got it in ${revealed} note${revealed===1?"":"s"}.`;
+
+    const line = "🟩".repeat(revealed) + "⬜".repeat(Math.max(0, 12 - revealed));
+    shareEl.style.display = "block";
+    shareEl.textContent = `Share with your friends:\nSONG GUESS — ${revealed} notes\n${line}`;
+
+    microEl.style.display = "block";
+    microEl.textContent = `Come back tomorrow.`;
+  }
+
+  function showGiveUpUI(){
+    gaveUp = true;
+    const { song } = songForDay(selectedDayIdx);
+    renderDots();
+    lockGame();
+    msgEl.textContent = `You gave up after ${revealed} note${revealed===1?"":"s"}.`;
+    shareEl.style.display = "block";
+    shareEl.textContent = `Answer: ${song.title}\nCome back tomorrow.`;
+  }
+
+  async function refreshLeaderboard(){
+    lbNote.textContent = "Loading…";
+    try {
+      const d = await fetchLeaderboard(dayKey(selectedDayIdx));
+      renderLeaderboardFromData(d);
+    } catch {
+      renderLeaderboardFromData(null);
+    }
+  }
+
+  function setDay(dayIdx){
+    selectedDayIdx = dayIdx;
+    revealed = 1;
+    solved = false;
+    gaveUp = false;
+    guessBox.style.display = "none";
+    guessInput.value = "";
+    resetUIMessage();
+    unlockGame();
+
+    const prog = loadProgress(dayIdx);
+    if (prog){
+      revealed = Math.max(1, Math.min(prog.revealed || 1, 999));
+      solved = !!prog.solved;
+      gaveUp = !!prog.gaveUp;
+    }
+
+    renderDots();
+    refreshLeaderboard();
+
+    if (solved) showWinUI();
+    if (gaveUp) showGiveUpUI();
+  }
+
+  function saveCurrentProgress(){
+    saveProgress(selectedDayIdx, { revealed, solved, gaveUp });
+  }
+
+  function buildDayPicker(){
+    const today = todayUTC();
+    const todayIdx = Math.max(0, dayIndexFromDate(today));
+    const maxIdx = todayIdx + 13;
+
+    daySelect.innerHTML = "";
+    for (let i=0; i<=maxIdx; i++){
+      const d = dateFromDayIndex(i);
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = (i === todayIdx) ? `Today (${fmtDate(d)})` : `Day ${i+1} (${fmtDate(d)})`;
+      daySelect.appendChild(opt);
+    }
+    daySelect.value = String(todayIdx);
+    setDay(todayIdx);
+  }
+
+  // --- Events ---
+  playBtn.addEventListener("click", () => { playTune().catch(()=>{}); });
+
+  addBtn.addEventListener("click", () => {
+    if (solved || gaveUp) return;
+    const { song } = songForDay(selectedDayIdx);
+    revealed = Math.min(revealed + 1, song.notes.length);
+    renderDots();
+    msgEl.textContent = `Notes revealed: ${revealed}`;
+    saveCurrentProgress();
+  });
+
+  nameBtn.addEventListener("click", () => {
+    if (solved || gaveUp) return;
+    guessBox.style.display = "block";
+    guessInput.focus();
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    guessBox.style.display = "none";
+    guessInput.value = "";
+  });
+
+  async function submitGuess(){
+    if (solved || gaveUp) return;
+
+    const guess = norm(guessInput.value);
+    if (!guess) return;
+
+    const { song } = songForDay(selectedDayIdx);
+    const answer = norm(song.title);
+
+    if (guess === answer){
+      let playerName = localStorage.getItem("songguess:playerName") || "";
+      if (!playerName){
+        playerName = prompt("Enter a name for the leaderboard (e.g. James):") || "";
+        playerName = playerName.trim().slice(0, 24);
+        if (playerName) localStorage.setItem("songguess:playerName", playerName);
+      }
+      if (!playerName) playerName = "Anonymous";
+
+      try {
+        await submitScore(dayKey(selectedDayIdx), playerName, revealed);
+      } catch {
+        msgEl.textContent = "Saved failed. Refresh and try again.";
+        return;
+      }
+
+      solved = true;
+      saveCurrentProgress();
+      showWinUI();
+      refreshLeaderboard();
+    } else {
+      msgEl.textContent = "Nope. Try again (or add another note).";
+      guessInput.select();
+    }
+  }
+
+  submitBtn.addEventListener("click", submitGuess);
+  guessInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") submitGuess();
+  });
+
+  giveBtn.addEventListener("click", () => {
+    if (solved || gaveUp) return;
+    showGiveUpUI();
+    saveCurrentProgress();
+  });
+
+  daySelect.addEventListener("change", () => {
+    const idx = Number(daySelect.value);
+    setDay(Number.isFinite(idx) ? idx : 0);
+  });
+
+  // --- Init ---
+  buildDayPicker();
+})();
+</script>
+</body>
+</html>
