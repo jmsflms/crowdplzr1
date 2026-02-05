@@ -223,7 +223,7 @@
   /*********************************************************************
    * REQUIRED: paste your Google Apps Script Web App URL here
    *********************************************************************/
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwWoSMW7O4CjCUwFxf23pIXENNy1MX6Tx3y26oI9ADHwi6jPDKEGNNtGgJPruDANX687w/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPckBzQq8P1tcnlFy4KAK-ZVCAaWQG2Ck1wugKnE_ICKXmb132H2XaaDsxAiKsabdI1g/exec";
 
   /*********************************************************************
    * CONFIG: EDIT SONGS HERE (title + notes)
@@ -521,20 +521,36 @@
   }
 
   // --- Submit score via POST ---
-  async function submitScore(dayStr, name, notes){
-    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-      throw new Error("Missing GOOGLE_SCRIPT_URL");
-    }
-    const url = new URL(GOOGLE_SCRIPT_URL);
-    url.searchParams.set("ua", navigator.userAgent.slice(0,120));
+function submitScore(dayStr, name, notes){
+  return new Promise((resolve, reject) => {
+    const cbName = "cb_" + Math.random().toString(16).slice(2);
+    const script = document.createElement("script");
 
-    // POST; we don't need to read response body for this to work
-    await fetch(url.toString(), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ day: dayStr, name, notes }),
-    });
-  }
+    window[cbName] = (data) => {
+      cleanup();
+      if (data && data.ok) resolve(true);
+      else reject(new Error("submit failed"));
+    };
+
+    function cleanup(){
+      try { delete window[cbName]; } catch {}
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    const url = new URL(GOOGLE_SCRIPT_URL);
+    url.searchParams.set("action", "submit");
+    url.searchParams.set("day", dayStr);
+    url.searchParams.set("name", name);
+    url.searchParams.set("notes", String(notes));
+    url.searchParams.set("ua", navigator.userAgent.slice(0,120));
+    url.searchParams.set("callback", cbName);
+
+    script.src = url.toString();
+    script.onerror = () => { cleanup(); reject(new Error("submit load failed")); };
+    document.head.appendChild(script);
+  });
+}
+
 
   function renderLeaderboardFromData(data){
     lbBody.innerHTML = "";
