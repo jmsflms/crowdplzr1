@@ -2,822 +2,938 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Safe Dial Demo</title>
   <style>
-    /* =========================
-       BRAND / THEME (EDIT HERE)
-       =========================
-       Change these two to match your brand image exactly.
-       They drive the full-screen background and accents.
-    */
     :root{
-      --red: #d81f2a;
-      --blue:#1e4bff;
+      --red:#e0162b;
+      --blue:#1246ff;
 
-      --fg: #ffffff;
-      --fgMuted: rgba(255,255,255,.78);
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.72);
 
-      --panel: rgba(255,255,255,.12);
-      --panel2: rgba(255,255,255,.18);
-      --stroke: rgba(255,255,255,.28);
+      --shadow: 0 14px 40px rgba(0,0,0,.30);
+      --shadow2: 0 10px 22px rgba(0,0,0,.24);
 
-      --shadow: rgba(0,0,0,.30);
-      --shadow2: rgba(0,0,0,.45);
+      --ringStroke: rgba(255,255,255,.18);
+      --ringStrokeStrong: rgba(255,255,255,.30);
+      --wedgeA: rgba(255,255,255,.08);
+      --wedgeB: rgba(255,255,255,.14);
+      --wedgeActive: rgba(255,255,255,.26);
 
-      --btn: rgba(255,255,255,.18);
-      --btnHover: rgba(255,255,255,.24);
+      --btnBg: rgba(255,255,255,.12);
+      --btnBgHover: rgba(255,255,255,.18);
+      --btnBorder: rgba(255,255,255,.18);
+      --btnBorderStrong: rgba(255,255,255,.30);
 
-      --dialSize: min(82vw, 360px);
-      --ringInset: 22px; /* controls how close text sits to edge */
+      --focus: rgba(255,255,255,.32);
     }
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html,body { height:100%; margin:0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; color:var(--text); }
     body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--fg);
       background: var(--red);
-      transition: background 220ms ease;
-      overflow:hidden;              /* prevent scroll while dragging */
-      touch-action: none;           /* prevent browser gestures */
-      -webkit-tap-highlight-color: transparent;
+      display:flex;
+      align-items: stretch;
+      justify-content:center;
+      transition: background-color 220ms ease;
+      overflow:hidden;
+      touch-action: manipulation;
     }
+    body.state-blue{ background: var(--blue); }
 
     .app{
-      height:100%;
+      width: min(780px, 100%);
+      height: 100%;
+      padding: clamp(12px, 2.2vh, 22px);
+      padding-top: max(clamp(12px, 2.2vh, 22px), env(safe-area-inset-top));
+      padding-bottom: max(clamp(12px, 2.2vh, 22px), env(safe-area-inset-bottom));
       display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:flex-start;
-      padding: 18px 16px max(18px, env(safe-area-inset-bottom));
-      gap: 10px;
+      flex-direction: column;
+      gap: clamp(10px, 1.6vh, 16px);
     }
 
-    .top{
-      width:min(560px, 94vw);
+    .topbar{
       display:flex;
-      flex-direction:column;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      text-align:center;
+    }
+
+    .timerRow{
+      width:100%;
+      display:flex;
       align-items:center;
-      gap: 8px;
-      padding-top: env(safe-area-inset-top);
+      justify-content: space-between;
+      gap:10px;
     }
 
     .timer{
-      font-weight: 800;
-      letter-spacing: 1px;
-      font-size: 28px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.16);
-      border: 1px solid rgba(255,255,255,.22);
-      box-shadow: 0 10px 26px var(--shadow);
-      min-width: 140px;
-      text-align:center;
+      flex:1;
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      padding: 10px 14px;
+      box-shadow: var(--shadow2);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      min-height: 48px;
     }
+    .timer .label{
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 750;
+    }
+    .timer .value{
+      font-variant-numeric: tabular-nums;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .code{
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      padding: 10px 14px;
+      box-shadow: var(--shadow2);
+      min-height: 48px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      white-space: nowrap;
+    }
+    .code .k{ font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color: var(--muted); font-weight: 750; }
+    .code .v{ font-variant-numeric: tabular-nums; font-size: 18px; font-weight: 900; }
 
     .instruction{
       width:100%;
-      text-align:center;
-      font-weight: 900;
-      letter-spacing: .7px;
-      font-size: clamp(16px, 4.2vw, 22px);
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.22);
-      box-shadow: 0 12px 30px var(--shadow);
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 22px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      font-weight: 950;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: clamp(14px, 2.0vh, 18px);
     }
 
-    .metaRow{
+    /* Curved direction arrow near the dial; flips with state */
+    .arrowRow{
       width:100%;
       display:flex;
-      justify-content:space-between;
-      gap: 10px;
-      align-items:center;
-      padding: 0 2px;
-      color: var(--fgMuted);
-      font-weight: 800;
-      letter-spacing:.3px;
-      font-size: 13px;
-      user-select:none;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.14);
-      border: 1px solid rgba(255,255,255,.18);
-      box-shadow: 0 10px 22px rgba(0,0,0,.14);
-      white-space:nowrap;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      background: rgba(255,255,255,.92);
-      box-shadow: 0 0 0 3px rgba(255,255,255,.12);
-    }
-
-    .stage{
-      width:min(560px, 94vw);
-      flex: 1;
-      display:flex;
-      flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap: 14px;
-      position:relative;
+      margin-top: -2px;
+      margin-bottom: -2px;
+    }
+    .arrow{
+      width: min(520px, 92%);
+      height: 34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: rgba(255,255,255,.88);
+      user-select:none;
+      pointer-events:none;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.22));
+    }
+    .arrow svg{ width:100%; height:100%; display:block; }
+    .arrow .line{
+      stroke: rgba(255,255,255,.78);
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .middle{
+      flex: 1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 4px 0;
     }
 
     .dialWrap{
-      width: var(--dialSize);
+      width: min(560px, 92vw);
       aspect-ratio: 1/1;
-      position:relative;
-      display:grid;
-      place-items:center;
-      user-select:none;
-      touch-action:none;
+      position: relative;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(255,255,255,0) 56%),
+        radial-gradient(circle at 50% 90%, rgba(0,0,0,.18), rgba(0,0,0,0) 55%),
+        rgba(0,0,0,.14);
+      border: 1px solid rgba(255,255,255,.20);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      touch-action: none; /* prevent page scroll while dragging */
     }
 
-    /* Fixed pointer at 12 o'clock */
-    .pointer{
+    #ringSvg{
       position:absolute;
-      top: -10px;
+      inset: 0;
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .centerPanel{
+      position:absolute;
       left: 50%;
-      transform: translateX(-50%);
-      width:0;height:0;
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-bottom: 28px solid rgba(255,255,255,.95);
-      filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));
+      top: 50%;
+      transform: translate(-50%,-50%);
+      width: 54%;
+      height: 54%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.22));
+      border: 1px solid rgba(255,255,255,.20);
+      box-shadow: 0 18px 45px rgba(0,0,0,.28);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      text-align:center;
       z-index: 5;
       pointer-events:none;
     }
+    .centerPanel .qWrap{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items:center;
+      justify-content:center;
+    }
+    .centerPanel .qNum{
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.78);
+      font-weight: 850;
+    }
+    .centerPanel .qText{
+      font-size: clamp(14px, 2.0vh, 18px);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: .01em;
+      padding: 0 4px;
+    }
 
-    /* Curved direction arrow (SVG) */
-    .dirArrow{
+    .handLayer{
       position:absolute;
-      right: -12px;
-      top: 14px;
-      width: 86px;
-      height: 86px;
-      z-index: 6;
-      pointer-events:none;
-      filter: drop-shadow(0 12px 20px rgba(0,0,0,.35));
-      opacity: .95;
-      transform-origin: 50% 50%;
-      transition: transform 200ms ease;
-    }
-    /* When BLUE (anti-clockwise), flip arrow horizontally */
-    body.isBlue .dirArrow{
-      transform: scaleX(-1);
-    }
-
-    /* The rotating dial */
-    .dial{
-      width:100%;
-      height:100%;
-      border-radius: 50%;
-      position:relative;
-      background:
-        radial-gradient(circle at 28% 22%, rgba(255,255,255,.30), rgba(255,255,255,.10) 40%, rgba(0,0,0,.20) 100%);
-      border: 2px solid rgba(255,255,255,.28);
-      box-shadow: 0 18px 46px var(--shadow2);
-      transform: rotate(var(--angle, 0deg));
-      transition: transform 70ms linear;
-      touch-action:none;
-      will-change: transform;
-    }
-
-    /* Inner gloss ring */
-    .dial::before{
-      content:"";
-      position:absolute;
-      inset: 10px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.12);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(0,0,0,.0) 60%);
+      inset: 0;
+      z-index: 8;
       pointer-events:none;
     }
-
-    /* Answer ring items sit on the dial and rotate with it */
-    .ring{
-      position:absolute;
-      inset: var(--ringInset);
-      border-radius:50%;
-      pointer-events:none; /* the dial handles drag */
-    }
-
-    .seg{
+    .hand{
       position:absolute;
       left:50%;
       top:50%;
-      transform-origin: 0 0;
-      width: 44%;
+      width: 6px;
+      height: 46%;
+      transform-origin: 50% 92%;
+      transform: translate(-50%,-92%) rotate(0deg);
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 16px 30px rgba(0,0,0,.30);
+    }
+    .hand::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top: 8px;
+      transform: translateX(-50%);
+      width: 0;
       height: 0;
+      border-left: 13px solid transparent;
+      border-right: 13px solid transparent;
+      border-bottom: 24px solid rgba(255,255,255,.96);
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.24));
+    }
+    .hubGlow{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%);
+      width: 40%;
+      height: 40%;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,255,255,.15), rgba(255,255,255,0) 62%);
+      opacity: .75;
       pointer-events:none;
     }
-
-    .seg span{
-      display:block;
-      transform: translate(0, -14px);
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.16);
-      border: 1px solid rgba(255,255,255,.16);
-      color: rgba(255,255,255,.92);
-      font-weight: 900;
-      letter-spacing:.2px;
-      font-size: 12px;
-      max-width: 150px;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      box-shadow: 0 10px 18px rgba(0,0,0,.18);
-    }
-
-    /* Center subject */
-    .center{
+    .hub{
       position:absolute;
-      inset: 28%;
-      border-radius: 50%;
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.22);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding: 12px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
-    }
-    .question{
-      font-weight: 950;
-      letter-spacing:.2px;
-      font-size: clamp(12px, 3.5vw, 14px);
-      line-height: 1.25;
-      color: rgba(255,255,255,.95);
-      text-shadow: 0 8px 18px rgba(0,0,0,.25);
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%);
+      width: 16%;
+      height: 16%;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,.24), rgba(255,255,255,0) 55%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03)),
+        rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.20);
+      box-shadow: 0 18px 40px rgba(0,0,0,.28);
     }
 
-    /* Selected pulse feedback */
-    .pulse{
-      animation: pulse 180ms ease-out;
-    }
-    @keyframes pulse{
-      0%{ transform: scale(1); }
-      50%{ transform: scale(1.02); }
-      100%{ transform: scale(1); }
-    }
-
-    .buttons{
-      width:min(560px, 94vw);
+    .bottom{
       display:flex;
       gap: 12px;
+      align-items:center;
       justify-content:center;
-      padding-bottom: 6px;
+      padding-top: 2px;
     }
-
-    button{
-      border: 1px solid rgba(255,255,255,.26);
-      background: var(--btn);
-      color: var(--fg);
-      padding: 14px 16px;
-      border-radius: 16px;
+    .btn{
+      flex:1;
+      max-width: 360px;
+      border-radius: 18px;
+      padding: 16px 16px;
+      border: 1px solid var(--btnBorder);
+      background: var(--btnBg);
+      color: var(--text);
       font-weight: 950;
-      letter-spacing:.6px;
-      cursor:pointer;
-      box-shadow: 0 14px 30px rgba(0,0,0,.22);
-      min-width: 140px;
-      transition: transform 80ms ease, background 120ms ease;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 16px;
+      box-shadow: var(--shadow2);
+      cursor: pointer;
       user-select:none;
       touch-action: manipulation;
+      transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease;
     }
-    button:active{ transform: translateY(1px) scale(.99); }
-    button:hover{ background: var(--btnHover); }
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
+    .btn:active{ transform: translateY(1px) scale(0.99); }
+    .btn:hover{ background: var(--btnBgHover); border-color: var(--btnBorderStrong); }
+    .btn:focus-visible{
+      outline: none;
+      box-shadow: var(--shadow2), 0 0 0 4px var(--focus);
+    }
+    .btn.lock{
+      background: rgba(255,255,255,.18);
+      border-color: rgba(255,255,255,.28);
     }
 
-    /* Modal */
+    /* Segment labels */
+    .segText{
+      font-size: 14px;
+      font-weight: 900;
+      fill: rgba(255,255,255,.94);
+      text-anchor: middle;
+      dominant-baseline: middle;
+      paint-order: stroke;
+      stroke: rgba(0,0,0,.38);
+      stroke-width: 3.2px;
+      letter-spacing: .01em;
+    }
+    .segText.small{ font-size: 12px; }
+
+    /* Wedges */
+    .wedge{
+      stroke: var(--ringStroke);
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+    .wedge.altA{ fill: var(--wedgeA); }
+    .wedge.altB{ fill: var(--wedgeB); }
+    .wedge.active{ fill: var(--wedgeActive); stroke: var(--ringStrokeStrong); stroke-width: 2.5; }
+
+    .dialWrap.snapFlash{
+      animation: snapFlash 120ms ease;
+    }
+    @keyframes snapFlash{
+      0% { filter: brightness(1); }
+      40% { filter: brightness(1.12); }
+      100% { filter: brightness(1); }
+    }
+
     .modal{
-      position:fixed;
-      inset:0;
+      position: fixed;
+      inset: 0;
       display:none;
       align-items:center;
       justify-content:center;
-      padding: 18px;
-      background: rgba(0,0,0,.52);
-      backdrop-filter: blur(8px);
-      z-index: 50;
+      padding: 22px;
+      z-index: 999;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
     .modal.show{ display:flex; }
-    .card{
-      width:min(520px, 94vw);
-      border-radius: 24px;
-      background: rgba(255,255,255,.12);
+    .modalCard{
+      width: min(520px, 92vw);
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
       border: 1px solid rgba(255,255,255,.22);
-      box-shadow: 0 26px 70px rgba(0,0,0,.45);
-      padding: 22px 18px 16px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.40);
+      padding: 22px 18px;
       text-align:center;
     }
-    .unlocked{
-      font-size: clamp(30px, 9vw, 44px);
-      font-weight: 1000;
-      letter-spacing: 1px;
+    .modalCard h1{
       margin: 6px 0 10px;
-      text-shadow: 0 14px 40px rgba(0,0,0,.35);
+      font-size: clamp(26px, 3.8vh, 38px);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 1000;
     }
-    .hint{
-      color: var(--fgMuted);
-      font-weight: 850;
-      letter-spacing:.4px;
-      margin-bottom: 14px;
+    .modalCard p{
+      margin: 0 0 14px;
+      color: rgba(255,255,255,.84);
+      font-weight: 650;
+      line-height: 1.25;
     }
-    .card button{
-      min-width: 220px;
+    .modalCard .hint{
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.74);
+    }
+
+    @media (max-width: 420px){
+      .segText{ font-size: 12px; }
+      .segText.small{ font-size: 11px; }
+      .btn{ font-size: 15px; padding: 15px 14px; }
+      .timer .value{ font-size: 22px; }
     }
   </style>
 </head>
-<body>
-  <div class="app" id="app">
-    <div class="top">
-      <div class="timer" id="timer">00:00</div>
-
-      <div class="instruction" id="instruction">PASS TO CLOCKWISE PLAYER</div>
-
-      <div class="metaRow">
-        <div class="pill"><span class="dot"></span><span id="stateLabel">RED</span></div>
-        <div class="pill" id="codePill">CODE: <span id="codeLabel">0</span> / 5</div>
-      </div>
-    </div>
-
-    <div class="stage">
-      <div class="dialWrap" id="dialWrap" aria-label="Safe dial">
-        <div class="pointer" aria-hidden="true"></div>
-
-        <!-- Direction arrow -->
-        <svg class="dirArrow" viewBox="0 0 100 100" aria-hidden="true">
-          <path d="M20,60 C20,30 45,15 65,20" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="8" stroke-linecap="round"/>
-          <path d="M62,10 L82,22 L58,30 Z" fill="rgba(255,255,255,.95)"/>
-        </svg>
-
-        <!-- Rotating dial -->
-        <div class="dial" id="dial" style="--angle:0deg">
-          <div class="ring" id="ring"></div>
-          <div class="center">
-            <div class="question" id="question">Loading…</div>
-          </div>
+<body class="state-red">
+  <div class="app">
+    <div class="topbar">
+      <div class="timerRow">
+        <div class="timer" aria-label="Timer">
+          <div class="label">TIMER</div>
+          <div class="value" id="timer">00:00</div>
+        </div>
+        <div class="code" aria-label="Progress">
+          <div class="k">CODE</div>
+          <div class="v" id="code">0 / 5</div>
         </div>
       </div>
 
-      <div class="buttons">
-        <button id="lockBtn">LOCK</button>
-        <button id="resetBtn">RESET</button>
+      <div class="instruction" id="instruction">PASS TO CLOCKWISE PLAYER</div>
+
+      <div class="arrowRow">
+        <div class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 520 40" role="img" aria-label="Direction arrow">
+            <path class="line" id="arrowPath" d="M 40 30 Q 260 2 480 30" />
+            <path class="line" id="arrowHead" d="M 470 20 L 482 30 L 468 34" />
+          </svg>
+        </div>
       </div>
+    </div>
+
+    <div class="middle">
+      <div class="dialWrap" id="dial" aria-label="Safe dial">
+        <svg id="ringSvg" viewBox="0 0 1000 1000" aria-hidden="true"></svg>
+
+        <div class="handLayer">
+          <div class="hubGlow"></div>
+          <div class="hand" id="hand"></div>
+          <div class="hub"></div>
+        </div>
+
+        <div class="centerPanel">
+          <div class="qWrap">
+            <div class="qNum" id="qNum">Q1</div>
+            <div class="qText" id="qText">…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <button class="btn lock" id="lockBtn">LOCK</button>
+      <button class="btn" id="resetBtn">RESET</button>
     </div>
   </div>
 
-  <!-- UNLOCKED MODAL -->
-  <div class="modal" id="modal">
-    <div class="card">
-      <div class="unlocked">SAFE UNLOCKED</div>
-      <div class="hint">Press RESET to play again</div>
-      <button id="modalReset">RESET</button>
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Safe Unlocked">
+    <div class="modalCard">
+      <h1>SAFE UNLOCKED</h1>
+      <p>You cracked the 5-step code.</p>
+      <div class="hint">Press RESET to play again.</div>
     </div>
   </div>
 
 <script>
-/* ===========================================================
-   QUESTIONS DATA (EDIT THIS LATER TO CHANGE QUESTIONS)
-   ===========================================================
-   Each item has:
-   - prompt: what appears in the center
-   - answers: 10 answer strings (must include the correct once)
-   - correct: the correct answer string (must match exactly one of answers)
-
-   To add/replace questions later:
-   - keep exactly 5 for v0
-   - keep exactly 10 answers each
+/*
+  DATA (edit this to change questions/answers/correctIndex)
+  - No shuffling.
+  - Exactly 5 questions.
+  - Each question has 10 fixed answer strings.
+  - correctIndex is the fixed segment index (0..9) that is correct for that question.
 */
-const QUESTIONS_SOURCE = [
+const QUESTIONS = [
   {
     prompt: "What is Chappell Roan’s middle name?",
     answers: ["Rose","Lily","Daisy","Violet","Ivy","Hazel","June","Pearl","Grace","Mae"],
-    correct: "Rose"
+    correctIndex: 0
   },
   {
     prompt: "Which country’s capital city is Tokyo?",
     answers: ["Japan","China","South Korea","Thailand","Vietnam","Singapore","Malaysia","Indonesia","Philippines","Taiwan"],
-    correct: "Japan"
+    correctIndex: 0
   },
   {
     prompt: "In tennis, what is the score called at 40–40?",
     answers: ["Deuce","Love","Advantage","Break","Ace","Tie","Set","Match","Rally","Fault"],
-    correct: "Deuce"
+    correctIndex: 0
   },
   {
     prompt: "Which planet is known as the Red Planet?",
     answers: ["Mars","Venus","Jupiter","Saturn","Mercury","Neptune","Uranus","Earth","Pluto","Moon"],
-    correct: "Mars"
+    correctIndex: 0
   },
   {
     prompt: "Which month has 28 days in a common (non-leap) year?",
     answers: ["February","January","March","April","May","June","July","August","September","October"],
-    correct: "February"
+    correctIndex: 0
   }
 ];
 
 (() => {
-  // ======================
-  // Constants / Geometry
-  // ======================
-  const STEPS = 10;
-  const STEP_DEG = 360 / STEPS;
+  const SEGMENTS = 10;
+  const STEP_DEG = 360 / SEGMENTS;
 
-  // ======================
-  // Elements
-  // ======================
   const body = document.body;
-  const dialWrap = document.getElementById("dialWrap");
   const dial = document.getElementById("dial");
-  const ring = document.getElementById("ring");
-  const questionEl = document.getElementById("question");
-
-  const timerEl = document.getElementById("timer");
+  const ringSvg = document.getElementById("ringSvg");
+  const handEl = document.getElementById("hand");
+  const qNumEl = document.getElementById("qNum");
+  const qTextEl = document.getElementById("qText");
   const instructionEl = document.getElementById("instruction");
-  const stateLabel = document.getElementById("stateLabel");
-  const codeLabel = document.getElementById("codeLabel");
-
+  const timerEl = document.getElementById("timer");
+  const codeEl = document.getElementById("code");
   const lockBtn = document.getElementById("lockBtn");
   const resetBtn = document.getElementById("resetBtn");
-
   const modal = document.getElementById("modal");
-  const modalReset = document.getElementById("modalReset");
 
-  // ======================
-  // Game State
-  // ======================
-  let state = "RED";           // RED => clockwise, BLUE => anti-clockwise
-  let angle = 0;               // dial rotation angle in degrees
-  let code = 0;                // 0..5
-  let qIndex = 0;              // current question index 0..4
-  let lockedOut = false;       // true when SAFE UNLOCKED modal shown
+  const arrowPath = document.getElementById("arrowPath");
+  const arrowHead = document.getElementById("arrowHead");
+
+  // Game state
+  let state = "RED"; // RED: clockwise only. BLUE: anti-clockwise only.
+  let questionIndex = 0;
+  let progress = 0; // correct-in-a-row count
+  let unlocked = false;
+
+  // Pointer state: current selected segment index (0..9)
+  let pointerIndex = 0;
+
+  // Drag tracking
+  let dragging = false;
+  let lastAngleDeg = null;
+  let pendingDelta = 0;
+  let rafActive = false;
 
   // Timer
-  let startTime = 0;
-  let timerRAF = 0;
+  let elapsedSec = 0;
+  let timerInterval = null;
 
-  // Shuffled question set used for current run
-  let questions = [];
+  // Wedge refs for fast highlighting
+  const wedgeEls = [];
 
-  // Drag
-  let isDragging = false;
-  let startPointerAngle = 0;
-  let startDialAngle = 0;
-  let lastDetentIndex = 0;
-  let rafMovePending = false;
-  let pendingEvent = null;
+  /* =========================================================
+     (1) Segment geometry / mapping pointer angle to segment index
+     - 0 degrees is at 12 o'clock (straight up).
+     - Angle increases CLOCKWISE.
+     - Segment i corresponds to the detent angle i * STEP_DEG.
+     - We store pointerIndex directly; hand rotation = pointerIndex * STEP_DEG.
+  ========================================================== */
 
-  // ======================
-  // Utilities
-  // ======================
-
-  // (1) Shuffling logic
-  function shuffle(arr){
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  // Build questions for a new run: shuffle answers so correct position changes each reset
-  function buildQuestions(){
-    questions = QUESTIONS_SOURCE.map(q => {
-      const shuffled = shuffle(q.answers);
-      const correctIndex = shuffled.indexOf(q.correct);
-      return {
-        prompt: q.prompt,
-        answers: shuffled,
-        correctIndex
-      };
-    });
-  }
-
-  function setState(next){
-    state = next;
-    const isBlue = (state === "BLUE");
-    body.classList.toggle("isBlue", isBlue);
-    body.style.background = isBlue ? getCssVar("--blue") : getCssVar("--red");
-
-    stateLabel.textContent = isBlue ? "BLUE" : "RED";
-    instructionEl.textContent = isBlue ? "PASS TO ANTI-CLOCKWISE PLAYER" : "PASS TO CLOCKWISE PLAYER";
-  }
-
-  function getCssVar(name){
-    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  }
-
-  function setAngle(a){
-    angle = a;
-    dial.style.setProperty("--angle", `${angle}deg`);
-  }
-
-  // (2) Angle-to-index mapping
-  // Pointer is fixed at 12 o'clock; dial rotates. We want which segment is under pointer.
-  function angleToIndex(a){
-    // At 0deg, index 0 is at pointer.
-    // As dial rotates clockwise (positive angle), the pointer effectively moves "back" over indices.
-    const normalized = ((-a % 360) + 360) % 360; // 0..359
-    const idx = Math.round(normalized / STEP_DEG) % STEPS;
-    return idx;
-  }
-
-  function snapAngle(a){
-    return Math.round(a / STEP_DEG) * STEP_DEG;
-  }
-
-  // Haptics (best-effort)
-  function vibrate(ms){
-    try{
-      if (navigator.vibrate) navigator.vibrate(ms);
-    }catch(_){}
-  }
-
-  // Visual pulse feedback (covers devices without haptics)
-  function pulseDial(){
-    dial.classList.remove("pulse");
-    // Force reflow to restart animation
-    void dial.offsetWidth;
-    dial.classList.add("pulse");
-  }
-
-  // Optional tiny "click" sound using WebAudio (no external assets).
-  // Safe on most browsers; if blocked, it simply does nothing.
-  let audioCtx = null;
-  function clickSound(){
-    try{
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = "square";
-      o.frequency.value = 620;
-      g.gain.value = 0.0001;
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start();
-      const now = audioCtx.currentTime;
-      g.gain.exponentialRampToValueAtTime(0.15, now + 0.005);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
-      o.stop(now + 0.05);
-    }catch(_){}
-  }
-
-  function formatMMSS(ms){
-    const total = Math.floor(ms / 1000);
-    const m = Math.floor(total / 60);
-    const s = total % 60;
-    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-  }
-
-  // ======================
-  // Render ring segments
-  // ======================
-  function renderRing(){
-    ring.innerHTML = "";
-    const q = questions[qIndex];
-    for (let i=0;i<STEPS;i++){
-      const seg = document.createElement("div");
-      seg.className = "seg";
-      const angleDeg = (i * STEP_DEG) - 90; // start at top
-      // Place each segment around a circle
-      seg.style.transform = `rotate(${angleDeg}deg) translate(${(dialWrap.clientWidth/2) - 48}px) rotate(${-(angleDeg)}deg)`;
-      const span = document.createElement("span");
-      span.textContent = q.answers[i];
-      seg.appendChild(span);
-      ring.appendChild(seg);
-    }
-  }
-
-  function renderQuestion(){
-    questionEl.textContent = questions[qIndex].prompt;
-    renderRing();
-    codeLabel.textContent = String(code);
-  }
-
-  // ======================
-  // Timer
-  // ======================
-  function startTimer(){
-    cancelAnimationFrame(timerRAF);
-    startTime = performance.now();
-    const tick = () => {
-      const elapsed = performance.now() - startTime;
-      timerEl.textContent = formatMMSS(elapsed);
-      timerRAF = requestAnimationFrame(tick);
-    };
-    timerRAF = requestAnimationFrame(tick);
-  }
-
-  // ======================
-  // Reset / Unlock
-  // ======================
-  // (4) Reset logic
-  function hardReset(){
-    lockedOut = false;
-    modal.classList.remove("show");
-
-    buildQuestions();
-    qIndex = 0;
-    code = 0;
-
-    setState("RED");
-    setAngle(0);
-    lastDetentIndex = angleToIndex(angle);
-
-    renderQuestion();
-    startTimer();
-
-    lockBtn.disabled = false;
-  }
-
-  function showUnlocked(){
-    lockedOut = true;
-    modal.classList.add("show");
-    lockBtn.disabled = true;
-    vibrate(50);
-    pulseDial();
-    clickSound();
-  }
-
-  // ======================
-  // Drag handling
-  // ======================
-  function pointerAngleFromEvent(e){
-    const rect = dialWrap.getBoundingClientRect();
-    const cx = rect.left + rect.width/2;
-    const cy = rect.top + rect.height/2;
-    const x = (e.clientX ?? (e.touches && e.touches[0].clientX)) - cx;
-    const y = (e.clientY ?? (e.touches && e.touches[0].clientY)) - cy;
-    const rad = Math.atan2(y, x);
-    let deg = rad * (180/Math.PI);
-    deg += 90; // make 0 at top
-    return deg;
-  }
-
-  function deltaAngle(a, b){
-    // smallest signed difference (b - a) in degrees, range [-180, 180]
-    let d = b - a;
-    while (d > 180) d -= 360;
-    while (d < -180) d += 360;
+  function normalizeDeg(d){
+    d = d % 360;
+    if (d < 0) d += 360;
     return d;
   }
 
-  // (3) Direction enforcement
-  function canMove(delta){
-    // We define:
-    // - RED: allow clockwise only => dial angle can only increase
-    // - BLUE: allow anti-clockwise only => dial angle can only decrease
-    if (state === "RED") return delta >= 0;
-    return delta <= 0;
+  function angleFromPoint(clientX, clientY){
+    const rect = dial.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+
+    // atan2 gives 0 at +x (3 o'clock). Convert to 0 at 12 o'clock by adding 90deg.
+    const rad = Math.atan2(dy, dx);
+    const deg = normalizeDeg(rad * 180 / Math.PI + 90);
+    return deg;
   }
 
-  function onDown(e){
-    if (lockedOut) return;
-    e.preventDefault();
-    isDragging = true;
-    startPointerAngle = pointerAngleFromEvent(e);
-    startDialAngle = angle;
-    lastDetentIndex = angleToIndex(angle);
-    pendingEvent = e;
+  function signedAngleDelta(prevDeg, currDeg){
+    // shortest signed delta in [-180, 180)
+    return (currDeg - prevDeg + 540) % 360 - 180;
   }
 
-  function onMove(e){
-    if (!isDragging || lockedOut) return;
-    e.preventDefault();
-    pendingEvent = e;
-    if (!rafMovePending){
-      rafMovePending = true;
-      requestAnimationFrame(applyMove);
+  /* =========================================================
+     (2) Direction enforcement
+     - RED: allow only clockwise movement (positive delta).
+     - BLUE: allow only anti-clockwise movement (negative delta).
+     - Wrong-direction movement is ignored (strict).
+  ========================================================== */
+  function filterDeltaByDirection(delta){
+    if (state === "RED") return delta > 0 ? delta : 0;
+    return delta < 0 ? delta : 0;
+  }
+
+  /* =========================================================
+     (3) Snapping/detents
+     - Accumulate allowed delta degrees into pendingDelta.
+     - In rAF, convert degrees to detent steps (STEP_DEG each).
+     - Each detent change triggers subtle vibrate + flash.
+  ========================================================== */
+  function stepPointerByDetents(deltaDeg){
+    const steps = (deltaDeg / STEP_DEG) | 0; // trunc toward 0
+    if (steps === 0) return deltaDeg;
+
+    pointerIndex = (pointerIndex + steps) % SEGMENTS;
+    if (pointerIndex < 0) pointerIndex += SEGMENTS;
+
+    onDetent();
+    renderPointerAndActive();
+
+    return deltaDeg - steps * STEP_DEG; // remainder
+  }
+
+  function onDetent(){
+    if (navigator.vibrate) navigator.vibrate(10);
+    dial.classList.remove("snapFlash");
+    void dial.offsetWidth;
+    dial.classList.add("snapFlash");
+  }
+
+  function renderPointerAndActive(){
+    const angle = pointerIndex * STEP_DEG;
+    handEl.style.transform = `translate(-50%,-92%) rotate(${angle}deg)`;
+
+    for (let i=0;i<wedgeEls.length;i++){
+      wedgeEls[i].classList.toggle("active", i === pointerIndex);
     }
   }
 
-  function applyMove(){
-    rafMovePending = false;
-    if (!isDragging || !pendingEvent) return;
+  /* =========================================================
+     (4) Lock handling and state flip
+     - LOCK ALWAYS flips state (RED<->BLUE), regardless of correctness.
+     - After flip, evaluate current pointerIndex vs correctIndex.
+     - Correct: progress++ and advance to next question.
+     - Wrong: progress=0 AND questionIndex=0 (Q1) immediately.
+     - Flip happens regardless (next player continues after flip).
+  ========================================================== */
+  function flipState(){
+    state = (state === "RED") ? "BLUE" : "RED";
+    body.classList.toggle("state-blue", state === "BLUE");
 
-    const p = pointerAngleFromEvent(pendingEvent);
-    const d = deltaAngle(startPointerAngle, p);
-    const proposed = startDialAngle + d;
-    const deltaFromCurrent = proposed - angle;
+    instructionEl.textContent = (state === "RED")
+      ? "PASS TO CLOCKWISE PLAYER"
+      : "PASS TO ANTI-CLOCKWISE PLAYER";
 
-    if (!canMove(deltaFromCurrent)) return;
-
-    setAngle(proposed);
-
-    // Detent haptic when crossing into a new segment
-    const idx = angleToIndex(angle);
-    if (idx !== lastDetentIndex){
-      lastDetentIndex = idx;
-      vibrate(8);
-      pulseDial();
-      clickSound();
-    }
+    renderArrow();
   }
 
-  function onUp(e){
-    if (!isDragging) return;
-    e.preventDefault();
-    isDragging = false;
+  function handleLock(){
+    if (unlocked) return;
 
-    // Snap to nearest detent
-    const snapped = snapAngle(angle);
-    const moved = snapped - angle;
+    // Stronger haptic on LOCK
+    if (navigator.vibrate) navigator.vibrate([40, 40, 70]);
 
-    // If snapping would violate direction (rare), clamp by staying put
-    if (moved !== 0 && !canMove(moved)){
-      setAngle(angle); // keep
-    }else{
-      setAngle(snapped);
-    }
+    // Flip always
+    flipState();
 
-    // Stronger tactile confirmation of snap
-    vibrate(12);
-    clickSound();
-  }
-
-  // ======================
-  // Lock handling
-  // ======================
-  // (5) Lock handling
-  function onLock(){
-    if (lockedOut) return;
-
-    // Always flip state first (movie cliché)
-    setState(state === "RED" ? "BLUE" : "RED");
-
-    // Strong lock feedback
-    vibrate(30);
-    pulseDial();
-    clickSound();
-
-    const currentQ = questions[qIndex];
-    const selectedIndex = angleToIndex(angle);
-    const isCorrect = (selectedIndex === currentQ.correctIndex);
+    const q = QUESTIONS[questionIndex];
+    const isCorrect = (pointerIndex === q.correctIndex);
 
     if (isCorrect){
-      code += 1;
-      codeLabel.textContent = String(code);
-
-      if (code >= 5){
+      progress += 1;
+      if (progress >= 5){
+        progress = 5;
+        unlocked = true;
         showUnlocked();
+      } else {
+        questionIndex = Math.min(questionIndex + 1, QUESTIONS.length - 1);
+      }
+    } else {
+      progress = 0;
+      questionIndex = 0;
+    }
+
+    // Reset pointer position after each lock for clarity (unless unlocked)
+    if (!unlocked) pointerIndex = 0;
+
+    updateUI();
+  }
+
+  /* =========================================================
+     (5) Reset logic and “SAFE UNLOCKED” modal
+     - RESET returns to start state: RED, Q1, CODE 0, pointer 0, timer 00:00.
+     - When unlocked, interaction is disabled until RESET.
+  ========================================================== */
+  function showUnlocked(){
+    modal.classList.add("show");
+  }
+  function hideUnlocked(){
+    modal.classList.remove("show");
+  }
+
+  function resetAll(){
+    unlocked = false;
+    hideUnlocked();
+    state = "RED";
+    questionIndex = 0;
+    progress = 0;
+    pointerIndex = 0;
+    elapsedSec = 0;
+
+    body.classList.remove("state-blue");
+    updateTimerUI();
+    updateUI();
+  }
+
+  function updateUI(){
+    const q = QUESTIONS[questionIndex];
+
+    qNumEl.textContent = `Q${questionIndex + 1}`;
+    qTextEl.textContent = q.prompt;
+    codeEl.textContent = `${progress} / 5`;
+
+    instructionEl.textContent = (state === "RED")
+      ? "PASS TO CLOCKWISE PLAYER"
+      : "PASS TO ANTI-CLOCKWISE PLAYER";
+
+    renderArrow();
+    buildRingForQuestion(q);
+    renderPointerAndActive();
+
+    lockBtn.disabled = unlocked;
+    lockBtn.style.opacity = unlocked ? 0.6 : 1;
+  }
+
+  function renderArrow(){
+    // RED (clockwise): arrowhead on right. BLUE (anti-clockwise): arrowhead on left.
+    if (state === "RED"){
+      arrowPath.setAttribute("d", "M 40 30 Q 260 2 480 30");
+      arrowHead.setAttribute("d", "M 470 20 L 482 30 L 468 34");
+    } else {
+      arrowPath.setAttribute("d", "M 480 30 Q 260 2 40 30");
+      arrowHead.setAttribute("d", "M 50 20 L 38 30 L 52 34");
+    }
+  }
+
+  // Build the fixed 10-segment ring (wedge separators + centered labels)
+  function buildRingForQuestion(q){
+    if (wedgeEls.length === 0){
+      ringSvg.innerHTML = "";
+
+      const cx = 500, cy = 500;
+      const rOuter = 485;
+      const rInner = 300;
+
+      const rimOuter = svgEl("circle", {
+        cx, cy, r: rOuter - 4,
+        fill: "none",
+        stroke: "rgba(255,255,255,.22)",
+        "stroke-width": 10,
+        opacity: 0.6
+      });
+      ringSvg.appendChild(rimOuter);
+
+      const rimInner = svgEl("circle", {
+        cx, cy, r: rInner + 4,
+        fill: "none",
+        stroke: "rgba(255,255,255,.20)",
+        "stroke-width": 10,
+        opacity: 0.55
+      });
+      ringSvg.appendChild(rimInner);
+
+      // Wedges + texts
+      for (let i=0;i<SEGMENTS;i++){
+        const startDeg = i * STEP_DEG;
+        const endDeg = (i+1) * STEP_DEG;
+
+        const path = svgEl("path", {
+          d: donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg),
+          class: `wedge ${i%2===0 ? "altA":"altB"}`
+        });
+        ringSvg.appendChild(path);
+        wedgeEls.push(path);
+
+        const midDeg = startDeg + STEP_DEG/2;
+        const textR = (rInner + rOuter) / 2;
+        const pos = polarToXY(cx, cy, textR, midDeg);
+
+        const t = svgEl("text", {
+          x: pos.x.toFixed(2),
+          y: pos.y.toFixed(2),
+          class: "segText",
+          "data-i": String(i)
+        });
+
+        // Keep labels upright: flip 180deg on bottom half so text isn't upside down.
+        const a = normalizeDeg(midDeg);
+        const flip = (a > 90 && a < 270) ? 180 : 0;
+        t.setAttribute("transform", `rotate(${flip} ${pos.x.toFixed(2)} ${pos.y.toFixed(2)})`);
+
+        ringSvg.appendChild(t);
+      }
+
+      // Radial separators for distinct sectors
+      for (let i=0;i<SEGMENTS;i++){
+        const deg = i * STEP_DEG;
+        const p1 = polarToXY(cx, cy, rInner, deg);
+        const p2 = polarToXY(cx, cy, rOuter, deg);
+        const line = svgEl("line", {
+          x1: p1.x.toFixed(2),
+          y1: p1.y.toFixed(2),
+          x2: p2.x.toFixed(2),
+          y2: p2.y.toFixed(2),
+          stroke: "rgba(255,255,255,.20)",
+          "stroke-width": 3,
+          "stroke-linecap": "round"
+        });
+        ringSvg.appendChild(line);
+      }
+    }
+
+    // Update labels (fixed positions; no shuffle)
+    const texts = ringSvg.querySelectorAll("text.segText");
+    for (let i=0;i<texts.length;i++){
+      const idx = Number(texts[i].getAttribute("data-i"));
+      const label = q.answers[idx] ?? "";
+      texts[i].textContent = label;
+      texts[i].classList.toggle("small", label.length >= 9);
+    }
+  }
+
+  // SVG helpers
+  function svgEl(tag, attrs){
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function degToRad(deg){ return (deg - 90) * Math.PI / 180; } // -90 => 0deg at top
+  function polarToXY(cx, cy, r, deg){
+    const rad = degToRad(deg);
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+  function donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg){
+    const p1 = polarToXY(cx, cy, rOuter, startDeg);
+    const p2 = polarToXY(cx, cy, rOuter, endDeg);
+    const p3 = polarToXY(cx, cy, rInner, endDeg);
+    const p4 = polarToXY(cx, cy, rInner, startDeg);
+    const largeArc = (endDeg - startDeg) > 180 ? 1 : 0;
+
+    return [
+      `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
+      `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
+      `L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)}`,
+      `A ${rInner} ${rInner} 0 ${largeArc} 0 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)}`,
+      "Z"
+    ].join(" ");
+  }
+
+  // rAF drag loop to keep movement smooth and avoid jitter
+  function startRafIfNeeded(){
+    if (rafActive) return;
+    rafActive = true;
+
+    const tick = () => {
+      if (!dragging || unlocked){
+        rafActive = false;
+        pendingDelta = 0;
         return;
       }
 
-      // Advance to next question (Q1..Q5). After Q5, loop back to Q1 for demo simplicity.
-      qIndex = (qIndex + 1) % questions.length;
-      renderQuestion();
-    } else {
-      // OPTION A reset:
-      // - progress resets
-      // - question resets to Q1 immediately
-      code = 0;
-      qIndex = 0;
-      codeLabel.textContent = "0";
-      renderQuestion();
-    }
+      let d = pendingDelta;
+      pendingDelta = 0;
+
+      d = stepPointerByDetents(d);
+      pendingDelta += d;
+
+      requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
   }
 
-  // ======================
-  // Wire up events
-  // ======================
-  // Pointer events (best for modern mobile + desktop)
-  dialWrap.addEventListener("pointerdown", onDown, {passive:false});
-  dialWrap.addEventListener("pointermove", onMove, {passive:false});
-  dialWrap.addEventListener("pointerup", onUp, {passive:false});
-  dialWrap.addEventListener("pointercancel", onUp, {passive:false});
+  function onPointerDown(clientX, clientY){
+    if (unlocked) return;
+    dragging = true;
+    lastAngleDeg = angleFromPoint(clientX, clientY);
+    pendingDelta = 0;
+    startRafIfNeeded();
+  }
 
-  // Fallback touch events (some Safari edge cases)
-  dialWrap.addEventListener("touchstart", onDown, {passive:false});
-  dialWrap.addEventListener("touchmove", onMove, {passive:false});
-  dialWrap.addEventListener("touchend", onUp, {passive:false});
+  function onPointerMove(clientX, clientY){
+    if (!dragging || unlocked) return;
 
-  lockBtn.addEventListener("click", onLock);
-  resetBtn.addEventListener("click", hardReset);
-  modalReset.addEventListener("click", hardReset);
+    const ang = angleFromPoint(clientX, clientY);
+    let d = signedAngleDelta(lastAngleDeg, ang);
+    lastAngleDeg = ang;
 
-  // Re-render ring on resize to keep placement tidy
-  window.addEventListener("resize", () => {
-    if (!questions.length) return;
-    renderRing();
+    d = filterDeltaByDirection(d);
+    pendingDelta += d;
+  }
+
+  function endDrag(){
+    dragging = false;
+    lastAngleDeg = null;
+  }
+
+  // Touch + mouse wiring
+  dial.addEventListener("touchstart", (e) => {
+    if (e.touches && e.touches.length){
+      e.preventDefault();
+      const t = e.touches[0];
+      onPointerDown(t.clientX, t.clientY);
+    }
+  }, { passive: false });
+
+  dial.addEventListener("touchmove", (e) => {
+    if (e.touches && e.touches.length){
+      e.preventDefault();
+      const t = e.touches[0];
+      onPointerMove(t.clientX, t.clientY);
+    }
+  }, { passive: false });
+
+  dial.addEventListener("touchend", (e) => { e.preventDefault(); endDrag(); }, { passive: false });
+  dial.addEventListener("touchcancel", (e) => { e.preventDefault(); endDrag(); }, { passive: false });
+
+  dial.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    onPointerDown(e.clientX, e.clientY);
   });
+  window.addEventListener("mousemove", (e) => onPointerMove(e.clientX, e.clientY));
+  window.addEventListener("mouseup", () => endDrag());
+
+  // Buttons
+  lockBtn.addEventListener("click", () => handleLock());
+  resetBtn.addEventListener("click", () => resetAll());
+
+  // Timer
+  function updateTimerUI(){
+    const m = Math.floor(elapsedSec / 60);
+    const s = elapsedSec % 60;
+    timerEl.textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  }
+  function startTimer(){
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      elapsedSec += 1;
+      updateTimerUI();
+    }, 1000);
+  }
 
   // Init
-  hardReset();
+  updateUI();
+  startTimer();
 })();
 </script>
 </body>
