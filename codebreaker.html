@@ -3,23 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Safe Dial Demo</title>
+  <title>Safe Dial</title>
   <style>
     :root{
       --red:#e0162b;
       --blue:#1246ff;
 
       --text:#ffffff;
-      --muted:rgba(255,255,255,.72);
+      --muted:rgba(255,255,255,.76);
 
-      --shadow: 0 14px 40px rgba(0,0,0,.30);
-      --shadow2: 0 10px 22px rgba(0,0,0,.24);
+      --shadow: 0 18px 50px rgba(0,0,0,.30);
+      --shadow2: 0 10px 22px rgba(0,0,0,.22);
 
-      --ringStroke: rgba(255,255,255,.18);
-      --ringStrokeStrong: rgba(255,255,255,.30);
+      --panel: rgba(0,0,0,.20);
+      --panelBorder: rgba(255,255,255,.18);
+
       --wedgeA: rgba(255,255,255,.08);
       --wedgeB: rgba(255,255,255,.14);
-      --wedgeActive: rgba(255,255,255,.22);
+      --wedgeActive: rgba(255,255,255,.26);
+
+      --sep: rgba(255,255,255,.34);
+      --rim: rgba(255,255,255,.22);
 
       --btnBg: rgba(255,255,255,.12);
       --btnBgHover: rgba(255,255,255,.18);
@@ -29,21 +33,20 @@
       --focus: rgba(255,255,255,.32);
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html,body { height:100%; margin:0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; color:var(--text); }
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html,body{ height:100%; margin:0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; color:var(--text); }
     body{
       background: var(--red);
-      display:flex;
-      align-items: stretch;
-      justify-content:center;
       transition: background-color 220ms ease;
       overflow:hidden;
       touch-action: manipulation;
+      display:flex;
+      justify-content:center;
     }
     body.state-blue{ background: var(--blue); }
 
     .app{
-      width: min(820px, 100%);
+      width: min(860px, 100%);
       height: 100%;
       padding: clamp(12px, 2.2vh, 22px);
       padding-top: max(clamp(12px, 2.2vh, 22px), env(safe-area-inset-top));
@@ -57,89 +60,88 @@
       display:flex;
       flex-direction: column;
       gap: 10px;
-      align-items: center;
+      align-items:center;
       text-align:center;
     }
 
-    .timerRow{
+    .row{
       width:100%;
       display:flex;
       align-items:center;
-      justify-content: space-between;
       gap:10px;
     }
 
-    .timer{
+    .pill{
       flex:1;
-      background: rgba(0,0,0,.20);
-      border: 1px solid rgba(255,255,255,.18);
+      min-height: 50px;
       border-radius: 18px;
-      padding: 10px 14px;
+      background: var(--panel);
+      border: 1px solid var(--panelBorder);
       box-shadow: var(--shadow2);
+      padding: 10px 14px;
       display:flex;
       align-items:center;
       justify-content: space-between;
-      min-height: 48px;
     }
-    .timer .label{
+
+    .pill .label{
       font-size: 12px;
       letter-spacing: .18em;
       text-transform: uppercase;
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 900;
     }
-    .timer .value{
+    .pill .value{
       font-variant-numeric: tabular-nums;
       font-size: 24px;
-      font-weight: 950;
+      font-weight: 1000;
       letter-spacing: .04em;
     }
 
-    .code{
-      background: rgba(0,0,0,.20);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 18px;
-      padding: 10px 14px;
-      box-shadow: var(--shadow2);
-      min-height: 48px;
-      display:flex;
-      align-items:center;
+    .codePill{
+      flex: 0 0 auto;
+      min-width: 150px;
       justify-content:center;
-      gap:10px;
-      white-space: nowrap;
+      gap: 10px;
     }
-    .code .k{ font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
-    .code .v{ font-variant-numeric: tabular-nums; font-size: 18px; font-weight: 950; }
+    .codePill .value{ font-size: 18px; }
 
     .instruction{
       width:100%;
+      border-radius: 22px;
       background: rgba(0,0,0,.22);
       border: 1px solid rgba(255,255,255,.18);
-      border-radius: 22px;
-      padding: 14px 16px;
       box-shadow: var(--shadow);
-      font-weight: 950;
+      padding: 14px 16px;
+      font-weight: 1000;
       letter-spacing: .06em;
       text-transform: uppercase;
       font-size: clamp(14px, 2.0vh, 18px);
     }
 
-    /* Curved direction arrow near the dial; flips with state */
-    .arrowRow{
-      width:100%;
+    /* Big obvious direction arrow (short + fat), pulses each second */
+    .arrowWrap{
+      width: 100%;
       display:flex;
-      align-items:center;
       justify-content:center;
-      margin-top: -2px;
-      margin-bottom: -2px;
       user-select:none;
       pointer-events:none;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.22));
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.22));
+      margin-top: -2px;
+      margin-bottom: -2px;
     }
-    .arrowRow svg{ width:min(560px, 94%); height: 34px; display:block; }
-    .arrowRow .line{
-      stroke: rgba(255,255,255,.82);
-      stroke-width: 3;
+    .arrowSvg{
+      width: min(520px, 94%);
+      height: 52px;
+      opacity: .96;
+      transition: opacity 120ms linear;
+    }
+    .arrowPulse{
+      opacity: .45;
+    }
+    .arrowLine{
+      stroke: rgba(255,255,255,.92);
+      stroke-width: 10;
       fill: none;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -150,164 +152,144 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 4px 0;
+      padding: 2px 0;
     }
 
-    .dialWrap{
-      width: min(600px, 92vw);
+    .dial{
+      width: min(640px, 92vw);
       aspect-ratio: 1/1;
       position: relative;
       border-radius: 999px;
+      box-shadow: var(--shadow);
       background:
-        radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(255,255,255,0) 56%),
-        radial-gradient(circle at 50% 90%, rgba(0,0,0,.18), rgba(0,0,0,0) 55%),
+        radial-gradient(circle at 50% 40%, rgba(255,255,255,.16), rgba(255,255,255,0) 58%),
+        radial-gradient(circle at 50% 85%, rgba(0,0,0,.20), rgba(0,0,0,0) 60%),
         rgba(0,0,0,.14);
       border: 1px solid rgba(255,255,255,.20);
-      box-shadow: var(--shadow);
       overflow:hidden;
-      touch-action: none; /* prevent page scroll while dragging the ring */
-    }
 
-    #ringSvg{
+      /* critical: prevent page scroll while dragging */
+      touch-action: none;
+      user-select:none;
+      cursor: grab;
+    }
+    .dial.dragging{ cursor: grabbing; }
+
+    #fixedSvg{
       position:absolute;
-      inset: 0;
+      inset:0;
       width:100%;
       height:100%;
       display:block;
     }
 
-    /* Center question */
-    .centerPanel{
-      position:absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%,-50%);
-      width: 54%;
-      height: 54%;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.22));
-      border: 1px solid rgba(255,255,255,.20);
-      box-shadow: 0 18px 45px rgba(0,0,0,.28);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 16px;
-      text-align:center;
-      z-index: 5;
-      pointer-events:none;
-    }
-    .centerPanel .qWrap{
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items:center;
-      justify-content:center;
-    }
-    .centerPanel .qNum{
-      font-size: 12px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.78);
-      font-weight: 900;
-    }
-    .centerPanel .qText{
-      font-size: clamp(14px, 2.0vh, 18px);
-      font-weight: 950;
-      line-height: 1.15;
-      letter-spacing: .01em;
-      padding: 0 4px;
-    }
-
-    /* Rotating ring + pointer marker (marker attached to ring) */
+    /* Rotating ring/bezel (only this rotates) */
     .rotorLayer{
       position:absolute;
       inset:0;
       z-index: 9;
-      pointer-events:none; /* dragging is captured by dialWrap */
+      pointer-events:none; /* we drag the dial container */
     }
     .rotor{
       position:absolute;
       inset:0;
-      transform: rotate(18deg); /* aligns marker to the MIDDLE of segment 0 (between radial lines) */
       transform-origin: 50% 50%;
       will-change: transform;
     }
 
-    /* Outer "knurled" ring look */
-    .knurl{
+    /* Bezel visuals */
+    .bezel{
       position:absolute;
-      inset: 3.5%;
+      inset: 2.8%;
       border-radius: 999px;
-      border: 2px solid rgba(255,255,255,.18);
-      box-shadow: inset 0 0 0 10px rgba(255,255,255,.04), 0 10px 30px rgba(0,0,0,.18);
+      border: 3px solid rgba(255,255,255,.18);
+      box-shadow:
+        inset 0 0 0 10px rgba(255,255,255,.04),
+        inset 0 0 0 22px rgba(0,0,0,.06);
       background:
-        radial-gradient(circle at 50% 30%, rgba(255,255,255,.12), rgba(255,255,255,0) 55%),
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,.16), rgba(255,255,255,0) 58%),
         rgba(0,0,0,.06);
-      pointer-events:none;
     }
 
-    /* The pointer marker sits on the ring circumference and points inward */
+    /* Pointer marker attached to ring; points direction of travel */
     .marker{
       position:absolute;
       left: 50%;
-      top: 4.5%;
-      transform: translate(-50%, 0);
-      width: 54px;
-      height: 54px;
-      pointer-events:none;
-      filter: drop-shadow(0 14px 20px rgba(0,0,0,.28));
+      top: 3.2%;
+      transform: translate(-50%, 0) rotate(90deg); /* default points clockwise (to the right) */
+      transform-origin: 50% 50%;
+      width: 76px;
+      height: 34px;
+      filter: drop-shadow(0 14px 18px rgba(0,0,0,.28));
     }
     .marker svg{ width:100%; height:100%; display:block; }
-    .marker .body{
-      fill: rgba(255,255,255,.96);
-      stroke: rgba(0,0,0,.12);
-      stroke-width: 1;
-    }
-    .marker .cut{
-      fill: rgba(0,0,0,.12);
-      opacity:.22;
-    }
+    .marker .mFill{ fill: rgba(255,255,255,.96); }
+    .marker .mCut{ fill: rgba(0,0,0,.16); opacity:.22; }
 
-    /* A subtle "grab me" hint on ring when idle */
-    .grabHint{
+    /* Center question panel */
+    .center{
       position:absolute;
-      inset:0;
+      left:50%;
+      top:50%;
+      transform: translate(-50%, -50%);
+      width: 56%;
+      height: 56%;
       border-radius: 999px;
-      border: 1px dashed rgba(255,255,255,.0);
+      background: linear-gradient(180deg, rgba(0,0,0,.42), rgba(0,0,0,.22));
+      border: 1px solid rgba(255,255,255,.20);
+      box-shadow: 0 18px 45px rgba(0,0,0,.28);
+      z-index: 7;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      text-align:center;
       pointer-events:none;
     }
-
-    /* Segment labels */
-    .segText{
-      font-size: 14px;
+    .qNum{
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.78);
       font-weight: 950;
-      fill: rgba(255,255,255,.94);
-      text-anchor: middle;
-      dominant-baseline: middle;
-      paint-order: stroke;
-      stroke: rgba(0,0,0,.38);
-      stroke-width: 3.2px;
+      margin-bottom: 10px;
+    }
+    .qText{
+      font-size: clamp(14px, 2.2vh, 20px);
+      font-weight: 1000;
+      line-height: 1.15;
       letter-spacing: .01em;
     }
-    .segText.small{ font-size: 12px; }
+
+    /* Answer labels (big, always upright/horizontal) */
+    .ansText{
+      fill: rgba(255,255,255,.97);
+      text-anchor: middle;
+      dominant-baseline: middle;
+      font-weight: 1000;
+      font-size: 34px; /* intentionally big */
+      letter-spacing: .01em;
+      paint-order: stroke;
+      stroke: rgba(0,0,0,.40);
+      stroke-width: 6px;
+    }
 
     /* Wedges */
     .wedge{
-      stroke: var(--ringStroke);
+      stroke: rgba(255,255,255,.18);
       stroke-width: 2;
       vector-effect: non-scaling-stroke;
     }
-    .wedge.altA{ fill: var(--wedgeA); }
-    .wedge.altB{ fill: var(--wedgeB); }
-    .wedge.active{ fill: var(--wedgeActive); stroke: var(--ringStrokeStrong); stroke-width: 2.5; }
+    .wedge.a{ fill: var(--wedgeA); }
+    .wedge.b{ fill: var(--wedgeB); }
+    .wedge.active{ fill: var(--wedgeActive); stroke: rgba(255,255,255,.30); stroke-width: 3; }
 
-    /* Snap feedback */
-    .dialWrap.snapFlash{
+    .snapFlash{
       animation: snapFlash 120ms ease;
     }
     @keyframes snapFlash{
       0% { filter: brightness(1); }
-      40% { filter: brightness(1.12); }
+      40% { filter: brightness(1.10); }
       100% { filter: brightness(1); }
     }
 
@@ -320,13 +302,13 @@
     }
     .btn{
       flex:1;
-      max-width: 380px;
+      max-width: 420px;
       border-radius: 18px;
       padding: 16px 16px;
       border: 1px solid var(--btnBorder);
       background: var(--btnBg);
       color: var(--text);
-      font-weight: 950;
+      font-weight: 1000;
       letter-spacing: .08em;
       text-transform: uppercase;
       font-size: 16px;
@@ -347,6 +329,27 @@
       border-color: rgba(255,255,255,.28);
     }
 
+    /* Tap-to-enable-sound badge */
+    .soundBadge{
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 1200;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.92);
+      user-select:none;
+    }
+    .soundBadge.hidden{ display:none; }
+
+    /* Modal */
     .modal{
       position: fixed;
       inset: 0;
@@ -361,7 +364,7 @@
     }
     .modal.show{ display:flex; }
     .modalCard{
-      width: min(520px, 92vw);
+      width: min(560px, 92vw);
       border-radius: 26px;
       background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
       border: 1px solid rgba(255,255,255,.22);
@@ -371,80 +374,80 @@
     }
     .modalCard h1{
       margin: 6px 0 10px;
-      font-size: clamp(26px, 3.8vh, 38px);
+      font-size: clamp(26px, 4.0vh, 40px);
       letter-spacing: .06em;
       text-transform: uppercase;
-      font-weight: 1000;
+      font-weight: 1100;
     }
-    .modalCard p{
+    .modalCard .time{
       margin: 0 0 14px;
-      color: rgba(255,255,255,.84);
-      font-weight: 700;
-      line-height: 1.25;
+      color: rgba(255,255,255,.92);
+      font-weight: 1000;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
     }
     .modalCard .hint{
       font-size: 12px;
       letter-spacing: .14em;
       text-transform: uppercase;
       color: rgba(255,255,255,.74);
+      margin-top: 4px;
     }
 
     @media (max-width: 420px){
-      .segText{ font-size: 12px; }
-      .segText.small{ font-size: 11px; }
+      .ansText{ font-size: 28px; stroke-width: 6px; }
+      .marker{ width: 66px; height: 30px; }
+      .pill .value{ font-size: 22px; }
       .btn{ font-size: 15px; padding: 15px 14px; }
-      .timer .value{ font-size: 22px; }
-      .marker{ width: 48px; height: 48px; }
+      .arrowSvg{ height: 46px; }
     }
   </style>
 </head>
 <body class="state-red">
   <div class="app">
     <div class="topbar">
-      <div class="timerRow">
-        <div class="timer" aria-label="Timer">
+      <div class="row">
+        <div class="pill" aria-label="Timer">
           <div class="label">TIMER</div>
           <div class="value" id="timer">00:00</div>
         </div>
-        <div class="code" aria-label="Progress">
-          <div class="k">CODE</div>
-          <div class="v" id="code">0 / 5</div>
+        <div class="pill codePill" aria-label="Progress">
+          <div class="label">CODE</div>
+          <div class="value" id="code">0 / 5</div>
         </div>
       </div>
 
       <div class="instruction" id="instruction">PASS TO CLOCKWISE PLAYER</div>
 
-      <div class="arrowRow" aria-hidden="true">
-        <svg viewBox="0 0 560 40" role="img" aria-label="Direction arrow">
-          <path class="line" id="arrowPath" d="M 40 30 Q 280 2 520 30" />
-          <path class="line" id="arrowHead" d="M 510 20 L 522 30 L 508 34" />
+      <div class="arrowWrap" aria-hidden="true">
+        <svg class="arrowSvg" viewBox="0 0 520 52" role="img" aria-label="Direction arrow">
+          <path class="arrowLine" id="arrowPath" d="M 60 36 Q 260 10 460 36" />
+          <path class="arrowLine" id="arrowHead" d="M 440 22 L 462 36 L 438 42" />
         </svg>
       </div>
     </div>
 
     <div class="middle">
-      <div class="dialWrap" id="dial" aria-label="Safe dial">
-        <svg id="ringSvg" viewBox="0 0 1000 1000" aria-hidden="true"></svg>
+      <div class="dial" id="dial" aria-label="Safe dial">
+        <svg id="fixedSvg" viewBox="0 0 1000 1000" aria-hidden="true"></svg>
 
         <div class="rotorLayer" aria-hidden="true">
           <div class="rotor" id="rotor">
-            <div class="knurl"></div>
+            <div class="bezel"></div>
             <div class="marker" id="marker">
-              <!-- Inward-pointing arrow marker attached to the rotating ring -->
-              <svg viewBox="0 0 64 64">
-                <!-- subtle plate -->
-                <path class="body" d="M32 6c10 0 18 8 18 18 0 5-2 9-5 12l-9 9c-1 1-2 1-4 1s-3 0-4-1l-9-9c-3-3-5-7-5-12C14 14 22 6 32 6Z"/>
-                <!-- inward pointer -->
-                <path class="body" d="M32 56 22 40c-1-2 0-4 2-4h16c2 0 3 2 2 4L32 56Z"/>
-                <path class="cut" d="M22 20c3-6 10-9 16-7 4 1 7 4 8 8-8-4-16-4-24-1Z"/>
+              <!-- Tangential arrow marker; points direction of travel -->
+              <svg viewBox="0 0 76 34">
+                <path class="mFill" d="M6 6h42c3 0 6 3 6 6v10c0 3-3 6-6 6H6c-3 0-6-3-6-6V12c0-3 3-6 6-6Z"/>
+                <path class="mFill" d="M54 5 76 17 54 29c-2 1-4-1-4-3V8c0-2 2-4 4-3Z"/>
+                <path class="mCut" d="M8 10h32c2 0 4 2 4 4v6c0 2-2 4-4 4H8c-2 0-4-2-4-4v-6c0-2 2-4 4-4Z"/>
               </svg>
             </div>
-            <div class="grabHint"></div>
           </div>
         </div>
 
-        <div class="centerPanel">
-          <div class="qWrap">
+        <div class="center" aria-hidden="true">
+          <div>
             <div class="qNum" id="qNum">Q1</div>
             <div class="qText" id="qText">…</div>
           </div>
@@ -458,126 +461,131 @@
     </div>
   </div>
 
+  <div class="soundBadge" id="soundBadge">TAP TO ENABLE SOUND</div>
+
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Safe Unlocked">
     <div class="modalCard">
       <h1>SAFE UNLOCKED</h1>
-      <p>You cracked the 5-step code.</p>
+      <div class="time" id="unlockTime">TIME: 00:00</div>
       <div class="hint">Press RESET to play again.</div>
     </div>
   </div>
 
 <script>
 /*
-  DATA (edit this to change questions/answers/correctIndex)
-  - No shuffling.
-  - Exactly 5 questions.
-  - Each question has 10 fixed answers (fixed segment positions).
-  - correctIndex is the fixed segment index (0..9) for the correct answer.
+  CANONICAL DATA (edit here)
+  - We DO NOT store fixed correctIndex here because answers are shuffled per question.
+  - We store the correct answer label and derive shuffled displayAnswers + correctIndex at runtime.
+
+  Required JS comments:
+  (1) segment geometry / mapping ring angle to segment index (center-of-segment detents)
+  (2) direction enforcement
+  (3) snapping/detents + click/haptic generation
+  (4) lock handling + state flip + correctness evaluation
+  (5) reset logic + SAFE UNLOCKED modal including time taken
 */
-const QUESTIONS = [
+const CANONICAL_QUESTIONS = [
   {
     prompt: "What is Chappell Roan’s middle name?",
-    answers: ["Rose","Lily","Daisy","Violet","Ivy","Hazel","June","Pearl","Grace","Mae"],
-    correctIndex: 0
+    correct: "Rose",
+    answers: ["Rose","Lily","Daisy","Violet","Ivy","Hazel","June","Pearl","Grace","Mae"]
   },
   {
     prompt: "Which country’s capital city is Tokyo?",
-    answers: ["Japan","China","South Korea","Thailand","Vietnam","Singapore","Malaysia","Indonesia","Philippines","Taiwan"],
-    correctIndex: 0
+    correct: "Japan",
+    answers: ["Japan","China","South Korea","Thailand","Vietnam","Singapore","Malaysia","Indonesia","Philippines","Taiwan"]
   },
   {
     prompt: "In tennis, what is the score called at 40–40?",
-    answers: ["Deuce","Love","Advantage","Break","Ace","Tie","Set","Match","Rally","Fault"],
-    correctIndex: 0
+    correct: "Deuce",
+    answers: ["Deuce","Love","Advantage","Break","Ace","Tie","Set","Match","Rally","Fault"]
   },
   {
     prompt: "Which planet is known as the Red Planet?",
-    answers: ["Mars","Venus","Jupiter","Saturn","Mercury","Neptune","Uranus","Earth","Pluto","Moon"],
-    correctIndex: 0
+    correct: "Mars",
+    answers: ["Mars","Venus","Jupiter","Saturn","Mercury","Neptune","Uranus","Earth","Pluto","Moon"]
   },
   {
     prompt: "Which month has 28 days in a common (non-leap) year?",
-    answers: ["February","January","March","April","May","June","July","August","September","October"],
-    correctIndex: 0
+    correct: "February",
+    answers: ["February","January","March","April","May","June","July","August","September","October"]
   }
 ];
 
 (() => {
   const SEGMENTS = 10;
   const STEP_DEG = 360 / SEGMENTS;
+  const CENTER_OFFSET_DEG = STEP_DEG / 2; // ensures detents always land in the MIDDLE of each segment
 
-  // IMPORTANT: radial separator lines are at 0, 36, 72...
-  // To ensure the pointer marker NEVER lands on a separator line, detents are at segment CENTERS:
-  // 18, 54, 90... (i.e., +STEP_DEG/2).
-  const CENTER_OFFSET_DEG = STEP_DEG / 2; // 18deg
-
-  const body = document.body;
   const dial = document.getElementById("dial");
-  const ringSvg = document.getElementById("ringSvg");
-  const rotorEl = document.getElementById("rotor");
-
-  const qNumEl = document.getElementById("qNum");
-  const qTextEl = document.getElementById("qText");
-  const instructionEl = document.getElementById("instruction");
+  const fixedSvg = document.getElementById("fixedSvg");
+  const rotor = document.getElementById("rotor");
+  const marker = document.getElementById("marker");
   const timerEl = document.getElementById("timer");
   const codeEl = document.getElementById("code");
+  const instructionEl = document.getElementById("instruction");
+  const qNumEl = document.getElementById("qNum");
+  const qTextEl = document.getElementById("qText");
   const lockBtn = document.getElementById("lockBtn");
   const resetBtn = document.getElementById("resetBtn");
   const modal = document.getElementById("modal");
+  const unlockTimeEl = document.getElementById("unlockTime");
+  const soundBadge = document.getElementById("soundBadge");
 
   const arrowPath = document.getElementById("arrowPath");
   const arrowHead = document.getElementById("arrowHead");
+  const arrowSvg = document.querySelector(".arrowSvg");
+
+  // Fixed wedges for highlighting current selection
+  const wedgeEls = [];
+  let textEls = [];
 
   // Game state
-  let state = "RED";         // RED: clockwise only. BLUE: anti-clockwise only.
+  let state = "RED"; // RED: clockwise only. BLUE: anti-clockwise only.
   let questionIndex = 0;
-  let progress = 0;          // correct-in-a-row count
+  let progress = 0;
   let unlocked = false;
 
-  // Pointer selection is discrete segment index (0..9).
-  // The rotor rotation is derived from pointerIndex (snapped to detents).
+  // Pointer selection index (0..9) - corresponds to segment centers
   let pointerIndex = 0;
 
-  // Drag tracking
+  // Per-run seed so shuffles are deterministic per-question within a run; RESET reseeds.
+  let runSeed = Date.now() >>> 0;
+
+  // Derived per-question display data (shuffled once per question load)
+  let DISPLAY = []; // [{prompt, displayAnswers[10], correctIndex}...]
+
+  // Drag state (rAF)
   let dragging = false;
   let lastAngleDeg = null;
   let pendingDelta = 0;
   let rafActive = false;
 
-  // Wedges (for active highlight)
-  const wedgeEls = [];
-
-  // Timer + audio
+  // Timer
   let elapsedSec = 0;
   let timerInterval = null;
+
+  // Audio (WebAudio only)
   let audioCtx = null;
-  let audioUnlocked = false;
+  let audioEnabled = false;
 
   /* =========================================================
-     (1) Segment geometry / mapping pointer angle to segment index
-     - Separator lines at angles: 0, 36, 72 ... (clockwise, 0 = 12 o'clock).
-     - Segment i is the wedge from i*STEP_DEG to (i+1)*STEP_DEG.
-     - Segment CENTER detent is i*STEP_DEG + CENTER_OFFSET_DEG.
-     - The rotating ring carries the pointer marker; when pointerIndex = i,
-       marker sits at that segment center (never on separator line).
+     (1) Segment geometry / mapping ring angle to segment index
+     - Segment boundaries are fixed at angles: 0, 36, 72... (0 = 12 o'clock).
+     - Detents must sit at segment CENTERS: 18, 54, 90... (CENTER_OFFSET_DEG + i*STEP_DEG).
+     - The rotating ring (rotor) is rendered at angle = CENTER_OFFSET_DEG + pointerIndex*STEP_DEG.
+     - That guarantees the marker never lands on a boundary line.
   ========================================================== */
-
-  function normalizeDeg(d){
-    d = d % 360;
-    if (d < 0) d += 360;
-    return d;
-  }
+  function normalizeDeg(d){ d%=360; if(d<0) d+=360; return d; }
 
   function angleFromPoint(clientX, clientY){
-    const rect = dial.getBoundingClientRect();
-    const cx = rect.left + rect.width/2;
-    const cy = rect.top + rect.height/2;
+    const r = dial.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
     const dx = clientX - cx;
     const dy = clientY - cy;
-
-    // atan2: 0 at +x (3 o'clock). Convert to 0 at 12 o'clock by +90deg, clockwise positive.
     const rad = Math.atan2(dy, dx);
-    return normalizeDeg(rad * 180 / Math.PI + 90);
+    return normalizeDeg(rad * 180 / Math.PI + 90); // 0 at top, clockwise positive
   }
 
   function signedAngleDelta(prevDeg, currDeg){
@@ -587,9 +595,9 @@ const QUESTIONS = [
 
   /* =========================================================
      (2) Direction enforcement (strict)
-     - RED: allow only clockwise movement (positive delta).
-     - BLUE: allow only anti-clockwise movement (negative delta).
-     - Wrong-direction movement is ignored.
+     - RED: allow only clockwise movement => positive delta
+     - BLUE: allow only anti-clockwise movement => negative delta
+     - Wrong-direction deltas are ignored.
   ========================================================== */
   function filterDeltaByDirection(delta){
     if (state === "RED") return delta > 0 ? delta : 0;
@@ -597,16 +605,17 @@ const QUESTIONS = [
   }
 
   /* =========================================================
-     (3) Snapping/detents
-     - We accumulate allowed delta degrees into pendingDelta.
-     - In rAF, we convert pendingDelta into integer detent steps (each STEP_DEG).
-     - Each detent step:
-        * updates pointerIndex (wrap 0..9)
-        * plays a click sound
-        * vibrates lightly (if available)
-        * flashes the dial
+     (3) Snapping/detents + click/haptic generation
+     - We accumulate allowed drag delta degrees into pendingDelta.
+     - In rAF, we convert pendingDelta into integer detent steps:
+        steps = trunc(pendingDelta / STEP_DEG)
+     - Each step:
+        pointerIndex updates (wrap 0..9),
+        vibrate(10),
+        play a click,
+        visual flash.
   ========================================================== */
-  function stepPointerByDetents(deltaDeg){
+  function stepByDetents(deltaDeg){
     const steps = (deltaDeg / STEP_DEG) | 0; // trunc toward 0
     if (steps === 0) return deltaDeg;
 
@@ -614,9 +623,8 @@ const QUESTIONS = [
     if (pointerIndex < 0) pointerIndex += SEGMENTS;
 
     onDetent();
-    renderRotorAndActive();
-
-    return deltaDeg - steps * STEP_DEG; // remainder
+    renderRotor();
+    return deltaDeg - steps * STEP_DEG;
   }
 
   function onDetent(){
@@ -624,50 +632,51 @@ const QUESTIONS = [
     dial.classList.remove("snapFlash");
     void dial.offsetWidth;
     dial.classList.add("snapFlash");
-    if (audioUnlocked) playDetentClick();
+    playDetentClick();
   }
 
-  function renderRotorAndActive(){
-    // rotor rotates to put marker at segment center: CENTER_OFFSET_DEG + pointerIndex*STEP_DEG
+  function renderRotor(){
     const angle = CENTER_OFFSET_DEG + pointerIndex * STEP_DEG;
-    rotorEl.style.transform = `rotate(${angle}deg)`;
+    rotor.style.transform = `rotate(${angle}deg)`;
 
     for (let i=0;i<wedgeEls.length;i++){
       wedgeEls[i].classList.toggle("active", i === pointerIndex);
     }
   }
 
+  function setMarkerDirection(){
+    // Marker should point along direction of travel.
+    // Because the marker is inside the rotating ring, we set a constant local rotation:
+    // clockwise => +90deg (point right), anti => -90deg (point left).
+    marker.style.transform = `translate(-50%, 0) rotate(${state === "RED" ? 90 : -90}deg)`;
+  }
+
   /* =========================================================
-     (4) Lock handling and state flip
-     - LOCK ALWAYS flips state (RED<->BLUE), regardless of correctness.
-     - After flip, evaluate pointerIndex vs correctIndex for current question.
-     - Correct: progress++ and advance to next question.
-     - Wrong: progress=0 and questionIndex=0 (Q1) immediately.
-     - Flip happens regardless (next player continues after flip).
+     (4) Lock handling + state flip + correctness evaluation
+     - LOCK ALWAYS flips state (RED<->BLUE) regardless of correctness.
+     - After flip, evaluate current pointerIndex vs correctIndex for current question.
+     - If correct: progress++ and go to next question.
+     - If wrong: OPTION A reset => progress=0 and questionIndex=0 immediately.
+     - Flip always happens first (next player continues after flip).
   ========================================================== */
   function flipState(){
     state = (state === "RED") ? "BLUE" : "RED";
-    body.classList.toggle("state-blue", state === "BLUE");
-
-    instructionEl.textContent = (state === "RED")
-      ? "PASS TO CLOCKWISE PLAYER"
-      : "PASS TO ANTI-CLOCKWISE PLAYER";
-
-    renderArrow();
+    document.body.classList.toggle("state-blue", state === "BLUE");
+    instructionEl.textContent = (state === "RED") ? "PASS TO CLOCKWISE PLAYER" : "PASS TO ANTI-CLOCKWISE PLAYER";
+    renderDirectionArrow();
+    setMarkerDirection();
   }
 
   function handleLock(){
     if (unlocked) return;
+    ensureAudioRunning();
+    if (navigator.vibrate) navigator.vibrate([60, 40, 110]);
+    playLockSound();
 
-    unlockAudioIfNeeded();
-    // Stronger lock haptic
-    if (navigator.vibrate) navigator.vibrate([50, 40, 90]);
-    playLockThud();
-
-    // Flip ALWAYS first
+    // flip ALWAYS
     flipState();
 
-    const q = QUESTIONS[questionIndex];
+    const q = DISPLAY[questionIndex];
     const isCorrect = (pointerIndex === q.correctIndex);
 
     if (isCorrect){
@@ -677,26 +686,35 @@ const QUESTIONS = [
         unlocked = true;
         showUnlocked();
       } else {
-        questionIndex = Math.min(questionIndex + 1, QUESTIONS.length - 1);
+        questionIndex = Math.min(questionIndex + 1, DISPLAY.length - 1);
       }
     } else {
       progress = 0;
       questionIndex = 0;
     }
 
-    // Reset ring position after each lock for clarity (unless unlocked)
+    // reset pointer to neutral after lock (unless unlocked)
     if (!unlocked) pointerIndex = 0;
 
     updateUI();
   }
 
   /* =========================================================
-     (5) Reset logic and “SAFE UNLOCKED” modal
-     - RESET returns to start state: RED, Q1, CODE 0/5, pointerIndex=0, timer=00:00.
-     - When unlocked, interaction is disabled until RESET.
+     (5) Reset logic + SAFE UNLOCKED modal including time taken
+     - RESET reseeds shuffles, resets timer, state, progress, question, pointer.
+     - On unlock, modal shows TIME: mm:ss from timer at that moment.
+     - While unlocked, disable ring interaction and LOCK until RESET.
   ========================================================== */
-  function showUnlocked(){ modal.classList.add("show"); }
-  function hideUnlocked(){ modal.classList.remove("show"); }
+  function showUnlocked(){
+    unlockTimeEl.textContent = `TIME: ${formatTime(elapsedSec)}`;
+    modal.classList.add("show");
+    lockBtn.disabled = true;
+    lockBtn.style.opacity = 0.6;
+  }
+
+  function hideUnlocked(){
+    modal.classList.remove("show");
+  }
 
   function resetAll(){
     unlocked = false;
@@ -707,123 +725,139 @@ const QUESTIONS = [
     progress = 0;
     pointerIndex = 0;
 
+    runSeed = (Date.now() ^ (Math.random()*0xFFFFFFFF)) >>> 0;
+    buildDisplayData();
+
     elapsedSec = 0;
-    body.classList.remove("state-blue");
     updateTimerUI();
+
+    document.body.classList.remove("state-blue");
+    lockBtn.disabled = false;
+    lockBtn.style.opacity = 1;
+
     updateUI();
   }
 
-  function updateUI(){
-    const q = QUESTIONS[questionIndex];
+  // --- Display data (randomize correct answer position per question) ---
+  function buildDisplayData(){
+    DISPLAY = CANONICAL_QUESTIONS.map((q, qi) => {
+      const rng = seededRng((runSeed + qi*2654435761) >>> 0);
 
-    qNumEl.textContent = `Q${questionIndex + 1}`;
-    qTextEl.textContent = q.prompt;
-    codeEl.textContent = `${progress} / 5`;
+      // Shuffle answers deterministically for this question
+      const arr = q.answers.slice();
+      shuffleInPlace(arr, rng);
 
-    instructionEl.textContent = (state === "RED")
-      ? "PASS TO CLOCKWISE PLAYER"
-      : "PASS TO ANTI-CLOCKWISE PLAYER";
+      // Ensure correct answer does NOT land in starting segment (index 0).
+      // If it does, reshuffle a few times deterministically (still based on seed stream).
+      let correctIndex = arr.indexOf(q.correct);
+      let guard = 0;
+      while (correctIndex === 0 && guard < 6){
+        shuffleInPlace(arr, rng);
+        correctIndex = arr.indexOf(q.correct);
+        guard++;
+      }
+      // If still 0 (very unlikely), swap with index 1.
+      if (correctIndex === 0){
+        [arr[0], arr[1]] = [arr[1], arr[0]];
+        correctIndex = arr.indexOf(q.correct);
+      }
 
-    renderArrow();
-    buildRingForQuestion(q);
-    renderRotorAndActive();
-
-    lockBtn.disabled = unlocked;
-    lockBtn.style.opacity = unlocked ? 0.6 : 1;
+      return { prompt: q.prompt, displayAnswers: arr, correctIndex };
+    });
   }
 
-  function renderArrow(){
-    // RED (clockwise): arrowhead on right. BLUE (anti-clockwise): arrowhead on left.
-    if (state === "RED"){
-      arrowPath.setAttribute("d", "M 40 30 Q 280 2 520 30");
-      arrowHead.setAttribute("d", "M 510 20 L 522 30 L 508 34");
-    } else {
-      arrowPath.setAttribute("d", "M 520 30 Q 280 2 40 30");
-      arrowHead.setAttribute("d", "M 50 20 L 38 30 L 52 34");
+  // Deterministic RNG (Mulberry32)
+  function seededRng(seed){
+    let t = seed >>> 0;
+    return function(){
+      t += 0x6D2B79F5;
+      let r = Math.imul(t ^ (t >>> 15), 1 | t);
+      r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+      return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function shuffleInPlace(a, rnd){
+    for (let i=a.length-1; i>0; i--){
+      const j = Math.floor(rnd() * (i+1));
+      [a[i], a[j]] = [a[j], a[i]];
     }
   }
 
-  // Build the fixed 10-segment ring (wedge separators + centered labels)
-  function buildRingForQuestion(q){
-    if (wedgeEls.length === 0){
-      ringSvg.innerHTML = "";
+  // --- Fixed dial graphics (segments do NOT rotate) ---
+  function buildFixedDialOnce(){
+    fixedSvg.innerHTML = "";
+    const cx = 500, cy = 500;
+    const rOuter = 485;
+    const rInner = 305;
 
-      const cx = 500, cy = 500;
-      const rOuter = 485;
-      const rInner = 300;
+    // Outer rim
+    fixedSvg.appendChild(svgEl("circle", {
+      cx, cy, r: rOuter - 6,
+      fill: "none",
+      stroke: "rgba(255,255,255,.22)",
+      "stroke-width": 12,
+      opacity: 0.65
+    }));
 
-      ringSvg.appendChild(svgEl("circle", {
-        cx, cy, r: rOuter - 4,
-        fill: "none",
-        stroke: "rgba(255,255,255,.22)",
-        "stroke-width": 10,
-        opacity: 0.6
-      }));
+    // Inner rim
+    fixedSvg.appendChild(svgEl("circle", {
+      cx, cy, r: rInner + 6,
+      fill: "none",
+      stroke: "rgba(255,255,255,.20)",
+      "stroke-width": 12,
+      opacity: 0.60
+    }));
 
-      ringSvg.appendChild(svgEl("circle", {
-        cx, cy, r: rInner + 4,
-        fill: "none",
-        stroke: "rgba(255,255,255,.20)",
-        "stroke-width": 10,
-        opacity: 0.55
-      }));
+    // Wedges + large upright text (no rotation so never upside down)
+    for (let i=0;i<SEGMENTS;i++){
+      const startDeg = i * STEP_DEG;
+      const endDeg = (i+1) * STEP_DEG;
 
-      // Wedges occupy: start=i*STEP_DEG, end=(i+1)*STEP_DEG
-      for (let i=0;i<SEGMENTS;i++){
-        const startDeg = i * STEP_DEG;
-        const endDeg = (i+1) * STEP_DEG;
+      const wedge = svgEl("path", {
+        d: donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg),
+        class: `wedge ${i%2===0 ? "a" : "b"}`
+      });
+      fixedSvg.appendChild(wedge);
+      wedgeEls.push(wedge);
 
-        const path = svgEl("path", {
-          d: donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg),
-          class: `wedge ${i%2===0 ? "altA":"altB"}`
-        });
-        ringSvg.appendChild(path);
-        wedgeEls.push(path);
+      // Label position: segment center angle at start+CENTER_OFFSET_DEG
+      const midDeg = startDeg + CENTER_OFFSET_DEG;
+      const labelR = (rInner + rOuter)/2 + 18; // slight bias outward (allowed to spill)
+      const pos = polarToXY(cx, cy, labelR, midDeg);
 
-        // Label at segment center (start + 18deg)
-        const midDeg = startDeg + CENTER_OFFSET_DEG;
-        const textR = (rInner + rOuter) / 2;
-        const pos = polarToXY(cx, cy, textR, midDeg);
-
-        const t = svgEl("text", {
-          x: pos.x.toFixed(2),
-          y: pos.y.toFixed(2),
-          class: "segText",
-          "data-i": String(i)
-        });
-
-        // Keep labels upright for readability
-        const a = normalizeDeg(midDeg);
-        const flip = (a > 90 && a < 270) ? 180 : 0;
-        t.setAttribute("transform", `rotate(${flip} ${pos.x.toFixed(2)} ${pos.y.toFixed(2)})`);
-
-        ringSvg.appendChild(t);
-      }
-
-      // Radial separators (distinct sector boundaries)
-      for (let i=0;i<SEGMENTS;i++){
-        const deg = i * STEP_DEG; // separator angles
-        const p1 = polarToXY(cx, cy, rInner, deg);
-        const p2 = polarToXY(cx, cy, rOuter, deg);
-        ringSvg.appendChild(svgEl("line", {
-          x1: p1.x.toFixed(2),
-          y1: p1.y.toFixed(2),
-          x2: p2.x.toFixed(2),
-          y2: p2.y.toFixed(2),
-          stroke: "rgba(255,255,255,.22)",
-          "stroke-width": 3,
-          "stroke-linecap": "round"
-        }));
-      }
+      const t = svgEl("text", {
+        x: pos.x.toFixed(2),
+        y: pos.y.toFixed(2),
+        class: "ansText",
+        "data-i": String(i)
+      });
+      // IMPORTANT: no rotation applied => always horizontal/upright
+      fixedSvg.appendChild(t);
     }
 
-    // Update labels (fixed positions; no shuffle)
-    const texts = ringSvg.querySelectorAll("text.segText");
-    for (let i=0;i<texts.length;i++){
-      const idx = Number(texts[i].getAttribute("data-i"));
-      const label = q.answers[idx] ?? "";
-      texts[i].textContent = label;
-      texts[i].classList.toggle("small", label.length >= 9);
+    // Strong radial separators
+    for (let i=0;i<SEGMENTS;i++){
+      const deg = i * STEP_DEG;
+      const p1 = polarToXY(cx, cy, rInner, deg);
+      const p2 = polarToXY(cx, cy, rOuter, deg);
+      fixedSvg.appendChild(svgEl("line", {
+        x1: p1.x.toFixed(2),
+        y1: p1.y.toFixed(2),
+        x2: p2.x.toFixed(2),
+        y2: p2.y.toFixed(2),
+        stroke: "rgba(255,255,255,.38)",
+        "stroke-width": 4,
+        "stroke-linecap": "round"
+      }));
+    }
+
+    textEls = Array.from(fixedSvg.querySelectorAll("text.ansText"));
+  }
+
+  function updateAnswersForQuestion(q){
+    // Put BIG labels into fixed segment positions (no shuffle during question)
+    for (let i=0;i<textEls.length;i++){
+      textEls[i].textContent = q.displayAnswers[i] ?? "";
     }
   }
 
@@ -833,10 +867,10 @@ const QUESTIONS = [
     for (const k in attrs) el.setAttribute(k, attrs[k]);
     return el;
   }
-  function degToRad(deg){ return (deg - 90) * Math.PI / 180; } // -90 => 0deg at top
+  function degToRad(deg){ return (deg - 90) * Math.PI/180; } // 0deg at top
   function polarToXY(cx, cy, r, deg){
     const rad = degToRad(deg);
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+    return { x: cx + r*Math.cos(rad), y: cy + r*Math.sin(rad) };
   }
   function donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg){
     const p1 = polarToXY(cx, cy, rOuter, startDeg);
@@ -844,7 +878,6 @@ const QUESTIONS = [
     const p3 = polarToXY(cx, cy, rInner, endDeg);
     const p4 = polarToXY(cx, cy, rInner, startDeg);
     const largeArc = (endDeg - startDeg) > 180 ? 1 : 0;
-
     return [
       `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
       `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
@@ -854,7 +887,7 @@ const QUESTIONS = [
     ].join(" ");
   }
 
-  // rAF drag loop for smooth interaction (no jitter)
+  // --- Drag handling (rAF, smooth, no jitter) ---
   function startRafIfNeeded(){
     if (rafActive) return;
     rafActive = true;
@@ -869,8 +902,8 @@ const QUESTIONS = [
       let d = pendingDelta;
       pendingDelta = 0;
 
-      // Convert to detent steps
-      d = stepPointerByDetents(d);
+      // Apply detents
+      d = stepByDetents(d);
       pendingDelta += d;
 
       requestAnimationFrame(tick);
@@ -881,10 +914,11 @@ const QUESTIONS = [
 
   function onDragStart(clientX, clientY){
     if (unlocked) return;
+    ensureAudioRunning();
     dragging = true;
+    dial.classList.add("dragging");
     lastAngleDeg = angleFromPoint(clientX, clientY);
     pendingDelta = 0;
-    unlockAudioIfNeeded();
     startRafIfNeeded();
   }
 
@@ -895,37 +929,33 @@ const QUESTIONS = [
     let d = signedAngleDelta(lastAngleDeg, ang);
     lastAngleDeg = ang;
 
-    // Direction enforcement
     d = filterDeltaByDirection(d);
-
-    // Accumulate for rAF
     pendingDelta += d;
   }
 
   function onDragEnd(){
     dragging = false;
+    dial.classList.remove("dragging");
     lastAngleDeg = null;
   }
 
-  // Touch + mouse wiring (desktop drags the ring to spin it)
+  // Touch + mouse (prevent scroll)
   dial.addEventListener("touchstart", (e) => {
     if (e.touches && e.touches.length){
       e.preventDefault();
-      const t = e.touches[0];
-      onDragStart(t.clientX, t.clientY);
+      onDragStart(e.touches[0].clientX, e.touches[0].clientY);
     }
-  }, { passive: false });
+  }, { passive:false });
 
   dial.addEventListener("touchmove", (e) => {
     if (e.touches && e.touches.length){
       e.preventDefault();
-      const t = e.touches[0];
-      onDragMove(t.clientX, t.clientY);
+      onDragMove(e.touches[0].clientX, e.touches[0].clientY);
     }
-  }, { passive: false });
+  }, { passive:false });
 
-  dial.addEventListener("touchend", (e) => { e.preventDefault(); onDragEnd(); }, { passive: false });
-  dial.addEventListener("touchcancel", (e) => { e.preventDefault(); onDragEnd(); }, { passive: false });
+  dial.addEventListener("touchend", (e) => { e.preventDefault(); onDragEnd(); }, { passive:false });
+  dial.addEventListener("touchcancel", (e) => { e.preventDefault(); onDragEnd(); }, { passive:false });
 
   dial.addEventListener("mousedown", (e) => {
     e.preventDefault();
@@ -938,48 +968,77 @@ const QUESTIONS = [
   lockBtn.addEventListener("click", () => handleLock());
   resetBtn.addEventListener("click", () => resetAll());
 
-  // Timer UI
-  function updateTimerUI(){
-    const m = Math.floor(elapsedSec / 60);
-    const s = elapsedSec % 60;
-    timerEl.textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  // --- Timer + arrow pulse ---
+  function formatTime(sec){
+    const m = Math.floor(sec/60);
+    const s = sec % 60;
+    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
   }
+  function updateTimerUI(){ timerEl.textContent = formatTime(elapsedSec); }
 
   function startTimer(){
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => {
       elapsedSec += 1;
       updateTimerUI();
-      // tick sound each second (best effort; requires user gesture to unlock audio)
-      if (audioUnlocked) playSecondTick();
+
+      // pulse arrow in time with seconds
+      arrowSvg.classList.add("arrowPulse");
+      setTimeout(() => arrowSvg.classList.remove("arrowPulse"), 130);
+
+      playSecondTick();
     }, 1000);
   }
 
-  // --- Audio (no external assets) ---
-  function unlockAudioIfNeeded(){
-    if (audioUnlocked) return;
-    try{
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === "suspended") audioCtx.resume();
-      audioUnlocked = true;
-    } catch (e){
-      audioUnlocked = false;
+  // --- Direction arrow render (big & obvious) ---
+  function renderDirectionArrow(){
+    // Short, fat, high contrast. Flip direction with state.
+    if (state === "RED"){
+      arrowPath.setAttribute("d", "M 70 38 Q 260 12 450 38");
+      arrowHead.setAttribute("d", "M 422 20 L 454 38 L 418 44");
+    } else {
+      arrowPath.setAttribute("d", "M 450 38 Q 260 12 70 38");
+      arrowHead.setAttribute("d", "M 98 20 L 66 38 L 102 44");
     }
   }
 
-  // soft second tick
+  // --- Audio reliability on iPhone (WebAudio only) ---
+  function ensureAudioRunning(){
+    // Called on every user gesture. If suspended, try to resume.
+    try{
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      // Consider "running" as enabled; hide badge once we get running.
+      if (audioCtx.state === "running"){
+        audioEnabled = true;
+        soundBadge.classList.add("hidden");
+      } else {
+        audioEnabled = false;
+        soundBadge.classList.remove("hidden");
+      }
+    } catch (e){
+      audioEnabled = false;
+      soundBadge.classList.remove("hidden");
+    }
+  }
+
+  // Keep trying to resume on subsequent gestures until running
+  ["pointerdown","touchstart","click"].forEach(evt => {
+    window.addEventListener(evt, ensureAudioRunning, { passive:true });
+  });
+
   function playSecondTick(){
-    if (!audioCtx) return;
+    if (!audioCtx || audioCtx.state !== "running") return;
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
 
     osc.type = "sine";
-    osc.frequency.setValueAtTime(900, now);
+    osc.frequency.setValueAtTime(930, now);
 
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(0.06, now + 0.006);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
 
     osc.connect(gain);
     gain.connect(audioCtx.destination);
@@ -987,53 +1046,77 @@ const QUESTIONS = [
     osc.stop(now + 0.06);
   }
 
-  // detent click: short square pulse + decay
   function playDetentClick(){
-    if (!audioCtx) return;
+    if (!audioCtx || audioCtx.state !== "running") return;
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
 
     osc.type = "square";
-    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.setValueAtTime(160, now);
 
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.035, now + 0.002);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.040, now + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.028);
 
     osc.connect(gain);
     gain.connect(audioCtx.destination);
     osc.start(now);
-    osc.stop(now + 0.035);
+    osc.stop(now + 0.032);
   }
 
-  // lock thud: short low sine + rapid decay
-  function playLockThud(){
-    if (!audioCtx) return;
+  function playLockSound(){
+    if (!audioCtx || audioCtx.state !== "running") return;
     const now = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
 
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(90, now);
-    osc.frequency.exponentialRampToValueAtTime(55, now + 0.08);
+    // Low thud + tiny metallic click layered
+    const osc1 = audioCtx.createOscillator();
+    const g1 = audioCtx.createGain();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(95, now);
+    osc1.frequency.exponentialRampToValueAtTime(55, now + 0.09);
+    g1.gain.setValueAtTime(0.0001, now);
+    g1.gain.exponentialRampToValueAtTime(0.11, now + 0.012);
+    g1.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+    osc1.connect(g1); g1.connect(audioCtx.destination);
+    osc1.start(now); osc1.stop(now + 0.18);
 
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.10, now + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start(now);
-    osc.stop(now + 0.16);
+    const osc2 = audioCtx.createOscillator();
+    const g2 = audioCtx.createGain();
+    osc2.type = "triangle";
+    osc2.frequency.setValueAtTime(520, now + 0.01);
+    g2.gain.setValueAtTime(0.0001, now + 0.01);
+    g2.gain.exponentialRampToValueAtTime(0.05, now + 0.016);
+    g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+    osc2.connect(g2); g2.connect(audioCtx.destination);
+    osc2.start(now + 0.01); osc2.stop(now + 0.065);
   }
 
-  // Init
+  // --- UI update ---
+  function updateUI(){
+    const q = DISPLAY[questionIndex];
+    qNumEl.textContent = `Q${questionIndex + 1}`;
+    qTextEl.textContent = q.prompt;
+    codeEl.textContent = `${progress} / 5`;
+
+    instructionEl.textContent = (state === "RED") ? "PASS TO CLOCKWISE PLAYER" : "PASS TO ANTI-CLOCKWISE PLAYER";
+
+    updateAnswersForQuestion(q);
+    renderDirectionArrow();
+    setMarkerDirection();
+    renderRotor();
+
+    lockBtn.disabled = unlocked;
+    lockBtn.style.opacity = unlocked ? 0.6 : 1;
+  }
+
+  // --- Init ---
+  buildDisplayData();
+  buildFixedDialOnce();
+  ensureAudioRunning(); // may show badge if not enabled
+  updateTimerUI();
   updateUI();
   startTimer();
-
-  // One-time gesture listener to unlock audio (mobile Safari requirement)
-  window.addEventListener("pointerdown", unlockAudioIfNeeded, { once: true });
 })();
 </script>
 </body>
