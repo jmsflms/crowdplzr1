@@ -1223,7 +1223,7 @@ function revealedCount(){
   });
 
   btnPlay.addEventListener("click", () => {
-const count = over ? songLen() : revealedCount();
+const count = isOver() ? songLen() : revealedCount();
 playSequence(currentSong.notes.slice(0, count));
 
   });
