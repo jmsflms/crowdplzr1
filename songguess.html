@@ -517,7 +517,9 @@
     },
   ];
 
-  const MAX_NOTES = 16;
+  const STAFF_SLOTS = 16;   // UI always shows 16 slots
+const MAX_NOTES = 16;     // keep if referenced elsewhere, but we won’t force songs to 16 anymore
+
 
   /**************************************************************************
    *  RULES TEXT (DO NOT MOVE TO MAIN PAGE)
@@ -598,14 +600,14 @@ Refresh if issues.`;
   function clampSongs(){
     for(const s of SONGS){
       if(!Array.isArray(s.notes)) s.notes = [];
-      if(s.notes.length !== MAX_NOTES){
-        console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; expected ${MAX_NOTES}. Will pad/trim for safety.`);
-        if(s.notes.length > MAX_NOTES) s.notes = s.notes.slice(0, MAX_NOTES);
-        while(s.notes.length < MAX_NOTES){
-          const last = s.notes.length ? s.notes[s.notes.length-1] : {m:64,d:1};
-          s.notes.push({m: last.m, d: last.d});
-        }
-      }
+      if(s.notes.length > STAFF_SLOTS){
+  console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; max is ${STAFF_SLOTS}. Trimming.`);
+  s.notes = s.notes.slice(0, STAFF_SLOTS);
+}
+if(s.notes.length < 1){
+  console.warn(`[SongGuess] "${s.title}" has 0 notes. Adding a default note.`);
+  s.notes = [{m:64,d:1}];
+}
       s.notes = s.notes.map(n => ({
         m: Number.isFinite(n.m) ? n.m : 64,
         d: Number.isFinite(n.d) ? n.d : 1
@@ -813,7 +815,7 @@ Refresh if issues.`;
       shownCount,
       width: 700,
       height: 120,
-      slots: MAX_NOTES,
+      slots: STAFF_SLOTS,
       showClef: true
     }));
   }
@@ -1047,9 +1049,13 @@ Refresh if issues.`;
     return state.status === "solved" || state.status === "gaveup";
   }
 
-  function revealedCount(){
-    return Math.max(1, Math.min(MAX_NOTES, Number(state.revealed) || 1));
-  }
+function songLen(){
+  return Math.min(STAFF_SLOTS, (currentSong.notes || []).length || 0);
+}
+function revealedCount(){
+  return Math.max(1, Math.min(songLen(), Number(state.revealed) || 1));
+}
+
 
   function setStatusMessage(){
     const dayLabel = `Day ${currentDayIndex}`;
@@ -1068,7 +1074,7 @@ Refresh if issues.`;
 
     btnPlay.disabled = false;
 
-    btnAdd.disabled = over || (rev >= MAX_NOTES);
+    btnAdd.disabled = over || (rev >= songLen());
     btnName.disabled = over;
     btnGiveUp.disabled = over;
 
@@ -1217,8 +1223,9 @@ Refresh if issues.`;
   });
 
   btnPlay.addEventListener("click", () => {
-    const count = isOver() ? MAX_NOTES : revealedCount();
-    playSequence(currentSong.notes.slice(0, count));
+const count = over ? songLen() : revealedCount();
+playSequence(currentSong.notes.slice(0, count));
+
   });
 
   btnAdd.addEventListener("click", () => {
