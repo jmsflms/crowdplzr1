@@ -197,12 +197,21 @@
     }
 
     /* Secret reset (bottom right under panel) */
-    .footerLinks{
-      width:min(760px, 94vw);
-      margin:10px auto 0;
-      display:flex;
-      justify-content:flex-end;
-    }
+.footerLinks{
+  width:min(760px, 94vw);
+  margin:10px auto 0;
+  display:flex;
+  justify-content:center;
+  gap:14px;
+}
+.footerLinks #resetLink{
+  position:absolute;
+  right:3vw;
+}
+@media (min-width: 760px){
+  .footerLinks #resetLink{ right: calc((100vw - 760px)/2); }
+}
+
 
     /* Drawer */
     .drawerBackdrop{
@@ -412,9 +421,14 @@
     </div>
   </div>
 
-  <div class="footerLinks">
-    <a class="link" id="resetLink" title="Clears this day's saved progress (for testing)">Secret reset</a>
-  </div>
+<div class="footerLinks">
+  <a class="link" id="copyrightLink" href="https://www.rebelbingo.com/house" target="_blank" rel="noopener noreferrer">
+    copyright James Gordon
+  </a>
+
+  <a class="link" id="resetLink" title="Clears this day's saved progress (for testing)">Secret reset</a>
+</div>
+
 
   <!-- Rules Drawer -->
   <div class="drawerBackdrop" id="drawerBackdrop"></div>
