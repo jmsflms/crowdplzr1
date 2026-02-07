@@ -453,50 +453,50 @@
   // Each song must have EXACTLY 16 notes: {m: MIDI, d: beats}
   const SONGS = [
     {
-  title: "Never Gonna Give You Up",
-  notes: [
-    {m:69,d:.5},{m:71,d:.5},{m:74,d:.5},{m:71,d:.5},
-    {m:78,d:1},{m:78,d:1},{m:76,d:1},{m:69,d:.5},
-    {m:71,d:.5},{m:74,d:.5},{m:71,d:.5},{m:76,d:1},
-    {m:76,d:1},{m:74,d:2},
-  ]
-},
-{
-  title: "Do You Want to Build a Snowman?",
-  notes: [
-    {m:63,d:.25},{m:63,d:.25},{m:63,d:.5},{m:58,d:.5},
-    {m:63,d:.5},{m:67,d:.5},{m:65,d:2},{m:67,d:1},
-    {m:63,d:.5},{m:63,d:.5},{m:58,d:.5},{m:63,d:.5},
-    {m:67,d:.5},{m:65,d:1},
-  ]
-},
-{
-  title: "My Heart Will Go On",
-  notes: [
-    {m:67,d:2},{m:69,d:2},{m:62,d:1},{m:74,d:2},
-    {m:72,d:1},{m:71,d:1},{m:69,d:2},{m:71,d:1},
-    {m:72,d:1},{m:71,d:2},{m:69,d:1},{m:67,d:1},
-    {m:66,d:2},{m:67,d:1},{m:67,d:1},{m:62,d:1},
-  ]
-},
-{
-  title: "Teenage Dirtbag",
-  notes: [
-    {m:67,d:.5},{m:72,d:.5},{m:71,d:.5},{m:69,d:1},
-    {m:67,d:1},{m:71,d:1},{m:66,d:1},{m:66,d:1},
-    {m:67,d:1},{m:67,d:.5},{m:72,d:.5},{m:71,d:.5},
-    {m:69,d:1},{m:67,d:1},{m:71,d:1},{m:66,d:1},
-  ]
-},
-{
-  title: "Get Into the Groove",
-  notes: [
-    {m:67,d:1},{m:60,d:.5},{m:63,d:.5},{m:60,d:.5},
-    {m:67,d:1},{m:60,d:1},{m:60,d:.5},{m:63,d:.5},
-    {m:60,d:.5},{m:67,d:1},{m:60,d:1},{m:60,d:.5},
-    {m:70,d:1},{m:67,d:1},
-  ]
-},    
+      title: "Never Gonna Give You Up",
+      notes: [
+        {m:69,d:.5},{m:71,d:.5},{m:74,d:.5},{m:71,d:.5},
+        {m:78,d:1},{m:78,d:1},{m:76,d:1},{m:69,d:.5},
+        {m:71,d:.5},{m:74,d:.5},{m:71,d:.5},{m:76,d:1},
+        {m:76,d:1},{m:74,d:2},
+      ]
+    },
+    {
+      title: "Do You Want to Build a Snowman?",
+      notes: [
+        {m:63,d:.25},{m:63,d:.25},{m:63,d:.5},{m:58,d:.5},
+        {m:63,d:.5},{m:67,d:.5},{m:65,d:2},{m:67,d:1},
+        {m:63,d:.5},{m:63,d:.5},{m:58,d:.5},{m:63,d:.5},
+        {m:67,d:.5},{m:65,d:1},
+      ]
+    },
+    {
+      title: "My Heart Will Go On",
+      notes: [
+        {m:67,d:2},{m:69,d:2},{m:62,d:1},{m:74,d:2},
+        {m:72,d:1},{m:71,d:1},{m:69,d:2},{m:71,d:1},
+        {m:72,d:1},{m:71,d:2},{m:69,d:1},{m:67,d:1},
+        {m:66,d:2},{m:67,d:1},{m:67,d:1},{m:62,d:1},
+      ]
+    },
+    {
+      title: "Teenage Dirtbag",
+      notes: [
+        {m:67,d:.5},{m:72,d:.5},{m:71,d:.5},{m:69,d:1},
+        {m:67,d:1},{m:71,d:1},{m:66,d:1},{m:66,d:1},
+        {m:67,d:1},{m:67,d:.5},{m:72,d:.5},{m:71,d:.5},
+        {m:69,d:1},{m:67,d:1},{m:71,d:1},{m:66,d:1},
+      ]
+    },
+    {
+      title: "Get Into the Groove",
+      notes: [
+        {m:67,d:1},{m:60,d:.5},{m:63,d:.5},{m:60,d:.5},
+        {m:67,d:1},{m:60,d:1},{m:60,d:.5},{m:63,d:.5},
+        {m:60,d:.5},{m:67,d:1},{m:60,d:1},{m:60,d:.5},
+        {m:70,d:1},{m:67,d:1},
+      ]
+    },
     {
       title: "Ode to Joy",
       notes: [
@@ -518,8 +518,7 @@
   ];
 
   const STAFF_SLOTS = 16;   // UI always shows 16 slots
-const MAX_NOTES = 16;     // keep if referenced elsewhere, but we won’t force songs to 16 anymore
-
+  const MAX_NOTES = 16;     // keep if referenced elsewhere, but we won’t force songs to 16 anymore
 
   /**************************************************************************
    *  RULES TEXT (DO NOT MOVE TO MAIN PAGE)
@@ -601,13 +600,13 @@ Refresh if issues.`;
     for(const s of SONGS){
       if(!Array.isArray(s.notes)) s.notes = [];
       if(s.notes.length > STAFF_SLOTS){
-  console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; max is ${STAFF_SLOTS}. Trimming.`);
-  s.notes = s.notes.slice(0, STAFF_SLOTS);
-}
-if(s.notes.length < 1){
-  console.warn(`[SongGuess] "${s.title}" has 0 notes. Adding a default note.`);
-  s.notes = [{m:64,d:1}];
-}
+        console.warn(`[SongGuess] "${s.title}" has ${s.notes.length} notes; max is ${STAFF_SLOTS}. Trimming.`);
+        s.notes = s.notes.slice(0, STAFF_SLOTS);
+      }
+      if(s.notes.length < 1){
+        console.warn(`[SongGuess] "${s.title}" has 0 notes. Adding a default note.`);
+        s.notes = [{m:64,d:1}];
+      }
       s.notes = s.notes.map(n => ({
         m: Number.isFinite(n.m) ? n.m : 64,
         d: Number.isFinite(n.d) ? n.d : 1
@@ -654,20 +653,23 @@ if(s.notes.length < 1){
   drawerText.textContent = RULES_TEXT;
 
   /**************************************************************************
-   *  DAY SELECTOR (1..Today+13)
+   *  DAY SELECTOR (LIMITED TO SONG COUNT)
    **************************************************************************/
   const startUTC = parseUTCDate(START_DATE_UTC);
   const todayUTC = todayUTCDate();
   const todayIndex = Math.max(1, daysBetweenUTC(startUTC, todayUTC) + 1);
-  const maxIndex = todayIndex + 13;
 
-  for(let i=1;i<=maxIndex;i++){
+  const songCount = Math.max(1, SONGS.length); // keep UI usable even if SONGS is empty
+  const selectedIndex = Math.min(songCount, Math.max(1, todayIndex)); // clamp to 1..songCount
+
+  // Populate dropdown with exactly one option per configured song
+  for(let i=1;i<=songCount;i++){
     const opt = document.createElement("option");
     opt.value = String(i);
     opt.textContent = `Day ${i}`;
     daySelect.appendChild(opt);
   }
-  daySelect.value = String(todayIndex);
+  daySelect.value = String(selectedIndex);
 
   function dayIndexToDateStr(dayIndex){
     const d = addDaysUTC(startUTC, dayIndex - 1);
@@ -1049,13 +1051,12 @@ if(s.notes.length < 1){
     return state.status === "solved" || state.status === "gaveup";
   }
 
-function songLen(){
-  return Math.min(STAFF_SLOTS, (currentSong.notes || []).length || 0);
-}
-function revealedCount(){
-  return Math.max(1, Math.min(songLen(), Number(state.revealed) || 1));
-}
-
+  function songLen(){
+    return Math.min(STAFF_SLOTS, (currentSong.notes || []).length || 0);
+  }
+  function revealedCount(){
+    return Math.max(1, Math.min(songLen(), Number(state.revealed) || 1));
+  }
 
   function setStatusMessage(){
     const dayLabel = `Day ${currentDayIndex}`;
@@ -1223,9 +1224,8 @@ function revealedCount(){
   });
 
   btnPlay.addEventListener("click", () => {
-const count = isOver() ? songLen() : revealedCount();
-playSequence(currentSong.notes.slice(0, count));
-
+    const count = isOver() ? songLen() : revealedCount();
+    playSequence(currentSong.notes.slice(0, count));
   });
 
   btnAdd.addEventListener("click", () => {
