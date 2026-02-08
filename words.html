@@ -12,7 +12,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; }
 
-    /* Font: heavy condensed, broadcast-safe (Impact-adjacent) */
     body {
       font-family: Anton, Impact, "Arial Narrow", "Helvetica Neue Condensed", "Helvetica Neue", Arial, sans-serif;
       background: #000;
@@ -20,7 +19,6 @@
       overflow: hidden;
     }
 
-    /* Big display */
     #display {
       width: 100%;
       height: 100%;
@@ -37,7 +35,6 @@
       user-select: none;
     }
 
-    /* Take control button */
     #takeControl {
       position: fixed;
       right: 18px;
@@ -54,7 +51,6 @@
     }
     #takeControl:active { transform: scale(0.99); }
 
-    /* Controller panel */
     #controls {
       position: fixed;
       left: 0;
@@ -92,11 +88,7 @@
       outline: none;
     }
 
-    .row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .btn {
       border: 0;
@@ -154,7 +146,7 @@ const TABLE = "text_channel";
 const ROW_ID = "f5d13f98-11d9-49c4-ab0a-176bf5bc33d3";
 
 /* =========================
-   Init (FIXED)
+   Init
    ========================= */
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
@@ -199,9 +191,11 @@ function applyState(row) {
     display.style.color = COLORS[textColorKey] || "#ffffff";
   }
 
-  // Keep controller textarea in sync when you become controller (or if same device)
-  if (isController && textInput.value !== txt) {
-    textInput.value = txt;
+  // ✅ CRITICAL FIX:
+  // Never overwrite the controller textarea while the user is actively typing (focused),
+  // otherwise realtime echoes will fight the keystrokes and "delete" letters.
+  if (isController && document.activeElement !== textInput) {
+    if (textInput.value !== txt) textInput.value = txt;
   }
 }
 
@@ -220,20 +214,18 @@ async function loadInitial() {
     console.error(error);
     return;
   }
-
   if (!data) {
     display.textContent = "No row found (check ROW_ID)";
     return;
   }
-
   applyState(data);
 }
 loadInitial();
 
 /* =========================
-   Realtime subscribe (UPDATE events)
+   Realtime subscribe
    ========================= */
-const channel = sb
+sb
   .channel("text_channel_updates")
   .on(
     "postgres_changes",
@@ -243,10 +235,7 @@ const channel = sb
       if (row && row.id === ROW_ID) applyState(row);
     }
   )
-  .subscribe((status) => {
-    // Optional: you can inspect status in console if debugging
-    // console.log("realtime status:", status);
-  });
+  .subscribe();
 
 /* =========================
    Controller enable
@@ -256,14 +245,18 @@ takeControlBtn.addEventListener("click", async () => {
   controls.style.display = "flex";
   takeControlBtn.style.display = "none";
 
-  // Pull latest text into textarea immediately
+  // Pull latest text into textarea ONCE when taking control
   const { data } = await sb
     .from(TABLE)
     .select("current_text,bg_mode,text_color")
     .eq("id", ROW_ID)
     .maybeSingle();
 
-  if (data) applyState({ id: ROW_ID, ...data });
+  if (data) {
+    applyState({ id: ROW_ID, ...data });
+    textInput.value = data.current_text || "";
+  }
+
   textInput.focus();
 });
 
@@ -272,7 +265,6 @@ takeControlBtn.addEventListener("click", async () => {
    ========================= */
 textInput.addEventListener("input", (e) => {
   if (!isController) return;
-
   const value = e.target.value;
 
   clearTimeout(debounceTimer);
