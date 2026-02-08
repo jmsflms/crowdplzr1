@@ -2,31 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Live Text Channel</title>
+  <title>/text — Live Text Channel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Supabase JS (official CDN) -->
+  <!-- Supabase JS v2 (CDN) -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
-    /* ===== RESET ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
-    }
-
+    /* Font: heavy condensed, broadcast-safe (Impact-adjacent) */
     body {
+      font-family: Anton, Impact, "Arial Narrow", "Helvetica Neue Condensed", "Helvetica Neue", Arial, sans-serif;
       background: #000;
       color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow: hidden;
     }
 
-    /* ===== DISPLAY ===== */
+    /* Big display */
     #display {
       width: 100%;
       height: 100%;
@@ -35,30 +29,67 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      font-size: clamp(48px, 8vw, 160px);
+      font-size: clamp(40px, 8vw, 180px);
       line-height: 1.05;
+      letter-spacing: 0.01em;
       word-break: break-word;
+      white-space: pre-wrap;
+      user-select: none;
     }
 
-    /* ===== CONTROLLER UI ===== */
+    /* Take control button */
+    #takeControl {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      padding: 12px 14px;
+      font-size: 16px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+    }
+    #takeControl:active { transform: scale(0.99); }
+
+    /* Controller panel */
     #controls {
       position: fixed;
-      bottom: 0;
       left: 0;
       right: 0;
-      background: #111;
-      padding: 12px;
+      bottom: 0;
+      z-index: 60;
       display: none;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(0,0,0,0.78);
+      border-top: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(8px);
+    }
+
+    #controlsInner {
+      width: 100%;
+      display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     textarea {
       width: 100%;
-      height: 80px;
-      font-size: 20px;
-      padding: 10px;
+      height: 96px;
+      resize: none;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
       font-family: inherit;
+      font-size: 18px;
+      outline: none;
     }
 
     .row {
@@ -67,19 +98,22 @@
       flex-wrap: wrap;
     }
 
-    button {
-      padding: 8px 12px;
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
       font-size: 14px;
       cursor: pointer;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
     }
+    .btn:active { transform: scale(0.99); }
 
-    #takeControl {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      font-size: 16px;
-      padding: 10px 14px;
-      z-index: 10;
+    .hint {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: -4px;
     }
   </style>
 </head>
@@ -87,129 +121,196 @@
 
   <div id="display"></div>
 
-  <button id="takeControl">Take control</button>
+  <button id="takeControl" type="button">Take control</button>
 
   <div id="controls">
-    <textarea id="textInput" placeholder="Type text…"></textarea>
+    <div id="controlsInner">
+      <textarea id="textInput" placeholder="Type text…"></textarea>
+      <div class="hint">Changes broadcast instantly. Latest update wins.</div>
 
-    <div class="row">
-      <button data-bg="black">Black BG</button>
-      <button data-bg="invert">Invert</button>
-    </div>
+      <div class="row" aria-label="Background mode">
+        <button class="btn" type="button" data-bg="black">Black BG (blend)</button>
+        <button class="btn" type="button" data-bg="invert">Invert</button>
+      </div>
 
-    <div class="row">
-      <button data-color="white">White</button>
-      <button data-color="offwhite">Off-white</button>
-      <button data-color="yellow">Yellow</button>
-      <button data-color="red">Dark red</button>
-      <button data-color="blue">Dark blue</button>
-      <button data-color="charcoal">Charcoal</button>
+      <div class="row" aria-label="Text colour palette">
+        <button class="btn" type="button" data-color="white">White</button>
+        <button class="btn" type="button" data-color="offwhite">Off-white</button>
+        <button class="btn" type="button" data-color="yellow">Yellow</button>
+        <button class="btn" type="button" data-color="red">Dark red</button>
+        <button class="btn" type="button" data-color="blue">Dark blue</button>
+        <button class="btn" type="button" data-color="charcoal">Charcoal</button>
+      </div>
     </div>
   </div>
 
 <script>
-/* ===== CONFIG (FILLED FROM YOUR VALUES) ===== */
+/* =========================
+   Supabase config (yours)
+   ========================= */
 const SUPABASE_URL = "https://fnqzcwscmyglptvihekl.supabase.co";
-const SUPABASE_KEY = "sb_publishable_jKWmYLsR_5q4oHVh36MvVg_vBGB5Pfn";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jKWmYLsR_5q4oHVh36MvVg_vBGB5Pfn";
 const TABLE = "text_channel";
 const ROW_ID = "f5d13f98-11d9-49c4-ab0a-176bf5bc33d3";
 
-/* ===== INIT ===== */
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* =========================
+   Init (FIXED)
+   ========================= */
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-const display = document.getElementById('display');
-const controls = document.getElementById('controls');
-const takeControlBtn = document.getElementById('takeControl');
-const textInput = document.getElementById('textInput');
+/* =========================
+   UI refs
+   ========================= */
+const display = document.getElementById("display");
+const controls = document.getElementById("controls");
+const takeControlBtn = document.getElementById("takeControl");
+const textInput = document.getElementById("textInput");
 
 let isController = false;
 let debounceTimer = null;
 
-/* ===== COLOR MAP ===== */
+/* =========================
+   Palette
+   ========================= */
 const COLORS = {
-  white: '#ffffff',
-  offwhite: '#f2f2ed',
-  yellow: '#f2c94c',
-  red: '#5b0f14',
-  blue: '#0b1c2d',
-  charcoal: '#1a1a1a'
+  white: "#ffffff",
+  offwhite: "#f2f2ed",
+  yellow: "#f2c94c",
+  red: "#5b0f14",
+  blue: "#0b1c2d",
+  charcoal: "#1a1a1a"
 };
 
-/* ===== APPLY STATE ===== */
+/* =========================
+   Render state
+   ========================= */
 function applyState(row) {
-  display.textContent = row.current_text || '';
+  const txt = (row && typeof row.current_text === "string") ? row.current_text : "";
+  display.textContent = txt;
 
-  if (row.bg_mode === 'invert') {
-    document.body.style.background = '#fff';
-    display.style.color = '#000';
+  const bgMode = row?.bg_mode || "black";
+  const textColorKey = row?.text_color || "white";
+
+  if (bgMode === "invert") {
+    document.body.style.background = "#ffffff";
+    display.style.color = "#000000";
   } else {
-    document.body.style.background = '#000';
-    display.style.color = COLORS[row.text_color] || '#fff';
+    document.body.style.background = "#000000";
+    display.style.color = COLORS[textColorKey] || "#ffffff";
+  }
+
+  // Keep controller textarea in sync when you become controller (or if same device)
+  if (isController && textInput.value !== txt) {
+    textInput.value = txt;
   }
 }
 
-/* ===== FETCH INITIAL STATE ===== */
+/* =========================
+   Load initial row
+   ========================= */
 async function loadInitial() {
-  const { data } = await supabase
+  const { data, error } = await sb
     .from(TABLE)
-    .select('*')
-    .eq('id', ROW_ID)
-    .single();
+    .select("*")
+    .eq("id", ROW_ID)
+    .maybeSingle();
 
-  if (data) applyState(data);
+  if (error) {
+    display.textContent = "Supabase error loading row";
+    console.error(error);
+    return;
+  }
+
+  if (!data) {
+    display.textContent = "No row found (check ROW_ID)";
+    return;
+  }
+
+  applyState(data);
 }
-
 loadInitial();
 
-/* ===== REALTIME SUBSCRIBE ===== */
-supabase
-  .channel('text-channel')
+/* =========================
+   Realtime subscribe (UPDATE events)
+   ========================= */
+const channel = sb
+  .channel("text_channel_updates")
   .on(
-    'postgres_changes',
-    { event: 'UPDATE', schema: 'public', table: TABLE },
-    payload => {
-      if (payload.new.id === ROW_ID) {
-        applyState(payload.new);
-      }
+    "postgres_changes",
+    { event: "UPDATE", schema: "public", table: TABLE },
+    (payload) => {
+      const row = payload?.new;
+      if (row && row.id === ROW_ID) applyState(row);
     }
   )
-  .subscribe();
+  .subscribe((status) => {
+    // Optional: you can inspect status in console if debugging
+    // console.log("realtime status:", status);
+  });
 
-/* ===== CONTROLLER ===== */
-takeControlBtn.onclick = () => {
+/* =========================
+   Controller enable
+   ========================= */
+takeControlBtn.addEventListener("click", async () => {
   isController = true;
-  controls.style.display = 'flex';
-  takeControlBtn.style.display = 'none';
-};
+  controls.style.display = "flex";
+  takeControlBtn.style.display = "none";
 
-textInput.addEventListener('input', e => {
+  // Pull latest text into textarea immediately
+  const { data } = await sb
+    .from(TABLE)
+    .select("current_text,bg_mode,text_color")
+    .eq("id", ROW_ID)
+    .maybeSingle();
+
+  if (data) applyState({ id: ROW_ID, ...data });
+  textInput.focus();
+});
+
+/* =========================
+   Debounced text updates
+   ========================= */
+textInput.addEventListener("input", (e) => {
   if (!isController) return;
+
+  const value = e.target.value;
 
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
-    supabase
+    sb
       .from(TABLE)
-      .update({ current_text: e.target.value })
-      .eq('id', ROW_ID);
-  }, 100);
+      .update({ current_text: value, updated_at: new Date().toISOString() })
+      .eq("id", ROW_ID)
+      .then(({ error }) => { if (error) console.error(error); });
+  }, 120);
 });
 
-document.querySelectorAll('[data-bg]').forEach(btn => {
-  btn.onclick = () => {
-    supabase
+/* =========================
+   Background mode buttons
+   ========================= */
+document.querySelectorAll("[data-bg]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const bg_mode = btn.dataset.bg;
+    sb
       .from(TABLE)
-      .update({ bg_mode: btn.dataset.bg })
-      .eq('id', ROW_ID);
-  };
+      .update({ bg_mode, updated_at: new Date().toISOString() })
+      .eq("id", ROW_ID)
+      .then(({ error }) => { if (error) console.error(error); });
+  });
 });
 
-document.querySelectorAll('[data-color]').forEach(btn => {
-  btn.onclick = () => {
-    supabase
+/* =========================
+   Text colour palette buttons
+   ========================= */
+document.querySelectorAll("[data-color]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const text_color = btn.dataset.color;
+    sb
       .from(TABLE)
-      .update({ text_color: btn.dataset.color })
-      .eq('id', ROW_ID);
-  };
+      .update({ text_color, updated_at: new Date().toISOString() })
+      .eq("id", ROW_ID)
+      .then(({ error }) => { if (error) console.error(error); });
+  });
 });
 </script>
 </body>
