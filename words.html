@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Live Text Channel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Supabase JS (official CDN) -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ===== RESET ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== DISPLAY ===== */
+    #display {
+      width: 100%;
+      height: 100%;
+      padding: 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: clamp(48px, 8vw, 160px);
+      line-height: 1.05;
+      word-break: break-word;
+    }
+
+    /* ===== CONTROLLER UI ===== */
+    #controls {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #111;
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      font-size: 20px;
+      padding: 10px;
+      font-family: inherit;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #takeControl {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 16px;
+      padding: 10px 14px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="display"></div>
+
+  <button id="takeControl">Take control</button>
+
+  <div id="controls">
+    <textarea id="textInput" placeholder="Type text…"></textarea>
+
+    <div class="row">
+      <button data-bg="black">Black BG</button>
+      <button data-bg="invert">Invert</button>
+    </div>
+
+    <div class="row">
+      <button data-color="white">White</button>
+      <button data-color="offwhite">Off-white</button>
+      <button data-color="yellow">Yellow</button>
+      <button data-color="red">Dark red</button>
+      <button data-color="blue">Dark blue</button>
+      <button data-color="charcoal">Charcoal</button>
+    </div>
+  </div>
+
+<script>
+/* ===== CONFIG (FILLED FROM YOUR VALUES) ===== */
+const SUPABASE_URL = "https://fnqzcwscmyglptvihekl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_jKWmYLsR_5q4oHVh36MvVg_vBGB5Pfn";
+const TABLE = "text_channel";
+const ROW_ID = "f5d13f98-11d9-49c4-ab0a-176bf5bc33d3";
+
+/* ===== INIT ===== */
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const display = document.getElementById('display');
+const controls = document.getElementById('controls');
+const takeControlBtn = document.getElementById('takeControl');
+const textInput = document.getElementById('textInput');
+
+let isController = false;
+let debounceTimer = null;
+
+/* ===== COLOR MAP ===== */
+const COLORS = {
+  white: '#ffffff',
+  offwhite: '#f2f2ed',
+  yellow: '#f2c94c',
+  red: '#5b0f14',
+  blue: '#0b1c2d',
+  charcoal: '#1a1a1a'
+};
+
+/* ===== APPLY STATE ===== */
+function applyState(row) {
+  display.textContent = row.current_text || '';
+
+  if (row.bg_mode === 'invert') {
+    document.body.style.background = '#fff';
+    display.style.color = '#000';
+  } else {
+    document.body.style.background = '#000';
+    display.style.color = COLORS[row.text_color] || '#fff';
+  }
+}
+
+/* ===== FETCH INITIAL STATE ===== */
+async function loadInitial() {
+  const { data } = await supabase
+    .from(TABLE)
+    .select('*')
+    .eq('id', ROW_ID)
+    .single();
+
+  if (data) applyState(data);
+}
+
+loadInitial();
+
+/* ===== REALTIME SUBSCRIBE ===== */
+supabase
+  .channel('text-channel')
+  .on(
+    'postgres_changes',
+    { event: 'UPDATE', schema: 'public', table: TABLE },
+    payload => {
+      if (payload.new.id === ROW_ID) {
+        applyState(payload.new);
+      }
+    }
+  )
+  .subscribe();
+
+/* ===== CONTROLLER ===== */
+takeControlBtn.onclick = () => {
+  isController = true;
+  controls.style.display = 'flex';
+  takeControlBtn.style.display = 'none';
+};
+
+textInput.addEventListener('input', e => {
+  if (!isController) return;
+
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    supabase
+      .from(TABLE)
+      .update({ current_text: e.target.value })
+      .eq('id', ROW_ID);
+  }, 100);
+});
+
+document.querySelectorAll('[data-bg]').forEach(btn => {
+  btn.onclick = () => {
+    supabase
+      .from(TABLE)
+      .update({ bg_mode: btn.dataset.bg })
+      .eq('id', ROW_ID);
+  };
+});
+
+document.querySelectorAll('[data-color]').forEach(btn => {
+  btn.onclick = () => {
+    supabase
+      .from(TABLE)
+      .update({ text_color: btn.dataset.color })
+      .eq('id', ROW_ID);
+  };
+});
+</script>
+</body>
+</html>
