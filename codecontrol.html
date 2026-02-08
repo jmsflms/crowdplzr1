@@ -1,0 +1,1324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Safe Dial</title>
+  <style>
+    :root{
+      --red:#e0162b;
+      --blue:#1246ff;
+
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.76);
+
+      --shadow: 0 18px 50px rgba(0,0,0,.30);
+      --shadow2: 0 10px 22px rgba(0,0,0,.22);
+
+      --panel: rgba(0,0,0,.20);
+      --panelBorder: rgba(255,255,255,.18);
+
+      --wedgeA: rgba(255,255,255,.08);
+      --wedgeB: rgba(255,255,255,.14);
+      --wedgeActive: rgba(255,255,255,.26);
+
+      --sep: rgba(255,255,255,.34);
+      --rim: rgba(255,255,255,.22);
+
+      --btnBg: rgba(255,255,255,.12);
+      --btnBgHover: rgba(255,255,255,.18);
+      --btnBorder: rgba(255,255,255,.18);
+      --btnBorderStrong: rgba(255,255,255,.30);
+
+      --focus: rgba(255,255,255,.32);
+    }
+
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html,body{ height:100%; margin:0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; color:var(--text); }
+    body{
+      background: var(--red);
+      transition: background-color 220ms ease;
+      overflow:hidden;
+      touch-action: manipulation;
+      display:flex;
+      justify-content:center;
+    }
+    body.state-blue{ background: var(--blue); }
+
+    .app{
+      width: min(860px, 100%);
+      height: 100%;
+      padding: clamp(12px, 2.2vh, 22px);
+      padding-top: max(clamp(12px, 2.2vh, 22px), env(safe-area-inset-top));
+      padding-bottom: max(clamp(12px, 2.2vh, 22px), env(safe-area-inset-bottom));
+      display:flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.6vh, 16px);
+    }
+
+    .topbar{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items:center;
+      text-align:center;
+    }
+
+    .row{
+      width:100%;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .pill{
+      flex:1;
+      min-height: 50px;
+      border-radius: 18px;
+      background: var(--panel);
+      border: 1px solid var(--panelBorder);
+      box-shadow: var(--shadow2);
+      padding: 10px 14px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+    }
+
+    .pill .label{
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 900;
+    }
+    .pill .value{
+      font-variant-numeric: tabular-nums;
+      font-size: 20px;
+      font-weight: 1000;
+      letter-spacing: .04em;
+    }
+
+    .codePill{
+      flex: 0 0 auto;
+      min-width: 150px;
+      justify-content:center;
+      gap: 10px;
+    }
+    .codePill .value{ font-size: 18px; }
+
+    .instruction{
+      width:100%;
+      border-radius: 22px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      font-weight: 1000;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: clamp(14px, 2.0vh, 18px);
+    }
+
+    .arrowWrap{
+      width: 100%;
+      display:flex;
+      justify-content:center;
+      user-select:none;
+      pointer-events:none;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.22));
+      margin-top: -2px;
+      margin-bottom: -2px;
+    }
+    .arrowSvg{
+      width: min(520px, 94%);
+      height: 52px;
+      opacity: .96;
+      transition: opacity 120ms linear;
+    }
+    .arrowLine{
+      stroke: rgba(255,255,255,.92);
+      stroke-width: 10;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .middle{
+      flex: 1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 2px 0;
+    }
+
+    .dial{
+      width: min(640px, 92vw);
+      aspect-ratio: 1/1;
+      position: relative;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      background:
+        radial-gradient(circle at 50% 40%, rgba(255,255,255,.16), rgba(255,255,255,0) 58%),
+        radial-gradient(circle at 50% 85%, rgba(0,0,0,.20), rgba(0,0,0,0) 60%),
+        rgba(0,0,0,.14);
+      border: 1px solid rgba(255,255,255,.20);
+      overflow:hidden;
+
+      touch-action: none;
+      user-select:none;
+      cursor: grab;
+    }
+    .dial.dragging{ cursor: grabbing; }
+
+    #fixedSvg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .rotorLayer{
+      position:absolute;
+      inset:0;
+      z-index: 9;
+      pointer-events:none;
+    }
+    .rotor{
+      position:absolute;
+      inset:0;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+
+    .bezel{
+      position:absolute;
+      inset: 2.8%;
+      border-radius: 999px;
+      border: 3px solid rgba(255,255,255,.18);
+      box-shadow:
+        inset 0 0 0 10px rgba(255,255,255,.04),
+        inset 0 0 0 22px rgba(0,0,0,.06);
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,.16), rgba(255,255,255,0) 58%),
+        rgba(0,0,0,.06);
+    }
+
+    .marker{
+      position:absolute;
+      left: 50%;
+      top: 3.2%;
+      transform: translate(-50%, 0) rotate(90deg);
+      transform-origin: 50% 50%;
+      width: 76px;
+      height: 34px;
+      filter: drop-shadow(0 14px 18px rgba(0,0,0,.28));
+    }
+    .marker svg{ width:100%; height:100%; display:block; }
+    .marker .mFill{ fill: rgba(255,255,255,.96); }
+    .marker .mCut{ fill: rgba(0,0,0,.16); opacity:.22; }
+
+    .center{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%, -50%);
+      width: 56%;
+      height: 56%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(0,0,0,.42), rgba(0,0,0,.22));
+      border: 1px solid rgba(255,255,255,.20);
+      box-shadow: 0 18px 45px rgba(0,0,0,.28);
+      z-index: 7;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      text-align:center;
+      pointer-events:none;
+    }
+    .qNum{
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.78);
+      font-weight: 950;
+      margin-bottom: 10px;
+    }
+    .qText{
+      font-size: clamp(14px, 2.2vh, 20px);
+      font-weight: 1000;
+      line-height: 1.15;
+      letter-spacing: .01em;
+    }
+
+    .ansText{
+      fill: rgba(255,255,255,.97);
+      text-anchor: middle;
+      dominant-baseline: middle;
+      font-weight: 1000;
+      font-size: 34px;
+      letter-spacing: .01em;
+      paint-order: stroke;
+      stroke: rgba(0,0,0,.40);
+      stroke-width: 6px;
+    }
+
+    .wedge{
+      stroke: rgba(255,255,255,.18);
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+    .wedge.a{ fill: var(--wedgeA); }
+    .wedge.b{ fill: var(--wedgeB); }
+    .wedge.active{ fill: var(--wedgeActive); stroke: rgba(255,255,255,.30); stroke-width: 3; }
+
+    .snapFlash{
+      animation: snapFlash 120ms ease;
+    }
+    @keyframes snapFlash{
+      0% { filter: brightness(1); }
+      40% { filter: brightness(1.10); }
+      100% { filter: brightness(1); }
+    }
+
+    .bottom{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content:center;
+      padding-top: 2px;
+      flex-wrap: wrap;
+    }
+    .btn{
+      flex:1;
+      max-width: 420px;
+      border-radius: 18px;
+      padding: 16px 16px;
+      border: 1px solid var(--btnBorder);
+      background: var(--btnBg);
+      color: var(--text);
+      font-weight: 1000;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 16px;
+      box-shadow: var(--shadow2);
+      cursor: pointer;
+      user-select:none;
+      touch-action: manipulation;
+      transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, opacity 120ms ease;
+    }
+    .btn:active{ transform: translateY(1px) scale(0.99); }
+    .btn:hover{ background: var(--btnBgHover); border-color: var(--btnBorderStrong); }
+    .btn:focus-visible{
+      outline: none;
+      box-shadow: var(--shadow2), 0 0 0 4px var(--focus);
+    }
+    .btn.lock{
+      background: rgba(255,255,255,.18);
+      border-color: rgba(255,255,255,.28);
+    }
+
+    .btn.secondary{
+      max-width: 860px;
+      flex: 1 0 100%;
+      opacity: .95;
+    }
+
+    .soundBadge{
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 1200;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.92);
+      user-select:none;
+    }
+    .soundBadge.hidden{ display:none; }
+
+    .modal{
+      position: fixed;
+      inset: 0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 22px;
+      z-index: 999;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .modal.show{ display:flex; }
+    .modalCard{
+      width: min(560px, 92vw);
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: 0 30px 80px rgba(0,0,0,.40);
+      padding: 22px 18px;
+      text-align:center;
+    }
+    .modalCard h1{
+      margin: 6px 0 10px;
+      font-size: clamp(26px, 4.0vh, 40px);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 1100;
+    }
+    .modalCard .hint{
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.74);
+      margin-top: 4px;
+    }
+
+    body.view-only .dial{ cursor: default; }
+    body.view-only .dial.dragging{ cursor: default; }
+
+    @media (max-width: 420px){
+      .ansText{ font-size: 28px; stroke-width: 6px; }
+      .marker{ width: 66px; height: 30px; }
+      .pill .value{ font-size: 18px; }
+      .btn{ font-size: 15px; padding: 15px 14px; }
+      .arrowSvg{ height: 46px; }
+    }
+  </style>
+</head>
+<body class="state-red view-only">
+  <div class="app">
+    <div class="topbar">
+      <div class="row">
+        <div class="pill" aria-label="Status">
+          <div class="label">STATUS</div>
+          <div class="value" id="role">VIEW ONLY</div>
+        </div>
+        <div class="pill codePill" aria-label="Progress">
+          <div class="label">CODE</div>
+          <div class="value" id="code">0 / 5</div>
+        </div>
+      </div>
+
+      <div class="instruction" id="instruction">PASS TO CLOCKWISE PLAYER</div>
+
+      <div class="arrowWrap" aria-hidden="true">
+        <svg class="arrowSvg" viewBox="0 0 520 52" role="img" aria-label="Direction arrow">
+          <path class="arrowLine" id="arrowPath" d="M 60 36 Q 260 10 460 36" />
+          <path class="arrowLine" id="arrowHead" d="M 440 22 L 462 36 L 438 42" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="middle">
+      <div class="dial" id="dial" aria-label="Safe dial">
+        <svg id="fixedSvg" viewBox="0 0 1000 1000" aria-hidden="true"></svg>
+
+        <div class="rotorLayer" aria-hidden="true">
+          <div class="rotor" id="rotor">
+            <div class="bezel"></div>
+            <div class="marker" id="marker">
+              <svg viewBox="0 0 76 34">
+                <path class="mFill" d="M6 6h42c3 0 6 3 6 6v10c0 3-3 6-6 6H6c-3 0-6-3-6-6V12c0-3 3-6 6-6Z"/>
+                <path class="mFill" d="M54 5 76 17 54 29c-2 1-4-1-4-3V8c0-2 2-4 4-3Z"/>
+                <path class="mCut" d="M8 10h32c2 0 4 2 4 4v6c0 2-2 4-4 4H8c-2 0-4-2-4-4v-6c0-2 2-4 4-4Z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="center" aria-hidden="true">
+          <div>
+            <div class="qNum" id="qNum">Q1</div>
+            <div class="qText" id="qText">…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <button class="btn lock" id="lockBtn">LOCK</button>
+      <button class="btn" id="resetBtn">RESET</button>
+      <button class="btn secondary" id="controlBtn">TAKE CONTROL</button>
+    </div>
+  </div>
+
+  <div class="soundBadge" id="soundBadge">TAP TO ENABLE SOUND</div>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Safe Unlocked">
+    <div class="modalCard">
+      <h1>SAFE UNLOCKED</h1>
+      <div class="hint">Press RESET to play again.</div>
+    </div>
+  </div>
+
+<script type="module">
+/*
+  CANONICAL DATA (edit here)
+  - We DO NOT store fixed correctIndex here because answers are shuffled per question.
+  - We store the correct answer label and derive shuffled displayAnswers + correctIndex at runtime.
+
+  Required JS comments:
+  (1) segment geometry / mapping ring angle to segment index (center-of-segment detents)
+  (2) direction enforcement
+  (3) snapping/detents + click/haptic generation
+  (4) lock handling + state flip + correctness evaluation
+  (5) reset logic + SAFE UNLOCKED modal (no timer in this version)
+*/
+const CANONICAL_QUESTIONS = [
+  {
+    prompt: "What is Chappell Roan’s middle name?",
+    correct: "Rose",
+    answers: ["Rose","Lily","Daisy","Violet","Ivy","Hazel","June","Pearl","Grace","Mae"]
+  },
+  {
+    prompt: "Which country’s capital city is Tokyo?",
+    correct: "Japan",
+    answers: ["Japan","China","South Korea","Thailand","Vietnam","Singapore","Malaysia","Indonesia","Philippines","Taiwan"]
+  },
+  {
+    prompt: "In tennis, what is the score called at 40–40?",
+    correct: "Deuce",
+    answers: ["Deuce","Love","Advantage","Break","Ace","Tie","Set","Match","Rally","Fault"]
+  },
+  {
+    prompt: "Which planet is known as the Red Planet?",
+    correct: "Mars",
+    answers: ["Mars","Venus","Jupiter","Saturn","Mercury","Neptune","Uranus","Earth","Pluto","Moon"]
+  },
+  {
+    prompt: "Which month has 28 days in a common (non-leap) year?",
+    correct: "February",
+    answers: ["February","January","March","April","May","June","July","August","September","October"]
+  }
+];
+
+/* =========================================================
+   SUPABASE CONFIG (PASTE YOUR KEYS HERE)
+========================================================= */
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+// Required: paste from Supabase -> Project Settings -> API
+const SUPABASE_URL = "PASTE_SUPABASE_PROJECT_URL_HERE";
+const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_PUBLIC_KEY_HERE";
+
+// Room name (later we can make this dynamic)
+const ROOM_CHANNEL = "codebreaker-room";
+
+// Broadcast event names (must match spec)
+const EVT = {
+  STATE_SNAPSHOT: "STATE_SNAPSHOT",
+  STATE_REQUEST:  "STATE_REQUEST",
+  DETENT_STEP:    "DETENT_STEP",
+  LOCK:           "LOCK",
+  RESET:          "RESET",
+  TAKE_CONTROL:   "TAKE_CONTROL",
+  RELEASE_CONTROL:"RELEASE_CONTROL"
+};
+
+(() => {
+  const SEGMENTS = 10;
+  const STEP_DEG = 360 / SEGMENTS;
+  const CENTER_OFFSET_DEG = STEP_DEG / 2;
+
+  // DOM
+  const dial = document.getElementById("dial");
+  const fixedSvg = document.getElementById("fixedSvg");
+  const rotor = document.getElementById("rotor");
+  const marker = document.getElementById("marker");
+  const roleEl = document.getElementById("role");
+  const codeEl = document.getElementById("code");
+  const instructionEl = document.getElementById("instruction");
+  const qNumEl = document.getElementById("qNum");
+  const qTextEl = document.getElementById("qText");
+  const lockBtn = document.getElementById("lockBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const controlBtn = document.getElementById("controlBtn");
+  const modal = document.getElementById("modal");
+  const soundBadge = document.getElementById("soundBadge");
+
+  const arrowPath = document.getElementById("arrowPath");
+  const arrowHead = document.getElementById("arrowHead");
+
+  // Fixed wedges + labels
+  const wedgeEls = [];
+  let textEls = [];
+
+  // Audio (WebAudio only)
+  let audioCtx = null;
+  let audioEnabled = false;
+
+  // Transport
+  let supabase = null;
+  let channel = null;
+  let connected = false;
+
+  // Stable clientId
+  const CLIENT_ID_KEY = "codebreaker:clientId";
+  const clientId = (() => {
+    const existing = localStorage.getItem(CLIENT_ID_KEY);
+    if (existing && /^[a-z0-9\-]{6,}$/i.test(existing)) return existing;
+    const id = `c-${cryptoRand(6)}-${Date.now().toString(36)}`;
+    localStorage.setItem(CLIENT_ID_KEY, id);
+    return id;
+  })();
+
+  function cryptoRand(nBytes){
+    const a = new Uint8Array(nBytes);
+    crypto.getRandomValues(a);
+    return Array.from(a).map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
+  // Canonical synchronized state
+  const game = {
+    state: "RED",           // RED / BLUE
+    questionIndex: 0,
+    progress: 0,
+    unlocked: false,
+    pointerIndex: 0,
+    runSeed: (Date.now() >>> 0),
+    controllerId: null,
+    controllerAt: null,     // timestamp for deterministic "first claim wins"
+  };
+
+  // Derived per-question display data
+  let DISPLAY = [];
+
+  // Drag state (rAF)
+  let dragging = false;
+  let lastAngleDeg = null;
+  let pendingDelta = 0;
+  let rafActive = false;
+
+  // Avoid re-broadcast loops
+  let applyingRemote = false;
+
+  /* =========================================================
+     (1) Segment geometry / mapping ring angle to segment index
+  ========================================================== */
+  function normalizeDeg(d){ d%=360; if(d<0) d+=360; return d; }
+  function angleFromPoint(clientX, clientY){
+    const r = dial.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    const rad = Math.atan2(dy, dx);
+    return normalizeDeg(rad * 180 / Math.PI + 90);
+  }
+  function signedAngleDelta(prevDeg, currDeg){
+    return (currDeg - prevDeg + 540) % 360 - 180;
+  }
+
+  /* =========================================================
+     (2) Direction enforcement (strict)
+  ========================================================== */
+  function filterDeltaByDirection(delta){
+    if (game.state === "RED") return delta > 0 ? delta : 0;
+    return delta < 0 ? delta : 0;
+  }
+
+  /* =========================================================
+     (3) Snapping/detents + click/haptic generation
+     - Local controller drag becomes discrete DETENT_STEP (+1/-1).
+     - We broadcast one DETENT_STEP per detent (no batching).
+  ========================================================== */
+  function applyDetentStep(delta, {remote=false} = {}){
+    game.pointerIndex = (game.pointerIndex + delta) % SEGMENTS;
+    if (game.pointerIndex < 0) game.pointerIndex += SEGMENTS;
+
+    if (!remote){
+      if (navigator.vibrate) navigator.vibrate(10);
+      dial.classList.remove("snapFlash");
+      void dial.offsetWidth;
+      dial.classList.add("snapFlash");
+    } else {
+      // mirror visuals/sound; avoid vibrate
+      dial.classList.remove("snapFlash");
+      void dial.offsetWidth;
+      dial.classList.add("snapFlash");
+    }
+    playDetentClick();
+    renderRotor();
+  }
+
+  function stepByDetents(deltaDeg){
+    const steps = (deltaDeg / STEP_DEG) | 0;
+    if (steps === 0) return deltaDeg;
+
+    const sign = steps > 0 ? 1 : -1;
+    const count = Math.abs(steps);
+
+    for (let i=0;i<count;i++){
+      applyDetentStep(sign, {remote:false});
+      // controller publishes discrete steps only
+      publish(EVT.DETENT_STEP, { delta: sign });
+    }
+    return deltaDeg - steps * STEP_DEG;
+  }
+
+  function renderRotor(){
+    const angle = CENTER_OFFSET_DEG + game.pointerIndex * STEP_DEG;
+    rotor.style.transform = `rotate(${angle}deg)`;
+    for (let i=0;i<wedgeEls.length;i++){
+      wedgeEls[i].classList.toggle("active", i === game.pointerIndex);
+    }
+  }
+
+  function setMarkerDirection(){
+    marker.style.transform = `translate(-50%, 0) rotate(${game.state === "RED" ? 90 : -90}deg)`;
+  }
+
+  /* =========================================================
+     (4) Lock handling + state flip + correctness evaluation
+     - Controller triggers LOCK event; all clients apply identically.
+  ========================================================== */
+  function flipState(){
+    game.state = (game.state === "RED") ? "BLUE" : "RED";
+    document.body.classList.toggle("state-blue", game.state === "BLUE");
+    instructionEl.textContent = (game.state === "RED") ? "PASS TO CLOCKWISE PLAYER" : "PASS TO ANTI-CLOCKWISE PLAYER";
+    renderDirectionArrow();
+    setMarkerDirection();
+  }
+
+  function applyLock({remote=false} = {}){
+    if (game.unlocked) return;
+
+    ensureAudioRunning();
+    if (!remote && navigator.vibrate) navigator.vibrate([60, 40, 110]);
+    playLockSound();
+
+    flipState();
+
+    const q = DISPLAY[game.questionIndex];
+    const isCorrect = (game.pointerIndex === q.correctIndex);
+
+    if (isCorrect){
+      game.progress += 1;
+      if (game.progress >= 5){
+        game.progress = 5;
+        game.unlocked = true;
+        showUnlocked();
+      } else {
+        game.questionIndex = Math.min(game.questionIndex + 1, DISPLAY.length - 1);
+      }
+    } else {
+      game.progress = 0;
+      game.questionIndex = 0;
+    }
+
+    if (!game.unlocked) game.pointerIndex = 0;
+
+    updateUI();
+  }
+
+  /* =========================================================
+     (5) Reset logic + SAFE UNLOCKED modal (no timer)
+     - Controller generates new runSeed and broadcasts STATE_SNAPSHOT.
+  ========================================================== */
+  function showUnlocked(){
+    modal.classList.add("show");
+    lockBtn.disabled = true;
+    lockBtn.style.opacity = 0.6;
+  }
+  function hideUnlocked(){
+    modal.classList.remove("show");
+  }
+
+  function applyReset({remote=false} = {}){
+    hideUnlocked();
+
+    game.unlocked = false;
+    game.state = "RED";
+    game.questionIndex = 0;
+    game.progress = 0;
+    game.pointerIndex = 0;
+
+    if (!remote){
+      game.runSeed = (Date.now() ^ (Math.random()*0xFFFFFFFF)) >>> 0;
+    }
+
+    buildDisplayData();
+
+    document.body.classList.remove("state-blue");
+    lockBtn.disabled = false;
+    lockBtn.style.opacity = 1;
+
+    updateUI();
+  }
+
+  // --- Display data (deterministic shuffle per runSeed) ---
+  function buildDisplayData(){
+    DISPLAY = CANONICAL_QUESTIONS.map((q, qi) => {
+      const rng = seededRng((game.runSeed + qi*2654435761) >>> 0);
+      const arr = q.answers.slice();
+      shuffleInPlace(arr, rng);
+
+      let correctIndex = arr.indexOf(q.correct);
+      let guard = 0;
+      while (correctIndex === 0 && guard < 6){
+        shuffleInPlace(arr, rng);
+        correctIndex = arr.indexOf(q.correct);
+        guard++;
+      }
+      if (correctIndex === 0){
+        [arr[0], arr[1]] = [arr[1], arr[0]];
+        correctIndex = arr.indexOf(q.correct);
+      }
+      return { prompt: q.prompt, displayAnswers: arr, correctIndex };
+    });
+  }
+
+  // Mulberry32 RNG
+  function seededRng(seed){
+    let t = seed >>> 0;
+    return function(){
+      t += 0x6D2B79F5;
+      let r = Math.imul(t ^ (t >>> 15), 1 | t);
+      r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+      return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function shuffleInPlace(a, rnd){
+    for (let i=a.length-1; i>0; i--){
+      const j = Math.floor(rnd() * (i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+  }
+
+  // --- Fixed dial graphics ---
+  function buildFixedDialOnce(){
+    fixedSvg.innerHTML = "";
+    wedgeEls.length = 0;
+
+    const cx = 500, cy = 500;
+    const rOuter = 485;
+    const rInner = 305;
+
+    fixedSvg.appendChild(svgEl("circle", {
+      cx, cy, r: rOuter - 6,
+      fill: "none",
+      stroke: "rgba(255,255,255,.22)",
+      "stroke-width": 12,
+      opacity: 0.65
+    }));
+
+    fixedSvg.appendChild(svgEl("circle", {
+      cx, cy, r: rInner + 6,
+      fill: "none",
+      stroke: "rgba(255,255,255,.20)",
+      "stroke-width": 12,
+      opacity: 0.60
+    }));
+
+    for (let i=0;i<SEGMENTS;i++){
+      const startDeg = i * STEP_DEG;
+      const endDeg = (i+1) * STEP_DEG;
+
+      const wedge = svgEl("path", {
+        d: donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg),
+        class: `wedge ${i%2===0 ? "a" : "b"}`
+      });
+      fixedSvg.appendChild(wedge);
+      wedgeEls.push(wedge);
+
+      const midDeg = startDeg + CENTER_OFFSET_DEG;
+      const labelR = (rInner + rOuter)/2 + 18;
+      const pos = polarToXY(cx, cy, labelR, midDeg);
+
+      const t = svgEl("text", {
+        x: pos.x.toFixed(2),
+        y: pos.y.toFixed(2),
+        class: "ansText",
+        "data-i": String(i)
+      });
+      fixedSvg.appendChild(t);
+    }
+
+    for (let i=0;i<SEGMENTS;i++){
+      const deg = i * STEP_DEG;
+      const p1 = polarToXY(cx, cy, rInner, deg);
+      const p2 = polarToXY(cx, cy, rOuter, deg);
+      fixedSvg.appendChild(svgEl("line", {
+        x1: p1.x.toFixed(2),
+        y1: p1.y.toFixed(2),
+        x2: p2.x.toFixed(2),
+        y2: p2.y.toFixed(2),
+        stroke: "rgba(255,255,255,.38)",
+        "stroke-width": 4,
+        "stroke-linecap": "round"
+      }));
+    }
+
+    textEls = Array.from(fixedSvg.querySelectorAll("text.ansText"));
+  }
+
+  function updateAnswersForQuestion(q){
+    for (let i=0;i<textEls.length;i++){
+      textEls[i].textContent = q.displayAnswers[i] ?? "";
+    }
+  }
+
+  function svgEl(tag, attrs){
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function degToRad(deg){ return (deg - 90) * Math.PI/180; }
+  function polarToXY(cx, cy, r, deg){
+    const rad = degToRad(deg);
+    return { x: cx + r*Math.cos(rad), y: cy + r*Math.sin(rad) };
+  }
+  function donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg){
+    const p1 = polarToXY(cx, cy, rOuter, startDeg);
+    const p2 = polarToXY(cx, cy, rOuter, endDeg);
+    const p3 = polarToXY(cx, cy, rInner, endDeg);
+    const p4 = polarToXY(cx, cy, rInner, startDeg);
+    const largeArc = (endDeg - startDeg) > 180 ? 1 : 0;
+    return [
+      `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
+      `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
+      `L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)}`,
+      `A ${rInner} ${rInner} 0 ${largeArc} 0 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)}`,
+      "Z"
+    ].join(" ");
+  }
+
+  // --- Direction arrow render ---
+  function renderDirectionArrow(){
+    if (game.state === "RED"){
+      arrowPath.setAttribute("d", "M 70 38 Q 260 12 450 38");
+      arrowHead.setAttribute("d", "M 422 20 L 454 38 L 418 44");
+    } else {
+      arrowPath.setAttribute("d", "M 450 38 Q 260 12 70 38");
+      arrowHead.setAttribute("d", "M 98 20 L 66 38 L 102 44");
+    }
+  }
+
+  // --- Audio reliability on iPhone (WebAudio only) ---
+  function ensureAudioRunning(){
+    try{
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      if (audioCtx.state === "running"){
+        audioEnabled = true;
+        soundBadge.classList.add("hidden");
+      } else {
+        audioEnabled = false;
+        soundBadge.classList.remove("hidden");
+      }
+    } catch (e){
+      audioEnabled = false;
+      soundBadge.classList.remove("hidden");
+    }
+  }
+  ["pointerdown","touchstart","click"].forEach(evt => {
+    window.addEventListener(evt, ensureAudioRunning, { passive:true });
+  });
+
+  function playDetentClick(){
+    if (!audioCtx || audioCtx.state !== "running") return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "square";
+    osc.frequency.setValueAtTime(160, now);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.040, now + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.028);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.032);
+  }
+
+  function playLockSound(){
+    if (!audioCtx || audioCtx.state !== "running") return;
+    const now = audioCtx.currentTime;
+
+    const osc1 = audioCtx.createOscillator();
+    const g1 = audioCtx.createGain();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(95, now);
+    osc1.frequency.exponentialRampToValueAtTime(55, now + 0.09);
+    g1.gain.setValueAtTime(0.0001, now);
+    g1.gain.exponentialRampToValueAtTime(0.11, now + 0.012);
+    g1.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+    osc1.connect(g1); g1.connect(audioCtx.destination);
+    osc1.start(now); osc1.stop(now + 0.18);
+
+    const osc2 = audioCtx.createOscillator();
+    const g2 = audioCtx.createGain();
+    osc2.type = "triangle";
+    osc2.frequency.setValueAtTime(520, now + 0.01);
+    g2.gain.setValueAtTime(0.0001, now + 0.01);
+    g2.gain.exponentialRampToValueAtTime(0.05, now + 0.016);
+    g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+    osc2.connect(g2); g2.connect(audioCtx.destination);
+    osc2.start(now + 0.01); osc2.stop(now + 0.065);
+  }
+
+  // --- Controller gating ---
+  function isController(){
+    return game.controllerId && game.controllerId === clientId;
+  }
+
+  function setRoleUI(){
+    const ctl = isController();
+    document.body.classList.toggle("view-only", !ctl);
+
+    if (!connected){
+      roleEl.textContent = "CONNECTING…";
+    } else if (ctl){
+      roleEl.textContent = "CONTROLLER";
+    } else if (game.controllerId){
+      roleEl.textContent = "VIEW ONLY";
+    } else {
+      roleEl.textContent = "NO CONTROLLER";
+    }
+
+    lockBtn.disabled = !ctl || game.unlocked;
+    resetBtn.disabled = !ctl;
+    dial.style.pointerEvents = ctl ? "auto" : "none";
+
+    controlBtn.textContent = ctl ? "RELEASE CONTROL" : "TAKE CONTROL";
+  }
+
+  // --- UI update ---
+  function updateUI(){
+    const q = DISPLAY[game.questionIndex];
+    qNumEl.textContent = `Q${game.questionIndex + 1}`;
+    qTextEl.textContent = q.prompt;
+    codeEl.textContent = `${game.progress} / 5`;
+
+    instructionEl.textContent = (game.state === "RED") ? "PASS TO CLOCKWISE PLAYER" : "PASS TO ANTI-CLOCKWISE PLAYER";
+    updateAnswersForQuestion(q);
+
+    renderDirectionArrow();
+    setMarkerDirection();
+    renderRotor();
+
+    if (game.unlocked){
+      lockBtn.disabled = true;
+      lockBtn.style.opacity = 0.6;
+    } else {
+      lockBtn.style.opacity = 1;
+    }
+
+    setRoleUI();
+  }
+
+  // --- Drag handling (controller only) ---
+  function startRafIfNeeded(){
+    if (rafActive) return;
+    rafActive = true;
+
+    const tick = () => {
+      if (!dragging || game.unlocked){
+        rafActive = false;
+        pendingDelta = 0;
+        return;
+      }
+      let d = pendingDelta;
+      pendingDelta = 0;
+
+      d = stepByDetents(d);
+      pendingDelta += d;
+
+      requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  }
+
+  function onDragStart(clientX, clientY){
+    if (!isController() || game.unlocked) return;
+    ensureAudioRunning();
+    dragging = true;
+    dial.classList.add("dragging");
+    lastAngleDeg = angleFromPoint(clientX, clientY);
+    pendingDelta = 0;
+    startRafIfNeeded();
+  }
+
+  function onDragMove(clientX, clientY){
+    if (!dragging || game.unlocked || !isController()) return;
+    const ang = angleFromPoint(clientX, clientY);
+    let d = signedAngleDelta(lastAngleDeg, ang);
+    lastAngleDeg = ang;
+
+    d = filterDeltaByDirection(d);
+    pendingDelta += d;
+  }
+
+  function onDragEnd(){
+    dragging = false;
+    dial.classList.remove("dragging");
+    lastAngleDeg = null;
+  }
+
+  // Touch + mouse (prevent scroll)
+  dial.addEventListener("touchstart", (e) => {
+    if (!isController()) return;
+    if (e.touches && e.touches.length){
+      e.preventDefault();
+      onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive:false });
+
+  dial.addEventListener("touchmove", (e) => {
+    if (!isController()) return;
+    if (e.touches && e.touches.length){
+      e.preventDefault();
+      onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive:false });
+
+  dial.addEventListener("touchend", (e) => { if (isController()) { e.preventDefault(); onDragEnd(); } }, { passive:false });
+  dial.addEventListener("touchcancel", (e) => { if (isController()) { e.preventDefault(); onDragEnd(); } }, { passive:false });
+
+  dial.addEventListener("mousedown", (e) => {
+    if (!isController()) return;
+    e.preventDefault();
+    onDragStart(e.clientX, e.clientY);
+  });
+  window.addEventListener("mousemove", (e) => onDragMove(e.clientX, e.clientY));
+  window.addEventListener("mouseup", () => onDragEnd());
+
+  // Buttons (controller only)
+  lockBtn.addEventListener("click", () => {
+    if (!isController()) return;
+    applyLock({remote:false});
+    publish(EVT.LOCK, {});
+  });
+
+  resetBtn.addEventListener("click", () => {
+    if (!isController()) return;
+    applyReset({remote:false});
+    publish(EVT.RESET, {});
+    // per spec: controller broadcasts snapshot on reset
+    publishStateSnapshot();
+  });
+
+  // Modal click does nothing; RESET required
+  modal.addEventListener("click", () => { /* noop */ });
+
+  // Control button
+  controlBtn.addEventListener("click", () => {
+    ensureAudioRunning();
+    if (!connected) return;
+
+    if (isController()){
+      publish(EVT.RELEASE_CONTROL, { from: clientId });
+    } else {
+      // deterministic first-claim-wins based on timestamp then lexicographic id
+      publish(EVT.TAKE_CONTROL, { claimerId: clientId, ts: Date.now() });
+    }
+  });
+
+  // --- Transport: Supabase Realtime ---
+  function canUseSupabase(){
+    return SUPABASE_URL && SUPABASE_ANON_KEY &&
+      !SUPABASE_URL.includes("PASTE_") && !SUPABASE_ANON_KEY.includes("PASTE_");
+  }
+
+  function publish(event, payload){
+    if (!channel) return;
+    if (!isController() && (event === EVT.DETENT_STEP || event === EVT.LOCK || event === EVT.RESET || event === EVT.STATE_SNAPSHOT)){
+      // enforce: only controller publishes gameplay-changing events
+      return;
+    }
+    channel.send({
+      type: "broadcast",
+      event,
+      payload: { ...payload, sender: clientId }
+    });
+  }
+
+  function publishStateSnapshot(){
+    const snapshot = {
+      state: game.state,
+      questionIndex: game.questionIndex,
+      progress: game.progress,
+      pointerIndex: game.pointerIndex,
+      runSeed: game.runSeed,
+      unlocked: game.unlocked,
+      controllerId: game.controllerId,
+      controllerAt: game.controllerAt
+    };
+    publish(EVT.STATE_SNAPSHOT, { snapshot });
+  }
+
+  function applyStateSnapshot(snapshot){
+    if (!snapshot) return;
+
+    game.state = snapshot.state ?? game.state;
+    game.questionIndex = snapshot.questionIndex ?? game.questionIndex;
+    game.progress = snapshot.progress ?? game.progress;
+    game.pointerIndex = snapshot.pointerIndex ?? game.pointerIndex;
+    game.runSeed = snapshot.runSeed ?? game.runSeed;
+    game.unlocked = snapshot.unlocked ?? game.unlocked;
+    game.controllerId = snapshot.controllerId ?? game.controllerId;
+    game.controllerAt = snapshot.controllerAt ?? game.controllerAt;
+
+    buildDisplayData();
+
+    if (game.state === "BLUE") document.body.classList.add("state-blue");
+    else document.body.classList.remove("state-blue");
+
+    if (game.unlocked) showUnlocked();
+    else hideUnlocked();
+
+    updateUI();
+  }
+
+  function handleTakeControl({claimerId, ts}){
+    if (!claimerId || !ts) return;
+
+    const curId = game.controllerId;
+    const curTs = game.controllerAt;
+
+    // deterministic rule: earliest timestamp wins; tie -> lowest lexicographic id wins
+    const shouldAssign =
+      !curId ||
+      !curTs ||
+      (ts < curTs) ||
+      (ts === curTs && String(claimerId) < String(curId));
+
+    if (shouldAssign){
+      game.controllerId = claimerId;
+      game.controllerAt = ts;
+
+      // If I just became controller, publish a snapshot so everyone converges fast.
+      if (isController()){
+        // ensure we are the canonical source
+        publishStateSnapshot();
+      }
+    }
+    updateUI();
+  }
+
+  function handleReleaseControl({from}){
+    if (!game.controllerId) return;
+
+    // only current controller can release; viewers ignore other releases
+    if (from && from !== game.controllerId) return;
+
+    game.controllerId = null;
+    game.controllerAt = null;
+
+    updateUI();
+  }
+
+  async function connectRealtime(){
+    connected = false;
+    setRoleUI();
+
+    if (!canUseSupabase()){
+      roleEl.textContent = "PASTE SUPABASE KEYS";
+      return;
+    }
+
+    supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false }
+    });
+
+    channel = supabase.channel(ROOM_CHANNEL, {
+      config: { broadcast: { self: true } }
+    });
+
+    channel
+      .on("broadcast", { event: EVT.STATE_REQUEST }, ({ payload }) => {
+        if (!payload) return;
+        if (payload.sender === clientId) return;
+        if (isController()){
+          publishStateSnapshot();
+        }
+      })
+      .on("broadcast", { event: EVT.STATE_SNAPSHOT }, ({ payload }) => {
+        if (!payload) return;
+        if (payload.sender === clientId) return;
+        const snap = payload.snapshot;
+        applyStateSnapshot(snap);
+      })
+      .on("broadcast", { event: EVT.DETENT_STEP }, ({ payload }) => {
+        if (!payload) return;
+        if (payload.sender === clientId) return;
+        const delta = payload.delta;
+        if (delta !== 1 && delta !== -1) return;
+
+        applyingRemote = true;
+        try{
+          applyDetentStep(delta, {remote:true});
+          // remote detents do not change anything else
+        } finally {
+          applyingRemote = false;
+        }
+      })
+      .on("broadcast", { event: EVT.LOCK }, ({ payload }) => {
+        if (payload && payload.sender === clientId) return;
+        applyingRemote = true;
+        try{
+          applyLock({remote:true});
+        } finally {
+          applyingRemote = false;
+        }
+      })
+      .on("broadcast", { event: EVT.RESET }, ({ payload }) => {
+        if (payload && payload.sender === clientId) return;
+        applyingRemote = true;
+        try{
+          // Reset uses current runSeed from snapshot; controller will follow with snapshot.
+          // Do a minimal local reset now for responsiveness; snapshot will finalize.
+          applyReset({remote:true});
+        } finally {
+          applyingRemote = false;
+        }
+      })
+      .on("broadcast", { event: EVT.TAKE_CONTROL }, ({ payload }) => {
+        if (!payload) return;
+        if (payload.sender === clientId && !payload.claimerId) return;
+        handleTakeControl(payload);
+      })
+      .on("broadcast", { event: EVT.RELEASE_CONTROL }, ({ payload }) => {
+        if (!payload) return;
+        handleReleaseControl(payload);
+      });
+
+    const status = await channel.subscribe((s) => {
+      if (s === "SUBSCRIBED"){
+        connected = true;
+        setRoleUI();
+        // Ask for the current state
+        channel.send({ type: "broadcast", event: EVT.STATE_REQUEST, payload: { sender: clientId } });
+      }
+    });
+
+    // If subscription errors, reflect in UI
+    if (status !== "ok"){
+      connected = false;
+      roleEl.textContent = "CONNECT ERROR";
+    }
+  }
+
+  // --- Init ---
+  buildDisplayData();
+  buildFixedDialOnce();
+  ensureAudioRunning();
+  updateUI();
+  connectRealtime();
+
+})();
+</script>
+</body>
+</html>
