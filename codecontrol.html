@@ -455,7 +455,9 @@
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Safe Unlocked">
     <div class="modalCard">
       <h1>SAFE UNLOCKED</h1>
-      <div class="hint">Press RESET to play again.</div>
+      <div class="hint" id="unlockHint">Waiting for controller…</div>
+<button class="btn" id="modalResetBtn" style="margin-top:14px; max-width:420px;">RESET</button>
+
     </div>
   </div>
 
@@ -543,6 +545,8 @@ const EVT = {
   const controlBtn = document.getElementById("controlBtn");
   const modal = document.getElementById("modal");
   const soundBadge = document.getElementById("soundBadge");
+  const unlockHint = document.getElementById("unlockHint");
+const modalResetBtn = document.getElementById("modalResetBtn");
 
   const arrowPath = document.getElementById("arrowPath");
   const arrowHead = document.getElementById("arrowHead");
@@ -984,8 +988,23 @@ const EVT = {
     } else if (game.controllerId){
       roleEl.textContent = "VIEW ONLY";
     } else {
-      roleEl.textContent = "NO CONTROLLER";
+      roleEl.textContent = "NO CONTROLLER";  
     }
+if (game.unlocked){
+  if (ctl){
+    unlockHint.textContent = "Press RESET to play again.";
+    modalResetBtn.disabled = false;
+    modalResetBtn.style.opacity = 1;
+  } else {
+    unlockHint.textContent = "Waiting for controller…";
+    modalResetBtn.disabled = true;
+    modalResetBtn.style.opacity = 0.6;
+  }
+}
+else {
+  unlockHint.textContent = "";
+  modalResetBtn.disabled = true;
+}
 
     lockBtn.disabled = !ctl || game.unlocked;
     resetBtn.disabled = !ctl;
@@ -1109,6 +1128,13 @@ const EVT = {
     // per spec: controller broadcasts snapshot on reset
     publishStateSnapshot();
   });
+  modalResetBtn.addEventListener("click", () => {
+  if (!isController()) return;
+  applyReset({ remote: false });
+  publish(EVT.RESET, {});
+  publishStateSnapshot();
+});
+
 
   // Modal click does nothing; RESET required
   modal.addEventListener("click", () => { /* noop */ });
