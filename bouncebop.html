@@ -685,6 +685,35 @@
   }
 
   function tryRevealOnCell(player, r, c){
+  if (state.winner) return false;
+
+  const cellKey = keyRC(r,c);
+  const hit = player.targetCellMap.get(cellKey);
+  if (!hit) return false;
+
+  const idx = hit.idx;
+
+  // Only allow replay for revealed notes, or reveal in-order for the next note.
+  // Do NOT allow playing future (unrevealed) notes out of order.
+  if (idx < player.revealedCount){
+    playSequence([player.song.notes[idx]]);
+    return false;
+  }
+
+  if (idx === player.revealedCount){
+    const note = player.song.notes[idx];
+    player.revealedNotes.push(note);
+    player.revealedCount++;
+
+    state.revealedByCell.set(cellKey, {playerId: player.id, idx});
+    playSequence([note]);
+    return true;
+  }
+
+  // idx > revealedCount (future note): ignore (silent) to prevent skipping.
+  return false;
+}
+
     if (state.winner) return false;
     const nextIdx = player.revealedCount;
     if (nextIdx >= player.song.notes.length) return false;
@@ -731,7 +760,7 @@
       cells,
       i: 0,
       t0: performance.now(),
-      msPerStep: 80, // speed of bounce animation
+      msPerStep: 120, // speed of bounce animation
       accent: pl.accent,
       revealedThisLaunch: 0
     };
