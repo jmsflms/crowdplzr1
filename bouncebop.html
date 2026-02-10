@@ -1,0 +1,1316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bounce Bop</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#111826;
+      --panel2:#0f1623;
+      --line:#1e2a3a;
+      --text:#e9eef6;
+      --muted:#9aa7b8;
+      --tile:#152033;
+      --tile2:#0f1a2b;
+      --good:#38d39f;
+      --warn:#f3c74b;
+      --bad:#ff5b6b;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 600px at 20% 0%, #10233b 0%, transparent 60%),
+                  radial-gradient(900px 500px at 90% 15%, #1a1b3a 0%, transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+    .wrap{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap: 16px;
+    }
+    header{
+      grid-column: 1 / -1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background: conic-gradient(from 90deg, #38d39f, #4bb7ff, #f3c74b, #ff5b6b, #38d39f);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 20px rgba(0,0,0,.35);
+    }
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .brand .sub{
+      margin:2px 0 0 0;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .topActions{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    button, input, select{
+      font-family:inherit;
+    }
+    .btn{
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      box-shadow: 0 10px 20px rgba(0,0,0,.20);
+      transition: transform .06s ease, border-color .12s ease, filter .12s ease;
+      user-select:none;
+    }
+    .btn:hover{ border-color: rgba(255,255,255,.18); filter:brightness(1.05); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      border-color: rgba(255,255,255,.0);
+      background: linear-gradient(180deg, rgba(56,211,159,.25), rgba(56,211,159,.10));
+    }
+    .btn.danger{
+      background: linear-gradient(180deg, rgba(255,91,107,.25), rgba(255,91,107,.10));
+    }
+    .btn:disabled{
+      opacity:.45; cursor:not-allowed; filter:none;
+    }
+    .stage{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      min-height: 520px;
+    }
+    .stageHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 12px 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.10);
+    }
+    .pillRow{
+      display:flex; gap:8px; flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      display:flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:99px;
+      background: rgba(255,255,255,.25);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.06);
+    }
+    .pill strong{ color: var(--text); font-weight:700; }
+    .gridWrap{
+      position:relative;
+      width:100%;
+      aspect-ratio: 1 / 1;
+      max-height: calc(100vh - 210px);
+      margin: 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 14px;
+    }
+    canvas{
+      width:100%;
+      height:100%;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.08);
+      background: radial-gradient(900px 500px at 40% 20%, rgba(75,183,255,.08), transparent 60%),
+                  radial-gradient(700px 400px at 75% 80%, rgba(56,211,159,.06), transparent 55%),
+                  rgba(0,0,0,.18);
+    }
+    .side{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .side .section{
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .side .section:last-child{ border-bottom:none; }
+    .h2{
+      margin:0 0 8px 0;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing:.12em;
+      text-transform: uppercase;
+    }
+    .playerTabs{
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap:8px;
+    }
+    .tab{
+      cursor:pointer;
+      padding:10px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:flex-start;
+      transition: border-color .12s ease, filter .12s ease, transform .06s ease;
+      user-select:none;
+    }
+    .tab:hover{ border-color: rgba(255,255,255,.18); filter:brightness(1.05); }
+    .tab:active{ transform: translateY(1px); }
+    .tab.active{
+      border-color: rgba(255,255,255,.0);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+    }
+    .tabTop{
+      display:flex; align-items:center; gap:8px;
+      width:100%;
+      justify-content:space-between;
+    }
+    .tag{
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .kbd{
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+    }
+    .bar{
+      height: 8px;
+      width:100%;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width:0%;
+      background: rgba(56,211,159,.75);
+    }
+    .formRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .label{
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 6px 0;
+    }
+    .field{
+      width:100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      color: var(--text);
+      outline:none;
+    }
+    .field:focus{ border-color: rgba(75,183,255,.45); box-shadow: 0 0 0 3px rgba(75,183,255,.15); }
+    .sliderRow{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color: #4bb7ff;
+    }
+    .mini{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .rules{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .rules ul{ margin:8px 0 0 18px; padding:0; }
+    .rules li{ margin:6px 0; }
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.65);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      max-width: min(720px, calc(100vw - 24px));
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      font-size: 13px;
+    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-2px); }
+    .modalBack{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.62);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+    }
+    .modal{
+      width: min(520px, 100%);
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .modal h3{
+      margin: 2px 0 8px 0;
+      font-size: 16px;
+    }
+    .modal p{ margin: 0 0 12px 0; color: var(--muted); font-size: 13px; line-height:1.45; }
+    .modal .row{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
+
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+      .side{ order: 2; }
+      .stage{ order: 1; }
+      .gridWrap{ max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Bounce Bop</h1>
+          <div class="sub">Launch straight shots. Reveal notes. First correct guess wins.</div>
+        </div>
+      </div>
+      <div class="topActions">
+        <button class="btn" id="btnReplay">Play revealed notes (active)</button>
+        <button class="btn danger" id="btnReset">Reset game</button>
+      </div>
+    </header>
+
+    <div class="stage">
+      <div class="stageHeader">
+        <div class="pillRow">
+          <div class="pill"><span class="dot" id="activeDot"></span><strong id="activeName">Player 1</strong><span id="activeEdge" class="tag">TOP → DOWN</span></div>
+          <div class="pill"><span class="tag">Grid</span> <span class="kbd" id="gridLabel">16×16</span></div>
+          <div class="pill"><span class="tag">Status</span> <span class="kbd" id="statusLabel">LIVE</span></div>
+        </div>
+        <div class="pillRow">
+          <div class="pill"><span class="tag">Hint</span><span class="kbd">Aim line shows your exact shot</span></div>
+        </div>
+      </div>
+
+      <div class="gridWrap">
+        <canvas id="board" width="900" height="900"></canvas>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="section">
+        <div class="h2">Active Player</div>
+        <div class="playerTabs" id="playerTabs"></div>
+      </div>
+
+      <div class="section">
+        <div class="h2">Launch Controls</div>
+        <div class="sliderRow">
+          <div>
+            <div class="label">Angle (within your edge arc)</div>
+            <input type="range" id="angle" min="-35" max="35" value="0" />
+            <div class="mini" id="angleMini">0°</div>
+          </div>
+          <div>
+            <div class="label">Power (distance)</div>
+            <input type="range" id="power" min="0.25" max="1.0" step="0.01" value="0.75" />
+            <div class="mini" id="powerMini">75%</div>
+          </div>
+        </div>
+        <div class="formRow" style="margin-top:10px;">
+          <button class="btn primary" id="btnLaunch">LAUNCH</button>
+          <button class="btn" id="btnGhost">Toggle ghost line</button>
+        </div>
+        <div class="mini" style="margin-top:10px;">
+          Shot is deterministic: no random physics. Your path is the straight line you see.
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="h2">Guessing</div>
+        <div class="label">Guess the Song (active player)</div>
+        <input class="field" id="guessInput" placeholder="Type your guess…" />
+        <div class="formRow" style="margin-top:10px;">
+          <button class="btn primary" id="btnGuess">Submit Guess</button>
+          <button class="btn" id="btnReveal" disabled>Reveal Song Name</button>
+        </div>
+        <div class="mini" id="guessFeedback" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="section">
+        <div class="h2">Rules</div>
+        <div class="rules">
+          <ul>
+            <li>Each player has a hidden melody (notes + durations).</li>
+            <li>Launch straight shots to hit lit squares and reveal notes <b>in order</b>.</li>
+            <li>Spacing between revealed squares encodes rhythm (bigger gap → longer duration).</li>
+            <li>You can guess your song title at any time.</li>
+            <li><b>First correct guess wins immediately.</b></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h3 id="modalTitle">Winner</h3>
+      <p id="modalBody"></p>
+      <div class="row">
+        <button class="btn" id="btnCloseModal">Close</button>
+        <button class="btn danger" id="btnReset2">Reset game</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    // =========================
+    // Data
+    // =========================
+    const SONGS = [
+      {
+        title: "Never Gonna Give You Up",
+        notes: [
+          {m:69,d:.5},{m:71,d:.5},{m:74,d:.5},{m:71,d:.5},
+          {m:78,d:1},{m:78,d:1},{m:76,d:1},{m:69,d:.5},
+          {m:71,d:.5},{m:74,d:.5},{m:71,d:.5},{m:76,d:1},
+          {m:76,d:1},{m:74,d:2},
+        ]
+      },
+      {
+        title: "Do You Want to Build a Snowman?",
+        notes: [
+          {m:63,d:.25},{m:63,d:.25},{m:63,d:.5},{m:58,d:.5},
+          {m:63,d:.5},{m:67,d:.5},{m:65,d:1},{m:67,d:1},
+          {m:63,d:.5},{m:63,d:.5},{m:58,d:.5},{m:63,d:.5},
+          {m:67,d:.5},{m:65,d:1},
+        ]
+      },
+      {
+        title: "Teenage Dirtbag",
+        notes: [
+          {m:67,d:.5},{m:72,d:.5},{m:71,d:.5},{m:69,d:1},
+          {m:67,d:1},{m:71,d:1},{m:66,d:1},{m:66,d:1},
+          {m:67,d:1},{m:67,d:.5},{m:72,d:.5},{m:71,d:.5},
+          {m:69,d:1},{m:67,d:1},{m:71,d:1},{m:66,d:1},
+        ]
+      },
+      {
+        title: "Get Into the Groove",
+        notes: [
+          {m:67,d:1},{m:60,d:.5},{m:63,d:.5},{m:60,d:.5},
+          {m:67,d:1},{m:60,d:1},{m:60,d:.5},{m:63,d:.5},
+          {m:60,d:.5},{m:67,d:1},{m:60,d:1},{m:60,d:.5},
+          {m:70,d:1},{m:67,d:1},
+        ]
+      }
+    ];
+
+    const PLAYERS = [
+      { id: 0, name: "Player 1", edge: "top",    dir: "down",  accent: "#38d39f" },
+      { id: 1, name: "Player 2", edge: "right",  dir: "left",  accent: "#4bb7ff" },
+      { id: 2, name: "Player 3", edge: "bottom", dir: "up",    accent: "#f3c74b" },
+      { id: 3, name: "Player 4", edge: "left",   dir: "right", accent: "#ff5b6b" },
+    ];
+
+    // Default grid size (16 or 32 per spec). Use 16 for playability; can be changed easily.
+    const N = 16;
+
+    // Rhythm encoding: convert duration to "gap steps" between successive note squares (geometry = rhythm).
+    // Base smallest unit = 0.25. Map 0.25->1, 0.5->2, 1->4, 2->8 etc.
+    const unit = 0.25;
+    const gapStepsForDuration = (d) => Math.max(1, Math.round(d / unit));
+
+    // Group notes into lanes so a single straight shot can reveal multiple consecutive notes sometimes.
+    // Chunk size determines how often lane changes.
+    const CHUNK = 4;
+
+    // =========================
+    // DOM
+    // =========================
+    const $ = (id) => document.getElementById(id);
+    const canvas = $("board");
+    const ctx = canvas.getContext("2d");
+
+    const playerTabs = $("playerTabs");
+    const activeName = $("activeName");
+    const activeEdge = $("activeEdge");
+    const activeDot  = $("activeDot");
+    const gridLabel  = $("gridLabel");
+    const statusLabel= $("statusLabel");
+
+    const angleEl = $("angle");
+    const powerEl = $("power");
+    const angleMini = $("angleMini");
+    const powerMini = $("powerMini");
+
+    const btnLaunch = $("btnLaunch");
+    const btnGhost  = $("btnGhost");
+    const btnReplay = $("btnReplay");
+    const btnReset  = $("btnReset");
+    const btnReset2 = $("btnReset2");
+
+    const guessInput = $("guessInput");
+    const btnGuess = $("btnGuess");
+    const btnReveal = $("btnReveal");
+    const guessFeedback = $("guessFeedback");
+
+    const toast = $("toast");
+    const modalBack = $("modalBack");
+    const modalTitle = $("modalTitle");
+    const modalBody = $("modalBody");
+    const btnCloseModal = $("btnCloseModal");
+
+    // =========================
+    // State
+    // =========================
+    const state = {
+      activePlayerId: 0,
+      showGhost: true,
+      winner: null, // {playerId, title}
+      // For each player: song index same as player id for this prototype
+      players: PLAYERS.map((p, i) => ({
+        ...p,
+        song: SONGS[i],
+        revealedCount: 0,
+        revealedNotes: [], // {m,d}
+        targets: [],       // [{r,c, idx}] ordered by idx
+        targetMap: new Map(), // "r,c" -> idx
+      })),
+      // Board global revealed markers (so other players’ revealed notes stay visible)
+      revealedByCell: new Map(), // "r,c" -> {playerId, idx}
+      // Animation
+      anim: null,
+    };
+
+    // =========================
+    // Audio (simple synth)
+    // =========================
+    let audioCtx = null;
+    function ensureAudio(){
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    }
+    function midiToHz(m){
+      return 440 * Math.pow(2, (m - 69) / 12);
+    }
+    function playNote(midi, durSec, when=0){
+      ensureAudio();
+      const t0 = audioCtx.currentTime + when;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(midiToHz(midi), t0);
+
+      // ADSR-ish
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.18, t0 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.06, t0 + Math.max(0.03, durSec * 0.45));
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + Math.max(0.06, durSec));
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(t0);
+      osc.stop(t0 + Math.max(0.06, durSec + 0.02));
+    }
+    function playSequence(notes){
+      // Interpret d as relative beat length; choose a snappy base.
+      const beat = 0.28; // seconds for duration=1
+      let t = 0;
+      for (const n of notes){
+        const dur = Math.max(0.06, n.d * beat);
+        playNote(n.m, dur, t);
+        t += dur;
+      }
+    }
+
+    // =========================
+    // Layout helpers
+    // =========================
+    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+    function lerp(a,b,t){ return a + (b-a)*t; }
+
+    // Convert board cell center to canvas coordinates
+    function cellToXY(r,c){
+      const pad = 18; // inner padding inside canvas drawing area
+      const size = Math.min(canvas.width, canvas.height);
+      const inner = size - pad*2;
+      const step = inner / N;
+      const x = pad + (c + 0.5) * step;
+      const y = pad + (r + 0.5) * step;
+      return {x,y,step,pad,inner};
+    }
+
+    function xyToCell(x,y){
+      const pad = 18;
+      const size = Math.min(canvas.width, canvas.height);
+      const inner = size - pad*2;
+      const step = inner / N;
+      const c = Math.floor((x - pad) / step);
+      const r = Math.floor((y - pad) / step);
+      if (r < 0 || r >= N || c < 0 || c >= N) return null;
+      return {r,c};
+    }
+
+    function keyRC(r,c){ return r + "," + c; }
+
+    // =========================
+    // Target generation (satisfies "facing players do not share same columns/rows")
+    // =========================
+    function allowedLanesForPlayer(player){
+      // Player 1/3 use columns; Player 2/4 use rows
+      if (player.edge === "top") {
+        // even columns
+        return Array.from({length:N}, (_,i)=>i).filter(c => c % 2 === 0);
+      }
+      if (player.edge === "bottom") {
+        // odd columns
+        return Array.from({length:N}, (_,i)=>i).filter(c => c % 2 === 1);
+      }
+      if (player.edge === "right") {
+        // even rows
+        return Array.from({length:N}, (_,i)=>i).filter(r => r % 2 === 0);
+      }
+      // left
+      return Array.from({length:N}, (_,i)=>i).filter(r => r % 2 === 1);
+    }
+
+    function buildTargets(){
+      // Reset
+      state.revealedByCell.clear();
+      for (const p of state.players){
+        p.revealedCount = 0;
+        p.revealedNotes = [];
+        p.targets = [];
+        p.targetMap = new Map();
+      }
+
+      // For each player, lay notes into lanes in CHUNKs.
+      // Within a chunk, keep same lane so one straight shot can reveal multiple notes if aimed correctly.
+      for (const p of state.players){
+        const lanes = allowedLanesForPlayer(p);
+        let laneIdx = 0;
+
+        let posAlong = 1; // starting offset from the player's edge (in cells)
+        let chunkPosAlong = 1;
+
+        const notes = p.song.notes.slice(); // up to 16
+        for (let i=0; i<notes.length; i++){
+          const inChunkIndex = i % CHUNK;
+          if (inChunkIndex === 0){
+            // New chunk: pick next lane, reset chunk position
+            laneIdx = (laneIdx + 1) % lanes.length;
+            chunkPosAlong = 1;
+          }
+
+          // Determine step (gap) from this note's duration
+          const gap = gapStepsForDuration(notes[i].d);
+
+          // Place note at current chunkPosAlong; next note in same chunk moves by gap
+          // Convert lane + along-distance into (r,c) based on edge
+          let r,c;
+
+          if (p.edge === "top"){
+            c = lanes[laneIdx];
+            r = clamp(chunkPosAlong, 0, N-1);
+          } else if (p.edge === "bottom"){
+            c = lanes[laneIdx];
+            r = clamp(N-1 - chunkPosAlong, 0, N-1);
+          } else if (p.edge === "right"){
+            r = lanes[laneIdx];
+            c = clamp(N-1 - chunkPosAlong, 0, N-1);
+          } else { // left
+            r = lanes[laneIdx];
+            c = clamp(chunkPosAlong, 0, N-1);
+          }
+
+          // Avoid collisions within same player's targets: if occupied, nudge along by 1 until free or give up.
+          let tries = 0;
+          while (tries < N*2 && p.targetMap.has(keyRC(r,c))){
+            chunkPosAlong += 1;
+            if (p.edge === "top") r = clamp(chunkPosAlong, 0, N-1);
+            if (p.edge === "bottom") r = clamp(N-1 - chunkPosAlong, 0, N-1);
+            if (p.edge === "right") c = clamp(N-1 - chunkPosAlong, 0, N-1);
+            if (p.edge === "left") c = clamp(chunkPosAlong, 0, N-1);
+            tries++;
+          }
+
+          // If still occupied, skip placing (shouldn't happen often on 16x16 with lane spacing)
+          if (!p.targetMap.has(keyRC(r,c))){
+            p.targets.push({ r, c, idx: i });
+            p.targetMap.set(keyRC(r,c), i);
+          }
+
+          chunkPosAlong += gap;
+          if (chunkPosAlong > N-2) chunkPosAlong = 1; // wrap inside lane to keep within grid
+        }
+      }
+    }
+
+    // =========================
+    // Shot model (deterministic straight line)
+    // =========================
+    function getStartPoint(player){
+      // Start just outside the grid toward that player's edge, aimed inward.
+      const pad = 18;
+      const size = Math.min(canvas.width, canvas.height);
+      const inner = size - pad*2;
+      const step = inner / N;
+
+      // Start at edge midpoint
+      const mid = pad + inner/2;
+      const off = step * 0.6;
+
+      if (player.edge === "top")    return {x: mid, y: pad - off};
+      if (player.edge === "bottom") return {x: mid, y: pad + inner + off};
+      if (player.edge === "right")  return {x: pad + inner + off, y: mid};
+      return {x: pad - off, y: mid};
+    }
+
+    function getBaseDirection(player){
+      // Unit vector pointing inward
+      if (player.edge === "top")    return {dx: 0, dy: 1};
+      if (player.edge === "bottom") return {dx: 0, dy:-1};
+      if (player.edge === "right")  return {dx:-1, dy: 0};
+      return {dx: 1, dy: 0};
+    }
+
+    function rotateVec(dx,dy,deg){
+      const a = deg * Math.PI/180;
+      const ca = Math.cos(a), sa = Math.sin(a);
+      return {dx: dx*ca - dy*sa, dy: dx*sa + dy*ca};
+    }
+
+    function computeShotLine(player, angleDeg, power01){
+      const start = getStartPoint(player);
+      const base = getBaseDirection(player);
+
+      // Angle is within arc around the base vector.
+      const v = rotateVec(base.dx, base.dy, angleDeg);
+
+      // Length scales with power to reach across grid
+      const pad = 18;
+      const size = Math.min(canvas.width, canvas.height);
+      const inner = size - pad*2;
+      const maxLen = inner * 1.35; // allow crossing
+      const len = maxLen * clamp(power01, 0.25, 1.0);
+
+      const end = { x: start.x + v.dx * len, y: start.y + v.dy * len };
+      return { start, end, v };
+    }
+
+    function distPointToSegment(px,py, ax,ay, bx,by){
+      const abx = bx-ax, aby = by-ay;
+      const apx = px-ax, apy = py-ay;
+      const ab2 = abx*abx + aby*aby;
+      const t = ab2 === 0 ? 0 : clamp((apx*abx + apy*aby)/ab2, 0, 1);
+      const cx = ax + abx*t, cy = ay + aby*t;
+      const dx = px-cx, dy = py-cy;
+      return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    function attemptRevealOnShot(player, line){
+      if (state.winner) return {hitCount:0};
+
+      const threshold = (Math.min(canvas.width, canvas.height) - 36) / N * 0.35; // near cell center
+      const notes = player.song.notes;
+      let idx = player.revealedCount;
+
+      let hitCount = 0;
+
+      // We allow the line to reveal multiple notes in-order, if it passes through their target centers.
+      // Iterate forward, try to reveal next note if its target lies on the segment.
+      while (idx < notes.length){
+        const tgt = player.targets.find(t => t.idx === idx);
+        if (!tgt) break; // missing placement
+        const {x,y} = cellToXY(tgt.r, tgt.c);
+        const d = distPointToSegment(x,y, line.start.x,line.start.y, line.end.x,line.end.y);
+        if (d <= threshold){
+          // Reveal this note
+          const cellKey = keyRC(tgt.r, tgt.c);
+
+          // Mark board globally (can overlap other players at same cell; keep first for display simplicity)
+          if (!state.revealedByCell.has(cellKey)){
+            state.revealedByCell.set(cellKey, {playerId: player.id, idx});
+          }
+
+          player.revealedNotes.push(notes[idx]);
+          player.revealedCount++;
+          hitCount++;
+          idx = player.revealedCount;
+
+          // Play note now (duration snappy)
+          playSequence([notes[player.revealedCount-1]]);
+        } else {
+          break;
+        }
+      }
+
+      return {hitCount};
+    }
+
+    // =========================
+    // Guessing
+    // =========================
+    function norm(s){
+      return (s||"")
+        .toLowerCase()
+        .replace(/&/g,"and")
+        .replace(/[^a-z0-9]+/g," ")
+        .trim()
+        .replace(/\s+/g," ");
+    }
+    function editDistance(a,b){
+      // classic DP (small strings only)
+      const m=a.length, n=b.length;
+      const dp = Array.from({length:m+1}, ()=>new Array(n+1).fill(0));
+      for (let i=0;i<=m;i++) dp[i][0]=i;
+      for (let j=0;j<=n;j++) dp[0][j]=j;
+      for (let i=1;i<=m;i++){
+        for (let j=1;j<=n;j++){
+          const cost = a[i-1]===b[j-1] ? 0 : 1;
+          dp[i][j] = Math.min(
+            dp[i-1][j] + 1,
+            dp[i][j-1] + 1,
+            dp[i-1][j-1] + cost
+          );
+        }
+      }
+      return dp[m][n];
+    }
+    function similarEnough(guess, title){
+      const g = norm(guess);
+      const t = norm(title);
+      if (!g) return false;
+      if (g === t) return true;
+      if (t.includes(g) && g.length >= Math.min(8, t.length)) return true;
+      const dist = editDistance(g,t);
+      const maxLen = Math.max(g.length, t.length);
+      const similarity = 1 - (dist / maxLen);
+      return similarity >= 0.82; // tolerant but not too loose
+    }
+
+    function declareWinner(player){
+      state.winner = { playerId: player.id, title: player.song.title };
+
+      statusLabel.textContent = "WIN";
+      btnReveal.disabled = false;
+
+      showModal(`${player.name} wins!`, `Correct song: “${player.song.title}”.`);
+      toastMsg(`${player.name} wins!`);
+      render();
+    }
+
+    // =========================
+    // Rendering
+    // =========================
+    function resizeCanvasToCSS(){
+      // Match pixel density for crisp grid
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const w = Math.max(520, Math.floor(rect.width * dpr));
+      const h = Math.max(520, Math.floor(rect.height * dpr));
+      if (canvas.width !== w || canvas.height !== h){
+        canvas.width = w;
+        canvas.height = h;
+      }
+    }
+
+    function draw(){
+      resizeCanvasToCSS();
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      const pad = 18;
+      const size = Math.min(canvas.width, canvas.height);
+      const inner = size - pad*2;
+      const step = inner / N;
+
+      // Background panel
+      ctx.save();
+      ctx.fillStyle = "rgba(0,0,0,.16)";
+      ctx.fillRect(pad, pad, inner, inner);
+      ctx.restore();
+
+      // Active edge glow
+      const p = state.players[state.activePlayerId];
+      ctx.save();
+      ctx.strokeStyle = hexToRgba(p.accent, 0.65);
+      ctx.lineWidth = Math.max(2, step * 0.12);
+      ctx.shadowColor = hexToRgba(p.accent, 0.75);
+      ctx.shadowBlur = step * 0.9;
+
+      if (p.edge === "top"){
+        ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad+inner, pad); ctx.stroke();
+      } else if (p.edge === "bottom"){
+        ctx.beginPath(); ctx.moveTo(pad, pad+inner); ctx.lineTo(pad+inner, pad+inner); ctx.stroke();
+      } else if (p.edge === "left"){
+        ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, pad+inner); ctx.stroke();
+      } else {
+        ctx.beginPath(); ctx.moveTo(pad+inner, pad); ctx.lineTo(pad+inner, pad+inner); ctx.stroke();
+      }
+      ctx.restore();
+
+      // Grid lines
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,255,255,.06)";
+      ctx.lineWidth = 1;
+      for (let i=0;i<=N;i++){
+        const x = pad + i*step;
+        const y = pad + i*step;
+        ctx.beginPath();
+        ctx.moveTo(x, pad); ctx.lineTo(x, pad+inner);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pad, y); ctx.lineTo(pad+inner, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Draw targets: all players (muted for non-active)
+      for (const pl of state.players){
+        const isActive = (pl.id === state.activePlayerId);
+        const accent = pl.accent;
+
+        for (const t of pl.targets){
+          const key = keyRC(t.r,t.c);
+          const alreadyRevealed = (pl.revealedCount > t.idx);
+          const nextIdx = pl.revealedCount;
+          const isNext = (t.idx === nextIdx);
+          const isFuture = (t.idx > nextIdx);
+
+          // Only show lit targets (unrevealed) + revealed markers
+          const cx = pad + (t.c + 0.5)*step;
+          const cy = pad + (t.r + 0.5)*step;
+          const r = step * 0.30;
+
+          if (alreadyRevealed){
+            // revealed tile marker (small dot + index pip)
+            ctx.save();
+            ctx.fillStyle = "rgba(255,255,255,.10)";
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI*2);
+            ctx.fill();
+
+            // colored center if that player's reveal created this cell
+            const global = state.revealedByCell.get(key);
+            if (global && global.playerId === pl.id){
+              ctx.fillStyle = hexToRgba(accent, 0.75);
+              ctx.beginPath();
+              ctx.arc(cx, cy, r*0.45, 0, Math.PI*2);
+              ctx.fill();
+            }
+            ctx.restore();
+            continue;
+          }
+
+          // Unrevealed targets: lit
+          ctx.save();
+          const baseAlpha = isActive ? 0.32 : 0.14;
+          const ringAlpha = isActive ? 0.72 : 0.30;
+          const glow = isActive ? 0.65 : 0.10;
+
+          // Active player's "next note" pops
+          const bump = isActive && isNext ? 1.10 : 1.0;
+          const pul = isActive && (isNext || isFuture) ? (0.86 + 0.14*Math.sin(Date.now()/260)) : 1.0;
+
+          ctx.fillStyle = hexToRgba(accent, baseAlpha * pul);
+          ctx.strokeStyle = hexToRgba(accent, ringAlpha * pul);
+          ctx.lineWidth = Math.max(1.2, step*0.05);
+
+          ctx.shadowColor = hexToRgba(accent, glow);
+          ctx.shadowBlur = step * (isActive ? 0.55 : 0.25);
+
+          ctx.beginPath();
+          ctx.arc(cx, cy, r*bump, 0, Math.PI*2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Tiny indicator for "next"
+          if (isActive && isNext){
+            ctx.fillStyle = "rgba(255,255,255,.85)";
+            ctx.beginPath();
+            ctx.arc(cx, cy, r*0.18, 0, Math.PI*2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+      }
+
+      // Ghost line for active player
+      if (state.showGhost){
+        const line = computeShotLine(state.players[state.activePlayerId], Number(angleEl.value), Number(powerEl.value));
+        ctx.save();
+        ctx.setLineDash([step*0.35, step*0.25]);
+        ctx.strokeStyle = hexToRgba(state.players[state.activePlayerId].accent, 0.65);
+        ctx.lineWidth = Math.max(2, step*0.08);
+        ctx.beginPath();
+        ctx.moveTo(line.start.x, line.start.y);
+        ctx.lineTo(line.end.x, line.end.y);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Animated ball (if any)
+      if (state.anim){
+        const a = state.anim;
+        const t = clamp((performance.now() - a.t0) / a.ms, 0, 1);
+        const x = lerp(a.start.x, a.end.x, t);
+        const y = lerp(a.start.y, a.end.y, t);
+
+        ctx.save();
+        ctx.fillStyle = "rgba(255,255,255,.90)";
+        ctx.shadowColor = hexToRgba(a.accent, 0.9);
+        ctx.shadowBlur = step * 0.9;
+        ctx.beginPath();
+        ctx.arc(x, y, Math.max(3.5, step*0.18), 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+
+        if (t >= 1){
+          state.anim = null;
+        } else {
+          requestAnimationFrame(draw);
+          return;
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    function hexToRgba(hex, a){
+      const h = hex.replace("#","");
+      const r = parseInt(h.slice(0,2),16);
+      const g = parseInt(h.slice(2,4),16);
+      const b = parseInt(h.slice(4,6),16);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    function renderSidebar(){
+      // Header info
+      const p = state.players[state.activePlayerId];
+      activeName.textContent = p.name;
+      activeEdge.textContent = edgeLabel(p.edge);
+      activeDot.style.background = hexToRgba(p.accent, 0.95);
+      activeDot.style.boxShadow = `0 0 0 3px ${hexToRgba(p.accent, 0.18)}`;
+
+      gridLabel.textContent = `${N}×${N}`;
+      statusLabel.textContent = state.winner ? "WIN" : "LIVE";
+
+      // Tabs
+      playerTabs.innerHTML = "";
+      state.players.forEach(pl => {
+        const total = pl.song.notes.length;
+        const pct = total ? Math.round((pl.revealedCount / total) * 100) : 0;
+
+        const tab = document.createElement("div");
+        tab.className = "tab" + (pl.id === state.activePlayerId ? " active" : "");
+        tab.setAttribute("role","button");
+        tab.tabIndex = 0;
+
+        const top = document.createElement("div");
+        top.className = "tabTop";
+
+        const left = document.createElement("div");
+        left.style.display="flex";
+        left.style.alignItems="center";
+        left.style.gap="8px";
+
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        dot.style.background = hexToRgba(pl.accent, 0.95);
+        dot.style.boxShadow = `0 0 0 3px ${hexToRgba(pl.accent, 0.12)}`;
+
+        const name = document.createElement("div");
+        name.innerHTML = `<strong style="font-size:12px;color:var(--text)">${pl.name}</strong><div class="tag">${edgeLabel(pl.edge)}</div>`;
+
+        left.appendChild(dot);
+        left.appendChild(name);
+
+        const right = document.createElement("div");
+        right.className = "kbd";
+        right.textContent = `${pl.revealedCount}/${total}`;
+
+        top.appendChild(left);
+        top.appendChild(right);
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        const fill = document.createElement("i");
+        fill.style.width = `${pct}%`;
+        fill.style.background = hexToRgba(pl.accent, 0.78);
+        bar.appendChild(fill);
+
+        tab.appendChild(top);
+        tab.appendChild(bar);
+
+        tab.addEventListener("click", () => setActivePlayer(pl.id));
+        tab.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") setActivePlayer(pl.id);
+        });
+
+        playerTabs.appendChild(tab);
+      });
+
+      // Controls mini labels
+      angleMini.textContent = `${Number(angleEl.value)}°`;
+      powerMini.textContent = `${Math.round(Number(powerEl.value) * 100)}%`;
+
+      // Guess feedback
+      if (!state.winner){
+        guessFeedback.textContent = "";
+        btnReveal.disabled = true;
+      } else {
+        // If winner exists, enable reveal (still per spec: disabled until end state or correct guess)
+        btnReveal.disabled = false;
+      }
+
+      // Active player themed accent on primary actions (subtle)
+      document.documentElement.style.setProperty("--accent", p.accent);
+    }
+
+    function edgeLabel(edge){
+      if (edge === "top") return "TOP → DOWN";
+      if (edge === "bottom") return "BOTTOM → UP";
+      if (edge === "left") return "LEFT → RIGHT";
+      return "RIGHT → LEFT";
+    }
+
+    function render(){
+      renderSidebar();
+      // draw loop is continuous; just keep it running.
+    }
+
+    // =========================
+    // Interaction
+    // =========================
+    function setActivePlayer(id){
+      state.activePlayerId = id;
+      guessInput.value = "";
+      guessFeedback.textContent = "";
+      toastMsg(`${state.players[id].name} active`);
+      render();
+    }
+
+    function launch(){
+      if (state.winner) return toastMsg("Game over. Reset to play again.");
+      const p = state.players[state.activePlayerId];
+
+      const ang = Number(angleEl.value);
+      const pow = Number(powerEl.value);
+
+      const line = computeShotLine(p, ang, pow);
+
+      // animate ball
+      state.anim = {
+        t0: performance.now(),
+        ms: 520,
+        start: line.start,
+        end: line.end,
+        accent: p.accent,
+      };
+
+      // attempt reveal
+      const {hitCount} = attemptRevealOnShot(p, line);
+
+      if (hitCount > 0){
+        toastMsg(`${p.name}: +${hitCount} note${hitCount>1?"s":""} revealed`);
+      } else {
+        toastMsg(`${p.name}: no hit (try another angle/power)`);
+      }
+
+      render();
+    }
+
+    function replayActive(){
+      const p = state.players[state.activePlayerId];
+      if (!p.revealedNotes.length){
+        toastMsg("No revealed notes yet.");
+        return;
+      }
+      playSequence(p.revealedNotes);
+      toastMsg(`Playing ${p.name}'s revealed melody…`);
+    }
+
+    function submitGuess(){
+      if (state.winner) return toastMsg("Game over. Reset to play again.");
+      const p = state.players[state.activePlayerId];
+      const g = guessInput.value.trim();
+      if (!g){
+        guessFeedback.style.color = "var(--muted)";
+        guessFeedback.textContent = "Type a guess first.";
+        return;
+      }
+
+      const ok = similarEnough(g, p.song.title);
+      if (ok){
+        guessFeedback.style.color = "var(--good)";
+        guessFeedback.textContent = "Correct! You win.";
+        declareWinner(p);
+      } else {
+        guessFeedback.style.color = "var(--bad)";
+        guessFeedback.textContent = "Nope. Keep going.";
+        toastMsg(`${p.name}: incorrect guess`);
+      }
+    }
+
+    function revealSongName(){
+      if (!state.winner){
+        toastMsg("Reveal is disabled until someone wins.");
+        return;
+      }
+      const p = state.players[state.activePlayerId];
+      // Reveal only the active player's song title (matches UI expectation)
+      showModal("Song Name", `${p.name}'s song is: “${p.song.title}”.`);
+    }
+
+    function resetGame(){
+      state.winner = null;
+      statusLabel.textContent = "LIVE";
+      btnReveal.disabled = true;
+      guessInput.value = "";
+      guessFeedback.textContent = "";
+      buildTargets();
+      toastMsg("Game reset.");
+      render();
+    }
+
+    // Ghost line toggle
+    function toggleGhost(){
+      state.showGhost = !state.showGhost;
+      toastMsg(state.showGhost ? "Ghost line ON" : "Ghost line OFF");
+      render();
+    }
+
+    // =========================
+    // Toast + Modal
+    // =========================
+    let toastTimer = null;
+    function toastMsg(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    function showModal(title, body){
+      modalTitle.textContent = title;
+      modalBody.textContent = body;
+      modalBack.style.display = "flex";
+    }
+    function closeModal(){
+      modalBack.style.display = "none";
+    }
+
+    // =========================
+    // Boot
+    // =========================
+    function init(){
+      buildTargets();
+      render();
+
+      // Controls
+      angleEl.addEventListener("input", () => render());
+      powerEl.addEventListener("input", () => render());
+
+      btnLaunch.addEventListener("click", launch);
+      btnGhost.addEventListener("click", toggleGhost);
+      btnReplay.addEventListener("click", replayActive);
+      btnGuess.addEventListener("click", submitGuess);
+      btnReveal.addEventListener("click", revealSongName);
+
+      guessInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") submitGuess();
+      });
+
+      btnReset.addEventListener("click", resetGame);
+      btnReset2.addEventListener("click", () => { closeModal(); resetGame(); });
+      btnCloseModal.addEventListener("click", closeModal);
+
+      modalBack.addEventListener("click", (e) => {
+        if (e.target === modalBack) closeModal();
+      });
+
+      // Keyboard quick switching: 1-4
+      window.addEventListener("keydown", (e) => {
+        if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+        if (e.key >= "1" && e.key <= "4"){
+          setActivePlayer(Number(e.key)-1);
+        }
+        if (e.key.toLowerCase() === "l") launch();
+      });
+
+      // Start draw loop
+      requestAnimationFrame(draw);
+      toastMsg("Ready. Pick a player and launch.");
+    }
+
+    init();
+  })();
+  </script>
+</body>
+</html>
