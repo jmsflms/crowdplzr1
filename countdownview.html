@@ -11,8 +11,18 @@
     height:100%;
     background:#000;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
+  }
+
+  #label {
+    color:#ff2a2a;
+    font-family: monospace;
+    font-size: clamp(24px, 4vw, 60px);
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(255,0,0,0.4);
+    user-select:none;
   }
 
   #timer {
@@ -21,13 +31,14 @@
     font-size: clamp(60px, 12vw, 160px);
     font-weight: bold;
     letter-spacing: 0.08em;
-    text-shadow: 0 0 25px rgba(255,0,0,0.4);
+    text-shadow: 0 0 30px rgba(255,0,0,0.5);
     user-select:none;
   }
 </style>
 </head>
 <body>
 
+<div id="label"></div>
 <div id="timer">00:00:00</div>
 
 <script type="module">
@@ -39,6 +50,8 @@ const supabase = createClient(
 )
 
 const timer = document.getElementById("timer")
+const labelEl = document.getElementById("label")
+
 let endTime = null
 let interval = null
 
@@ -71,6 +84,7 @@ async function load(){
 
   if(data){
     endTime = data.end_time
+    labelEl.textContent = data.label || ""
     start()
   }
 }
@@ -84,6 +98,7 @@ supabase
     { event:"*", schema:"public", table:"countdowns", filter:"id=eq.main" },
     payload => {
       endTime = payload.new.end_time
+      labelEl.textContent = payload.new.label || ""
       start()
     }
   )
