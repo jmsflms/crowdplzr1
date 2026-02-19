@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Operator</title>
+  <style>
+    html, body { margin:0; padding:0; font-family: system-ui, Arial, sans-serif; background:#fff; }
+    .wrap { max-width: 900px; margin: 24px auto; padding: 16px; }
+    .box { border:1px solid #ddd; border-radius:12px; padding:16px; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:10px 0; }
+    input, button, select { font-size:16px; padding:8px 10px; }
+    input[type="number"]{ width:90px; }
+    .status { font-size: 13px; color:#555; }
+    .ok { color:#0a7; }
+    .bad { color:#c00; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="box">
+      <div class="row">
+        <strong>Countdown controller</strong>
+        <span class="status">Writes to id <span class="mono">main</span></span>
+      </div>
+
+      <div class="row">
+        <label><strong>Mode:</strong></label>
+        <select id="mode">
+          <option value="target">Target date/time</option>
+          <option value="duration">Duration (starts now)</option>
+        </select>
+      </div>
+
+      <div id="targetControls">
+        <div class="row">
+          <label><strong>Target:</strong></label>
+          <input id="target" type="datetime-local" />
+          <button id="twoWeeks" type="button">+2 weeks</button>
+        </div>
+      </div>
+
+      <div id="durationControls" style="display:none;">
+        <div class="row">
+          <label><strong>Duration:</strong></label>
+          <input id="hours" type="number" min="0" value="1" /> h
+          <input id="mins" type="number" min="0" max="59" value="0" /> m
+          <input id="secs" type="number" min="0" max="59" value="0" /> s
+          <button id="oneHour" type="button">1 hour</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <label><strong>Label (optional):</strong></label>
+        <input id="label" type="text" placeholder="e.g. Doors open in…" style="flex:1; min-width:260px;" />
+      </div>
+
+      <hr />
+
+      <div class="row">
+        <button id="save" type="button">Save / Update</button>
+        <button id="load" type="button">Load current</button>
+        <span class="status" id="status"></span>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+  const SUPABASE_URL = "https://hhyfixoxwxmzncosmcqo.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_KWvHkZqW2aAipujklitrdg_C7bSBFce";
+  const COUNTDOWN_ID = "main";
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $("status");
+
+  function pad(n){ return String(n).padStart(2,"0"); }
+
+  function showControls(){
+    const mode = $("mode").value;
+    $("targetControls").style.display = mode === "target" ? "" : "none";
+    $("durationControls").style.display = mode === "duration" ? "" : "none";
+  }
+
+  function durationMs(){
+    const h = Number($("hours").value || 0);
+    const m = Number($("mins").value || 0);
+    const s = Number($("secs").value || 0);
+    return ((h * 60 + m) * 60 + s) * 1000;
+  }
+
+  function setStatus(msg, ok=true){
+    statusEl.className = "status " + (ok ? "ok" : "bad");
+    statusEl.textContent = msg;
+  }
+
+  $("twoWeeks").addEventListener("click", () => {
+    const d = new Date(Date.now() + 14*24*60*60*1000);
+    const yyyy = d.getFullYear();
+    const mm = pad(d.getMonth()+1);
+    const dd = pad(d.getDate());
+    const hh = pad(d.getHours());
+    const mi = pad(d.getMinutes());
+    $("target").value = `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+    setStatus("Target set to 2 weeks from now.");
+  });
+
+  $("oneHour").addEventListener("click", () => {
+    $("hours").value = 1;
+    $("mins").value = 0;
+    $("secs").value = 0;
+    setStatus("Duration set to 1 hour.");
+  });
+
+  $("mode").addEventListener("change", showControls);
+  showControls();
+
+  async function loadCurrent(){
+    const { data, error } = await supabase
+      .from("countdowns")
+      .select("id,label,end_time,updated_at")
+      .eq("id", COUNTDOWN_ID)
+      .maybeSingle();
+
+    if (error) { setStatus(error.message, false); return; }
+    if (!data) { setStatus("No countdown row yet. Press Save/Update to create it."); return; }
+
+    $("label").value = data.label || "";
+    // Put end_time into datetime-local field (best-effort, local time)
+    const d = new Date(data.end_time);
+    const yyyy = d.getFullYear();
+    const mm = pad(d.getMonth()+1);
+    const dd = pad(d.getDate());
+    const hh = pad(d.getHours());
+    const mi = pad(d.getMinutes());
+    $("target").value = `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+
+    $("mode").value = "target";
+    showControls();
+    setStatus("Loaded current countdown.");
+  }
+
+  async function save(){
+    let endTimeISO = null;
+
+    if ($("mode").value === "target") {
+      const v = $("target").value;
+      if (!v) { setStatus("Pick a target date/time.", false); return; }
+      endTimeISO = new Date(v).toISOString();
+    } else {
+      const ms = durationMs();
+      if (ms <= 0) { setStatus("Set a duration greater than 0.", false); return; }
+      endTimeISO = new Date(Date.now() + ms).toISOString();
+    }
+
+    const payload = {
+      id: COUNTDOWN_ID,
+      label: ($("label").value || "").trim(),
+      end_time: endTimeISO,
+      updated_at: new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from("countdowns")
+      .upsert(payload, { onConflict: "id" });
+
+    if (error) setStatus(error.message, false);
+    else setStatus("Saved.");
+  }
+
+  $("load").addEventListener("click", loadCurrent);
+  $("save").addEventListener("click", save);
+
+  // Auto-load on open (optional)
+  loadCurrent();
+</script>
+</body>
+</html>
