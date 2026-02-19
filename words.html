@@ -157,9 +157,15 @@ const display = document.getElementById("display");
 const controls = document.getElementById("controls");
 const takeControlBtn = document.getElementById("takeControl");
 const textInput = document.getElementById("textInput");
+const releaseControlBtn = document.getElementById("releaseControl");
+
 
 let isController = false;
 let debounceTimer = null;
+
+let localControllerToken = null;
+let currentControllerToken = null;
+
 
 /* =========================
    Palette
@@ -177,6 +183,18 @@ const COLORS = {
    Render state
    ========================= */
 function applyState(row) {
+  currentControllerToken = row.controller_token || null;
+  // Only allow typing if we own the controller token
+if (localControllerToken && localControllerToken === currentControllerToken) {
+  isController = true;
+  controls.style.display = "flex";
+  takeControlBtn.style.display = "none";
+} else {
+  isController = false;
+  controls.style.display = "none";
+  takeControlBtn.style.display = "block";
+}
+
   const txt = (row && typeof row.current_text === "string") ? row.current_text : "";
   display.textContent = txt;
 
@@ -241,9 +259,28 @@ sb
    Controller enable
    ========================= */
 takeControlBtn.addEventListener("click", async () => {
-  isController = true;
-  controls.style.display = "flex";
-  takeControlBtn.style.display = "none";
+  const newToken = crypto.randomUUID();
+
+  const { error } = await sb
+    .from(TABLE)
+    .update({ controller_token: newToken })
+    .eq("id", ROW_ID);
+
+  if (!error) {
+    localControllerToken = newToken;
+  }
+});
+releaseControlBtn.addEventListener("click", async () => {
+  const { error } = await sb
+    .from(TABLE)
+    .update({ controller_token: null })
+    .eq("id", ROW_ID);
+
+  if (!error) {
+    localControllerToken = null;
+  }
+});
+
 
   // Pull latest text into textarea ONCE when taking control
   const { data } = await sb
@@ -264,6 +301,7 @@ takeControlBtn.addEventListener("click", async () => {
    Debounced text updates
    ========================= */
 textInput.addEventListener("input", (e) => {
+  
   if (!isController) return;
   const value = e.target.value;
 
