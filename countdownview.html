@@ -54,4 +54,41 @@ function format(ms){
 }
 
 function start(){
-  if(interval
+  if(interval) clearInterval(interval)
+  interval = setInterval(()=>{
+    if(!endTime) return
+    const diff = new Date(endTime).getTime() - Date.now()
+    timer.textContent = format(diff)
+  }, 250)
+}
+
+async function load(){
+  const { data } = await supabase
+    .from("countdowns")
+    .select("*")
+    .eq("id","main")
+    .maybeSingle()
+
+  if(data){
+    endTime = data.end_time
+    start()
+  }
+}
+
+await load()
+
+supabase
+  .channel("countdown-live")
+  .on(
+    "postgres_changes",
+    { event:"*", schema:"public", table:"countdowns", filter:"id=eq.main" },
+    payload => {
+      endTime = payload.new.end_time
+      start()
+    }
+  )
+  .subscribe()
+</script>
+
+</body>
+</html>
