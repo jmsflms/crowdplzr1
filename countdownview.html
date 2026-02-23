@@ -16,13 +16,23 @@
     justify-content:center;
   }
 
+  /* Logo above */
+  #logo {
+    width: min(900px, 90vw);
+    height: auto;
+    margin: 0 0 18px 0;
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+
   #label {
     color:#ff2a2a;
     font-family: monospace;
     font-size: clamp(24px, 4vw, 60px);
-    margin-bottom: 20px;
+    margin: 0 0 18px 0;
     text-shadow: 0 0 20px rgba(255,0,0,0.4);
     user-select:none;
+    text-align:center;
   }
 
   #timer {
@@ -33,13 +43,48 @@
     letter-spacing: 0.08em;
     text-shadow: 0 0 30px rgba(255,0,0,0.5);
     user-select:none;
+    text-align:center;
   }
+
+  /* House below */
+  #house {
+    width: min(520px, 65vw);
+    height: auto;
+    margin: 22px 0 0 0;
+    user-select:none;
+    -webkit-user-drag:none;
+    opacity: 0.95;
+  }
+
+  /* Tap-to-enable sound overlay (needed for browser autoplay rules) */
+  #soundGate {
+    position: fixed;
+    inset: 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(0,0,0,0.65);
+    color:#ff2a2a;
+    font-family: monospace;
+    font-size: clamp(18px, 3vw, 28px);
+    text-align:center;
+    cursor: pointer;
+    user-select:none;
+  }
+  #soundGate small { display:block; color: rgba(255,42,42,0.75); margin-top: 10px; font-size: 0.7em; }
 </style>
 </head>
 <body>
 
+<img id="logo" src="assets/hodlogo.png" alt="House of Deceit" />
 <div id="label"></div>
 <div id="timer">00:00:00</div>
+<img id="house" src="assets/house.png" alt="House" />
+
+<div id="soundGate">
+  Tap to enable sound
+  <small>(Browsers block beeps until you tap once)</small>
+</div>
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
@@ -72,12 +117,64 @@ function format(ms){
   return `${pad(totalHours)}:${pad(m)}:${pad(s)}`
 }
 
+/* ---- 1 beep per second (WebAudio) ---- */
+let audioCtx = null
+let soundEnabled = false
+let lastWholeSeconds = null
+
+function ensureAudio(){
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+}
+
+function pip(){
+  if (!soundEnabled) return
+  ensureAudio()
+  if (audioCtx.state !== "running") return
+
+  const o = audioCtx.createOscillator()
+  const g = audioCtx.createGain()
+
+  o.type = "square"
+  o.frequency.value = 880  // pip pitch
+  g.gain.value = 0.05      // volume
+
+  o.connect(g)
+  g.connect(audioCtx.destination)
+
+  const t = audioCtx.currentTime
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.05, t + 0.005)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06)
+
+  o.start(t)
+  o.stop(t + 0.07)
+}
+
+const soundGate = document.getElementById("soundGate")
+soundGate.addEventListener("click", async () => {
+  ensureAudio()
+  await audioCtx.resume()
+  soundEnabled = true
+  soundGate.style.display = "none"
+  pip() // confirm
+})
+
 function start(){
   if(interval) clearInterval(interval)
+
   interval = setInterval(()=>{
     if(!endTime) return
-    const diff = new Date(endTime).getTime() - Date.now()
-    timer.textContent = format(diff)
+
+    const diffMs = new Date(endTime).getTime() - Date.now()
+    timer.textContent = format(diffMs)
+
+    // beep exactly once per whole second change
+    const whole = Math.max(0, Math.floor(diffMs / 1000))
+    if (lastWholeSeconds === null) lastWholeSeconds = whole
+    if (whole !== lastWholeSeconds) {
+      lastWholeSeconds = whole
+      if (whole > 0) pip()
+    }
   }, 250)
 }
 
@@ -91,13 +188,14 @@ async function load(){
   if(data){
     endTime = data.end_time
     labelEl.textContent = data.label || ""
+    lastWholeSeconds = null
     start()
   }
 }
 
 await load()
 setInterval(load, 2000);
-  
+
 supabase
   .channel("countdown-live")
   .on(
@@ -106,6 +204,7 @@ supabase
     payload => {
       endTime = payload.new.end_time
       labelEl.textContent = payload.new.label || ""
+      lastWholeSeconds = null
       start()
     }
   )
