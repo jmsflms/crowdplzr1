@@ -10,19 +10,30 @@
     margin:0;
     height:100%;
     background:#000;
+  }
+
+  /* Layout: logo near top, timer block centered-ish, house near bottom */
+  .page{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  #logo {
+    width: min(900px, 90vw);
+    height: auto;
+    margin-top: 28px;
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+
+  .timerBlock{
+    margin-top: 70px;         /* pushes the countdown down */
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-  }
-
-  /* Logo above */
-  #logo {
-    width: min(900px, 90vw);
-    height: auto;
-    margin: 0 0 18px 0;
-    user-select:none;
-    -webkit-user-drag:none;
   }
 
   #label {
@@ -46,45 +57,51 @@
     text-align:center;
   }
 
-  /* House below */
   #house {
     width: min(520px, 65vw);
     height: auto;
-    margin: 22px 0 0 0;
+    margin-top: auto;          /* pushes house to bottom area */
+    margin-bottom: 28px;
     user-select:none;
     -webkit-user-drag:none;
     opacity: 0.95;
   }
 
-  /* Tap-to-enable sound overlay (needed for browser autoplay rules) */
-  #soundGate {
+  /* Discreet sound toggle */
+  #soundToggle {
     position: fixed;
-    inset: 0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background: rgba(0,0,0,0.65);
-    color:#ff2a2a;
+    right: 16px;
+    bottom: 16px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,42,42,0.35);
+    color: #ff2a2a;
     font-family: monospace;
-    font-size: clamp(18px, 3vw, 28px);
-    text-align:center;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 12px;
     cursor: pointer;
     user-select:none;
   }
-  #soundGate small { display:block; color: rgba(255,42,42,0.75); margin-top: 10px; font-size: 0.7em; }
+  #soundToggle.on {
+    background: rgba(255,42,42,0.12);
+    border-color: rgba(255,42,42,0.7);
+  }
 </style>
 </head>
 <body>
 
-<img id="logo" src="assets/hodlogo.png" alt="House of Deceit" />
-<div id="label"></div>
-<div id="timer">00:00:00</div>
-<img id="house" src="assets/house.png" alt="House" />
+<div class="page">
+  <img id="logo" src="assets/hodlogo.png" alt="House of Deceit" />
 
-<div id="soundGate">
-  Tap to enable sound
-  <small>(Browsers block beeps until you tap once)</small>
+  <div class="timerBlock">
+    <div id="label"></div>
+    <div id="timer">00:00:00</div>
+  </div>
+
+  <img id="house" src="assets/house.png" alt="House" />
 </div>
+
+<button id="soundToggle" type="button">Sound: Off</button>
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
@@ -96,6 +113,7 @@ const supabase = createClient(
 
 const timer = document.getElementById("timer")
 const labelEl = document.getElementById("label")
+const soundToggle = document.getElementById("soundToggle")
 
 let endTime = null
 let interval = null
@@ -117,7 +135,7 @@ function format(ms){
   return `${pad(totalHours)}:${pad(m)}:${pad(s)}`
 }
 
-/* ---- 1 beep per second (WebAudio) ---- */
+/* ---- Beep (optional, off by default) ---- */
 let audioCtx = null
 let soundEnabled = false
 let lastWholeSeconds = null
@@ -135,8 +153,8 @@ function pip(){
   const g = audioCtx.createGain()
 
   o.type = "square"
-  o.frequency.value = 880  // pip pitch
-  g.gain.value = 0.05      // volume
+  o.frequency.value = 880
+  g.gain.value = 0.05
 
   o.connect(g)
   g.connect(audioCtx.destination)
@@ -150,13 +168,19 @@ function pip(){
   o.stop(t + 0.07)
 }
 
-const soundGate = document.getElementById("soundGate")
-soundGate.addEventListener("click", async () => {
-  ensureAudio()
-  await audioCtx.resume()
-  soundEnabled = true
-  soundGate.style.display = "none"
-  pip() // confirm
+soundToggle.addEventListener("click", async () => {
+  if (!soundEnabled) {
+    ensureAudio()
+    await audioCtx.resume()
+    soundEnabled = true
+    soundToggle.classList.add("on")
+    soundToggle.textContent = "Sound: On"
+    pip()
+  } else {
+    soundEnabled = false
+    soundToggle.classList.remove("on")
+    soundToggle.textContent = "Sound: Off"
+  }
 })
 
 function start(){
@@ -168,7 +192,6 @@ function start(){
     const diffMs = new Date(endTime).getTime() - Date.now()
     timer.textContent = format(diffMs)
 
-    // beep exactly once per whole second change
     const whole = Math.max(0, Math.floor(diffMs / 1000))
     if (lastWholeSeconds === null) lastWholeSeconds = whole
     if (whole !== lastWholeSeconds) {
