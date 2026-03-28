@@ -40,7 +40,7 @@
     }
 
     .leaderboard {
-      margin-top: 30px;
+      margin-bottom: 30px;
     }
 
     .leader-row {
@@ -79,14 +79,16 @@
   <div class="wrap">
     <h1>House of Deceit Leader Board</h1>
 
-    <div id="inputs"></div>
-
-    <button onclick="updateLeaderboard()">Update Leaderboard</button>
-
+    <!-- LEADERBOARD AT TOP -->
     <div class="leaderboard">
       <h2>Leaderboard</h2>
       <div id="leaderboard"></div>
     </div>
+
+    <!-- INPUTS AT BOTTOM -->
+    <div id="inputs"></div>
+
+    <button onclick="updateLeaderboard()">Update Leaderboard</button>
   </div>
 
   <script>
