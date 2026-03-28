@@ -414,7 +414,7 @@
         </div>
       </div>
 
-      <div class="instruction" id="instruction">PASS TO CLOCKWISE PLAYER</div>
+      <div class="instruction" id="instruction">Move Dial in Direction of Arrow</div>
 
       <div class="arrowWrap" aria-hidden="true">
         <svg class="arrowSvg" viewBox="0 0 520 52" role="img" aria-label="Direction arrow">
@@ -610,7 +610,7 @@ const CANONICAL_QUESTIONS = [
   function flipState(){
     state = (state === "RED") ? "BLUE" : "RED";
     document.body.classList.toggle("state-blue", state === "BLUE");
-    instructionEl.textContent = (state === "RED") ? "PASS TO CLOCKWISE PLAYER" : "PASS TO ANTI-CLOCKWISE PLAYER";
+    instructionEl.textContent = (state === "RED") ? "Move Dial in Direction of Arrow" : "Move Dial in Direction of Arrow";
     renderDirectionArrow();
     setMarkerDirection();
   }
@@ -1042,7 +1042,7 @@ const CANONICAL_QUESTIONS = [
     qTextEl.textContent = q.prompt;
     codeEl.textContent = `${progress} / 5`;
 
-    instructionEl.textContent = (state === "RED") ? "PASS TO CLOCKWISE PLAYER" : "PASS TO ANTI-CLOCKWISE PLAYER";
+    instructionEl.textContent = (state === "RED") ? "Move Dial in Direction of Arrow" : "PMove Dial in Direction of Arrow";
 
     updateAnswersForQuestion(q);
     renderDirectionArrow();
