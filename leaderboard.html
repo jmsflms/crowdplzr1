@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1, h2 {
+      margin-top: 0;
+    }
+
+    .input-row, .leader-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 120px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .input-row input {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .leaderboard {
+      margin-top: 30px;
+    }
+
+    .leader-row {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+
+    .leader-row.top {
+      background: #ffeaa7;
+      font-weight: bold;
+    }
+
+    .rank {
+      font-weight: bold;
+    }
+
+    .score {
+      text-align: right;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: #222;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Leaderboard Tracker</h1>
+
+    <div id="inputs"></div>
+
+    <button onclick="updateLeaderboard()">Update Leaderboard</button>
+
+    <div class="leaderboard">
+      <h2>Leaderboard</h2>
+      <div id="leaderboard"></div>
+    </div>
+  </div>
+
+  <script>
+    const inputsDiv = document.getElementById("inputs");
+    const leaderboardDiv = document.getElementById("leaderboard");
+
+    for (let i = 1; i <= 12; i++) {
+      const row = document.createElement("div");
+      row.className = "input-row";
+      row.innerHTML = `
+        <div>${i}.</div>
+        <input type="text" placeholder="Enter name" id="name${i}">
+        <input type="number" placeholder="Score" id="score${i}" value="0">
+      `;
+      inputsDiv.appendChild(row);
+    }
+
+    function updateLeaderboard() {
+      const players = [];
+
+      for (let i = 1; i <= 12; i++) {
+        const name = document.getElementById(`name${i}`).value.trim();
+        const score = parseFloat(document.getElementById(`score${i}`).value) || 0;
+
+        if (name !== "") {
+          players.push({ name, score });
+        }
+      }
+
+      players.sort((a, b) => b.score - a.score);
+
+      leaderboardDiv.innerHTML = "";
+
+      players.forEach((player, index) => {
+        const row = document.createElement("div");
+        row.className = "leader-row" + (index === 0 ? " top" : "");
+        row.innerHTML = `
+          <div class="rank">#${index + 1}</div>
+          <div>${player.name}</div>
+          <div class="score">${player.score}</div>
+        `;
+        leaderboardDiv.appendChild(row);
+      });
+    }
+
+    document.addEventListener("input", updateLeaderboard);
+    updateLeaderboard();
+  </script>
+</body>
+</html>
