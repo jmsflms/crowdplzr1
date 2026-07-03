@@ -23,7 +23,8 @@
       margin-top: 0;
     }
 
-    .input-row, .leader-row {
+    .input-row,
+    .leader-row {
       display: grid;
       grid-template-columns: 60px 1fr 120px;
       gap: 10px;
@@ -50,8 +51,10 @@
       font-size: 18px;
     }
 
+    /* First place */
     .leader-row.top {
-      background: #222;
+      background: #c40000;
+      color: #fff;
       font-weight: bold;
     }
 
@@ -79,23 +82,27 @@
   <div class="wrap">
     <h1>House of Deceit Leader Board</h1>
 
-    <!-- LEADERBOARD AT TOP -->
+    <!-- LEADERBOARD -->
     <div class="leaderboard">
       <h2>Leaderboard</h2>
       <div id="leaderboard"></div>
     </div>
 
-    <!-- INPUTS AT BOTTOM -->
+    <!-- PLAYER INPUTS -->
     <div id="inputs"></div>
 
     <button onclick="updateLeaderboard()">Update Leaderboard</button>
   </div>
 
   <script>
+    // Change this number to however many players you want.
+    const PLAYER_COUNT = 20;
+
     const inputsDiv = document.getElementById("inputs");
     const leaderboardDiv = document.getElementById("leaderboard");
 
-    for (let i = 1; i <= 12; i++) {
+    // Create player input rows
+    for (let i = 1; i <= PLAYER_COUNT; i++) {
       const row = document.createElement("div");
       row.className = "input-row";
       row.innerHTML = `
@@ -109,7 +116,8 @@
     function updateLeaderboard() {
       const players = [];
 
-      for (let i = 1; i <= 12; i++) {
+      // Read player data
+      for (let i = 1; i <= PLAYER_COUNT; i++) {
         const name = document.getElementById(`name${i}`).value.trim();
         const score = parseFloat(document.getElementById(`score${i}`).value) || 0;
 
@@ -118,10 +126,12 @@
         }
       }
 
+      // Sort by score (highest first)
       players.sort((a, b) => b.score - a.score);
 
       leaderboardDiv.innerHTML = "";
 
+      // Display leaderboard
       players.forEach((player, index) => {
         const row = document.createElement("div");
         row.className = "leader-row" + (index === 0 ? " top" : "");
@@ -134,7 +144,10 @@
       });
     }
 
+    // Update automatically
     document.addEventListener("input", updateLeaderboard);
+
+    // Initial display
     updateLeaderboard();
   </script>
 </body>
