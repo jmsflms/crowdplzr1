@@ -410,7 +410,7 @@
         </div>
         <div class="pill codePill" aria-label="Progress">
           <div class="label">CODE</div>
-          <div class="value" id="code">0 / 5</div>
+          <div class="value" id="code">0 / 6</div>
         </div>
       </div>
 
@@ -458,10 +458,10 @@
 
   <div class="soundBadge" id="soundBadge">TAP TO ENABLE SOUND</div>
 
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Code: 3589">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Code: 3598">
     <div class="modalCard">
       <h1>SAFE UNLOCKED</h1>
-      <div class="codeReveal">CODE: 3589</div>
+      <div class="codeReveal">CODE: 3598</div>
       <div class="time" id="unlockTime">TIME: 00:00</div>
       <div class="hint">Press RESET to play again.</div>
     </div>
@@ -470,40 +470,34 @@
 <script>
 const CANONICAL_QUESTIONS = [
   {
-    prompt: "At Surmans Butcher, how much are Fresh Chicken Supremes per lb?",
-    correct: "4.52",
-    answers: ["4.52","3.82","6.02","3.45","20.80","4.02","8.90","7.80","8.00","5.25"]
+    prompt: "Cheeseboard for two at Ales & Blooms?",
+    correct: "£28",
+    answers: ["£28","£10","£12","£26","£27","£29","£30","£32","£35","Not Listed"]
   },
   {
-    prompt: "At Scoops, which flavour is advertised below Blue Bubblegum?",
-    correct: "Funky\nBanana",
-    answers: [
-      "Funky\nBanana",
-      "Raspberry\nRipple",
-      "Bueno Ripple",
-      "Salted Caramel",
-      "True Coffee",
-      "Under\nthe Sea",
-      "Cookie Dough",
-      "Rhubarb and\nCustard",
-      "Booze Berry",
-      "Ginger Snap"
-    ]
+    prompt: "What is Mad Cat at the Tankerton Arms?",
+    correct: "Bitter",
+    answers: ["Bitter","The Cat","Pale Ale","The Owner","The Barmaid","Lager","The Pub Dog","Cocktail","House Wine"]
   },
   {
-    prompt: "How much is an Aperol Spritz at Ales and Blooms?",
-    correct: "10.75",
-    answers: ["10.75","9.80","8.00","11.50","10.00","12.50","7.80","14.00","13.00","Not Listed"]
+    prompt: "What colour are the strings on the crocheted red-handled tennis rackets on the courts?",
+    correct: "Orange",
+    answers: ["Orange","Red","Yellow","Green","Blue","White","Black","Pink","Purple"]
   },
   {
-    prompt: "At the Tankerton Arms, what is a Dark Conspiracy?",
-    correct: "Hoppy\nPorter",
-    answers: ["Hoppy\nPorter","IPA","Pale Ale","Bitter","Stout","Cocktail","House Wine","A Secret","Barman's T-Shirt","Not Listed"]
+    prompt: "On the sign near the lifeguard hut, what year did Tankerton win the High St Rising Star award?",
+    correct: "2019",
+    answers: ["2019","1886","1974","1985","2015","2016","2020","2022","2025"]
   },
   {
-    prompt: "How much is a pickled egg at the Carousel Fish and Chip shop?",
+    prompt: "Pickled egg at Carousel Fish Bar?",
     correct: "70p",
-    answers: ["70p","50p","80p","1.20","1.10","65p","20p","1.50","1.00","75p"]
+    answers: ["70p","50p","60p","65p","75p","80p","90p","£1.00","£1.20","Not Listed"]
+  },
+  {
+    prompt: "Four Loko Tropical at Tesco?",
+    correct: "£4.30",
+    answers: ["£4.30","£3.80","£3.99","£4.00","£4.20","£4.50","£4.75","£4.99","£5.30","Not Sold"]
   }
 ];
 
@@ -628,8 +622,8 @@ const CANONICAL_QUESTIONS = [
 
     if (isCorrect){
       progress += 1;
-      if (progress >= 5){
-        progress = 5;
+      if (progress >= DISPLAY.length){
+        progress = DISPLAY.length;
         unlocked = true;
         showUnlocked();
       } else {
@@ -1040,9 +1034,9 @@ const CANONICAL_QUESTIONS = [
     const q = DISPLAY[questionIndex];
     qNumEl.textContent = `Q${questionIndex + 1}`;
     qTextEl.textContent = q.prompt;
-    codeEl.textContent = `${progress} / 5`;
+    codeEl.textContent = `${progress} / ${DISPLAY.length}`;
 
-    instructionEl.textContent = (state === "RED") ? "Move Dial in Direction of Arrow" : "PMove Dial in Direction of Arrow";
+    instructionEl.textContent = (state === "RED") ? "Move Dial in Direction of Arrow" : "Move Dial in Direction of Arrow";
 
     updateAnswersForQuestion(q);
     renderDirectionArrow();
